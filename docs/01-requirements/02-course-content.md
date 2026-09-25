@@ -47,11 +47,11 @@ and learning progress tracking are outside the initial scope.
 
 ### UC-CONTENT-001 - Create Chapter
 - Related Requirements: FR-CONTENT-001, FR-CONTENT-002
-- Description: The System allows lecturers to create a new chapter within a course to organize educational content into a hierarchical structure.
+- Primary Actor: Lecturer
 - Preconditions:
     * The lecturer is authenticated.
     * The lecturer is assigned to manage the target course.
-    * Te target course is exists.
+    * The target course is exists.
 - Trigger: The lecturer chooses to create a new chapter.
 - Main Flow:
     1. The lecturer navigates to the course content management interface.
@@ -76,7 +76,7 @@ and learning progress tracking are outside the initial scope.
 
 ### UC-CONTENT-002 - Update Chapter
 - Related Requirements: FR-CONTENT-002
-- Description: The system allows lecturers to update the details of an existing chapter within a course.
+- Primary Actor: Lecturer
 - Preconditions:
     * The lecturer is authenticated.
     * The lecturer has permission to manage the target course.
@@ -105,7 +105,7 @@ and learning progress tracking are outside the initial scope.
 
 ### UC-CONTENT-003 - Organize Chapters
 - Related Requirements: FR-CONTENT-001, FR-CONTENT-002
-- Description: The system allows lecturers to organize the order and structural arrangement of chapters within a course.
+-  Primary Actor: Lecturer
 - Preconditions:
     * The lecturer is authenticated.
     * The lecturer has permission to manage the target course.
@@ -133,7 +133,7 @@ and learning progress tracking are outside the initial scope.
 
 ### UC-CONTENT-004 - Create Lesson
 - Related Requirements: FR-CONTENT-001, FR-CONTENT-003
-- Description: The system allows lecturers to create a lesson within an existing chapter to provide a specific learning unit.
+- Primary Actor: Lecturer
 - Preconditions:
     * The lecturer is authenticated.
     * The lecterer has permission to manage the target course.
@@ -164,7 +164,7 @@ and learning progress tracking are outside the initial scope.
 
 ### UC-CONTENT-005 - Update Lesson
 - Related Requirements: FR-CONTENT-003
-- Description: The system allows lecturers to update the details of an existing lesson within a chapter.
+- Primary Actor: Lecturer
 - Preconditions:
     * The lecturer is authenticated.
     * The lecturer has permission to manage the target course.
@@ -193,7 +193,7 @@ and learning progress tracking are outside the initial scope.
 
 ### UC-CONTENT-006 – Manage Learning Materials
 - Related Requirements: FR-CONTENT-003, FR-CONTENT-004
-- Description: The system allows lecturers to attach, update, and remove supported educational materials associated with a lesson.
+- Primary Actor: Lecturer
 - Preconditions:
     * The lecturer is authenticated.
     * The lecturer has permission to manage the target course.
@@ -226,7 +226,7 @@ and learning progress tracking are outside the initial scope.
 
 ### UC-CONTENT-007 – Browse Course Content
 - Related Requirements: FR-CONTENT-001, FR-CONTENT-005
-- Description: The system allows enrolled students to browse the hierarchical structure of a course, including its chapters and lessons.
+- Primary Actor: Student
 - Preconditions:
     * The student is authenticated.
     * The student is enrolled in the target course.
@@ -252,7 +252,7 @@ and learning progress tracking are outside the initial scope.
 
 ### UC-CONTENT-008 – View and Interact with Learning Content
 - Related Requirements: FR-CONTENT-004, FR-CONTENT-005
-- Description: The system allows enrolled students to view and interact with educational content and supported learning materials published within a lesson.
+- Primary Actor: Student
 - Preconditions:
     * The student is authenticated.
     * The student is authenticated.
@@ -282,7 +282,7 @@ and learning progress tracking are outside the initial scope.
 
 ### UC-CONTENT-009 – Manage Lesson Quizzes
 - Related Requirements: FR-CONTENT-003, FR-CONTENT-006
-- Description: The system allows lecturers to create, update, and organize quizzes associated with a lesson.
+- Primary Actor: Lecturer
 - Preconditions:   
     * The lecturer is authenticated.
     * The lecturer has permission to manage the target course.
@@ -313,7 +313,7 @@ and learning progress tracking are outside the initial scope.
 
 ### UC-CONTENT-010 – Take Lesson Quiz
 - Related Requirements: FR-CONTENT-005, FR-CONTENT-007
-- Description: The system allows students to take a quiz associated with a lesson and records the quiz attempt and available result.
+- Primary Actor: Student
 - Preconditions:
     * The student is authenticated.
     * The student is enrolled in the course.
@@ -347,7 +347,7 @@ and learning progress tracking are outside the initial scope.
 ## 5. Business Rules
 
 ### BR-CONTENT-001 - Hierarchical Content Structure
--  Each lesson must belong to one chapter, and each chapter must belong to one course.
+- Each lesson must belong to one chapter, and each chapter must belong to one course.
 - The system must maintain the hierarchy of Course → Chapter → Lesson.
 - A lesson cannot exist without an associated chapter, and a chapter cannot exist without an associated course.
 
