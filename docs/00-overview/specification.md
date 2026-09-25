@@ -170,6 +170,11 @@ participated in by students.
 
 Represents the participation of a student in a course.
 
+### Enrollment Status History
+
+Represents the recorded sequence of changes to a student's participation
+status in a course.
+
 ### Chapter
 
 Represents a major organizational section of a course.
