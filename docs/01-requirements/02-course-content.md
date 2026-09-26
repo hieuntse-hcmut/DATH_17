@@ -5,8 +5,7 @@
 - Scope: Covers the creation, updating, and structuring of learning
 content, supporting multiple formats including documents, videos,
 and other supported resources. It also includes permission-based
-access for students participating in a course, lesson quiz management,
-and quiz attempt recording. Live video-conferencing infrastructure
+access for students participating in a course. Live video-conferencing infrastructure
 and learning progress tracking are outside the initial scope.
 
 ## 2. Actors
@@ -15,33 +14,25 @@ and learning progress tracking are outside the initial scope.
 
 ## 3. Functional Requirements
 
-### FR-CONTENT-001 - Hierarchical Content Organztion
-- Description: The system must allow lecturers to organize educational materials into a structed hierarchy consisting of courses, chapters, and lessons.
-- Priority: High
+### FR-CONTENT-001 - Hierarchical Content Organization
+- Description: The system must allow lecturers to organize educational materials into a structured hierarchy consisting of courses, chapters, and lessons.
+- Priority: Must-have
 
 ### FR-CONTENT-002 - Chapter Management
 - Description: The system must allow lecturers to create, update and organize chapters as the major organizational sections of a course.
-- Priority: High
+- Priority: Must-have
 
 ### FR-CONTENT-003 - Lesson Management
-- Description: The system must allow lecturers to created update and manage individual learning lessons contained within a chapter.
-- Priority: High
+- Description: The system must allow lecturers to create, update and manage individual learning lessons contained within a chapter.
+- Priority: Must-have
 
 ### FR-CONTENT-004 - Multi-Format Learning Materials Support
 - Description: The system must support the storage and attachment of various educational resources to lessons, including documents, videos, and other supported educational formats.
-- Priority: High
+- Priority: Must-have
 
 ### FR-CONTENT-005 - Student Learning Content Access
 - Description: The system must allow enrolled students to access, view and interact with learning content and materials published in their courses.
-- Priority: High
-
-### FR-CONTENT-006 – Lesson Quiz Management
-- Description: The system must allow lecturers to create, update, organize, and associate quizzes with lessons.
-- Priority: High
-
-### FR-CONTENT-007 – Quiz Attempt Recording
-- Description: The system must allow students to take quizzes associated with lessons and record their attempts and available results.
-- Priority: High
+- Priority: Must-have
 
 ## 4. Use Cases
 
@@ -51,7 +42,7 @@ and learning progress tracking are outside the initial scope.
 - Preconditions:
     * The lecturer is authenticated.
     * The lecturer is assigned to manage the target course.
-    * The target course is exists.
+    * The target course exists.
 - Trigger: The lecturer chooses to create a new chapter.
 - Main Flow:
     1. The lecturer navigates to the course content management interface.
@@ -80,7 +71,7 @@ and learning progress tracking are outside the initial scope.
 - Preconditions:
     * The lecturer is authenticated.
     * The lecturer has permission to manage the target course.
-    * The target chapter is exists.
+    * The target chapter exists.
 - Trigger: The lecturer chooses to edit an existing chapter.
 - Main Flow:
     1. The lecturer navigates to the course content management interface.
@@ -88,17 +79,17 @@ and learning progress tracking are outside the initial scope.
     3. The lecturer selects the edit chapter option.
     4. The system retrieves and displays the current chapter details.
     5. The lecturer modifies the chapter title or supported metadata.
-    6. The lecturer submits the updated informaion.
+    6. The lecturer submits the updated information.
     7. The system validates the updated details.
     8. The system updates the chapter in the database.
-    9. The system displays the updated chapter informaion.
+    9. The system displays the updated chapter information.
 - Alternative Flows:
-    * A1 - Cancel Update: The lecturer cancels the editing process. The system retains the origianl chapter details.
+    * A1 - Cancel Update: The lecturer cancels the editing process. The system retains the original chapter details.
     * A2 - No changes: The lecturer submits without modifying any information. The system retains the existing details.
 - Exception Flows:
     * E1 - Invalid Chapter Details: The system displays a validation error and requests correction.
     * E2 - Chapter Not Found: The system informs the lecturer that the selected chapter does not exist.
-    * E3 - Unauthorized Access: The system rejects the update operation if the lecrurer lacks permission.
+    * E3 - Unauthorized Access: The system rejects the update operation if the lecturer lacks permission.
 - Postconditions:
     * The chapter details are updated in the database.
     * The updated information is displayed in the course hierarchy.
@@ -118,7 +109,7 @@ and learning progress tracking are outside the initial scope.
     4. The lecturer changes the chapter's position in the hierarchy.
     5. The system validates the requested arrangement.
     6. The system updates the chapter ordering.
-    7. The system saves the updated structure in te database.
+    7. The system saves the updated structure in the database.
     8. The system displays the revised chapter hierarchy.
 - Alternative Flows:
     * A1 - Move Chapter Up: The lecturer moves a chapter to an earlier position.
@@ -136,8 +127,8 @@ and learning progress tracking are outside the initial scope.
 - Primary Actor: Lecturer
 - Preconditions:
     * The lecturer is authenticated.
-    * The lecterer has permission to manage the target course.
-    * The target course exists and belongs to the target course.
+    * The lecturer has permission to manage the target course.
+    * The target chapter exists and belongs to the target course.
 - Trigger: The lecturer chooses to create a new lesson within a chapter.
 - Main Flow:
     1. The lecturer navigates to the course content management interface.
@@ -176,7 +167,7 @@ and learning progress tracking are outside the initial scope.
     3. The lecturer chooses the edit lesson option.
     4. The system retrieves and displays the current lesson details.
     5. The lecturer modifies the lesson title or supported learning content.
-    6. The lecturer modifies the lesson title or supported learning content.
+    6. The lecturer submits the updated information.
     7. The system validates the updated details. 
     8. The system updates the lesson in the database.
     9. The system displays the updated lesson information.
@@ -197,7 +188,7 @@ and learning progress tracking are outside the initial scope.
 - Preconditions:
     * The lecturer is authenticated.
     * The lecturer has permission to manage the target course.
-    * The lecturer has permission to manage the target course.
+    * The lecturer has access to the material management interface.
     * The target lesson exists.
 - Trigger: The lecturer chooses to manage educational materials for a lesson.
 - Main Flow:
@@ -255,7 +246,7 @@ and learning progress tracking are outside the initial scope.
 - Primary Actor: Student
 - Preconditions:
     * The student is authenticated.
-    * The student is authenticated.
+    * The student is enrolled in the target course.
     * The target lesson exists and is available.
     * The lesson contains published learning content or materials.
 - Trigger: The student selects a lesson to study.
@@ -280,70 +271,6 @@ and learning progress tracking are outside the initial scope.
     * The student has accessed the lesson content.
     * The student has been provided with the available supported learning materials.
 
-### UC-CONTENT-009 – Manage Lesson Quizzes
-- Related Requirements: FR-CONTENT-003, FR-CONTENT-006
-- Primary Actor: Lecturer
-- Preconditions:   
-    * The lecturer is authenticated.
-    * The lecturer has permission to manage the target course.
-    * The target lesson exists.
-- Trigger: The lecturer chooses to manage quizzes for a lesson.
-- Main Flow:
-    1. The lecturer selects a lesson.
-    2. The lecturer opens the quiz management interface.
-    3. The lecturer chooses to create a new quiz.
-    4. The system displays the quiz configuration form.
-    5. The lecturer enters the quiz title, instructions, and relevant settings.
-    6. The lecturer adds questions and configures their answer options.
-    7. The lecturer submits the quiz details.
-    8. The system validates the quiz information.
-    9. The system saves the quiz and associates it with the selected lesson.
-    10. The system displays the quiz within the lesson content.
-- Alternative Flows:
-    * A1 – Update Quiz: The lecturer modifies the quiz title, instructions, settings, or questions.
-    * A2 – Reorder Questions: The lecturer changes the order of questions within the quiz.
-    * A3 – Remove Quiz: The lecturer removes a quiz if the feature and permissions allow it.
-- Exception Flows:
-    * E1 – Invalid Quiz Configuration: The system rejects missing or invalid quiz information.
-    * E2 – Missing Questions: The system prevents publication if the quiz requires at least one question and none is provided.
-    * E3 – Unauthorized Access: The system denies the operation if the lecturer lacks permission.
-- Postconditions: 
-    * The quiz is stored and associated with the selected lesson.
-    * The quiz configuration is available for supported student access.
-
-### UC-CONTENT-010 – Take Lesson Quiz
-- Related Requirements: FR-CONTENT-005, FR-CONTENT-007
-- Primary Actor: Student
-- Preconditions:
-    * The student is authenticated.
-    * The student is enrolled in the course.
-    * The quiz is published and accessible.
-    * The quiz belongs to the selected lesson.
-- Trigger: The student chooses to take a lesson quiz.
-- Main Flow:
-    1. The student opens the lesson.
-    2. The student selects the available quiz.
-    3. The system displays the quiz questions and instructions.
-    4. The student answers the questions.
-    5. The student submits the quiz.
-    6. The system validates the submission.
-    7. The system evaluates automatically gradable answers.
-    8. The system records the quiz attempt and result.
-    9. The system updates the relevant lesson progress or completion status, if configured.
-    10. The system displays the result according to the quiz policy.
-- Alternative Flows:
-    * A1 – Retake Quiz: The student retakes the quiz if the configured attempt limit permits it.
-    * A2 – Save Attempt: The student saves an unfinished attempt if supported.
-    * A3 – Manual Grading: The system records answers requiring lecturer grading.
-- Exception Flows:
-    * E1 – Quiz Unavailable: The system denies access to an unpublished or closed quiz.
-    * E2 – Submission Failure: The system cannot save the attempt.
-    * E3 – Invalid Submission: The system rejects the submission if it does not meet the required conditions.
-- Postconditions:
-    * The quiz attempt is recorded.
-    * The available result is stored.
-    * Lesson progress may be updated according to the configured rules.
-
 ## 5. Business Rules
 
 ### BR-CONTENT-001 - Hierarchical Content Structure
@@ -352,7 +279,7 @@ and learning progress tracking are outside the initial scope.
 - A lesson cannot exist without an associated chapter, and a chapter cannot exist without an associated course.
 
 ### BR-CONTENT-002 - Content Management Authorization
-- Only lecturers assigned to a course and authorized to manage that course may create, update, organize, or remove its chapters, lessons, learning materials, and quizzes.
+- Only lecturers assigned to a course and authorized to manage that course may create, update, organize, or remove its chapters, lessons, learning materials.
 - Students may access published course content but may not modify the course structure or learning materials.
 
 ### BR-CONTENT-003 - Chapter and Lesson Ordering
@@ -370,19 +297,7 @@ and learning progress tracking are outside the initial scope.
 - Students may access only content that has been published or made available to them.
 - Users without the required permissions must not be allowed to access restricted course content.
 
-### BR-CONTENT-006 - Quiz Association
-- Each quiz must be associated with one lesson.
-- Only lecturers authorized to manage the relevant course may create, update, organize, or remove quizzes.
-- A quiz must contain the required configuration and questions before it can be published, where applicable.
-- Students may access only quizzes that are published and available to them.
-
-### BR-CONTENT-011 - Quiz Attempt Recording
-- Each student's quiz attempt must be recorded separately.
-- The system must record the available result after a quiz is submitted and evaluated.
-- Students may retake a quiz only when the configured quiz policy allows additional attempts.
-- Quiz attempts must be associated with the relevant student and quiz.
-
-### BR-CONTENT-012 - Content Availability and Updates
+### BR-CONTENT-006 - Content Availability and Updates
 - Learning content must be available to students only when it satisfies the configured publication and access conditions.
 - Updating or removing learning materials must not grant unauthorized access to the affected content.
-- The system must handle unavailable or deleted learning materials without falsely reporting that the material was successfully accessed or completed.
+- The system must clearly indicate when a learning material is unavailable or has been removed.
