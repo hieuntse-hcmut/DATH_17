@@ -1,47 +1,44 @@
 # Enrollment Requirements
 
 ## 1. Overview
-
 - Module Description: Manages the relationship between Students and the courses in which they participate.
 - Scope: Covers student self-enrollment, enrollment by an authorized Lecturer or Administrator, course rosters, a Student's enrolled-course list, and withdrawal or removal from a course. Course creation and publication belong to Course Management; lesson access belongs to Course Content; progress, assessments, and risk calculations belong to their respective modules. Enrollment supplies their course-participation context.
 - Dependency: Course Management owns three distinct attributes used here: course publication state, the enrollment window (whether the course accepts new enrollments), and content availability. Course Content applies content availability when serving published materials. Enrollment decisions use course publication state and the enrollment window; an enrollment alone does not make content available.
 
 ## 2. Actors
-
 - Student: Enrolls in available courses, views their course participation, and withdraws when allowed.
 - Lecturer: Views and manages enrollment in courses to which they are assigned.
 - Administrator: Manages enrollment and course participation across the platform.
 
 ## 3. Functional Requirements
-
 ### FR-ENROLL-001 - Enroll in Available Course
 - Description: The system must allow an authenticated Student to enroll when the course publication state is published and the enrollment window accepts new enrollments. Successful enrollment must create or reactivate an ACTIVE Student-Course relationship.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ENROLL-002 - Enroll Student by Authorized Staff
 - Description: The system must allow an assigned Lecturer or an Administrator to enroll an existing, active Student when the enrollment window accepts new enrollments. The system must allow only an Administrator to override a closed enrollment window through an explicit, separately confirmed action with a mandatory reason; the override must record the acting Administrator, timestamp, and reason in Enrollment Status History and the administrative audit log. The override must only create or reactivate enrollment and must not change course publication state, content availability, or their access rules.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ENROLL-003 - Prevent Duplicate Active Enrollment
 - Description: The system must enforce at most one Enrollment record per (Student, Course) pair with a uniqueness constraint at the persistence layer. Re-enrollment must reactivate that record through a conditional update, never through check-then-insert; concurrent requests must yield exactly one ACTIVE enrollment and treat losing requests as already enrolled.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ENROLL-004 - View Course Roster
 - Description: The system must allow the assigned Lecturer and authorized Administrator to view a roster that defaults to ACTIVE enrollments and offers an explicit option to include WITHDRAWN and REMOVED entries. Each entry must show enrollment status, latest status-change date, and the Student's account status as a derived indicator.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ENROLL-005 - View My Courses
 - Description: The system must allow a Student to view courses with ACTIVE enrollment and open course content only when the course publication state is published and content availability permits access.
 - Dependency: Learning Progress owns grouping courses as in progress or completed and displaying progress percentages.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ENROLL-006 - Withdraw or Remove Enrollment
 - Description: The system must allow a Student to change their own enrollment from ACTIVE to WITHDRAWN when course policy permits, and allow an assigned Lecturer or Administrator to change an authorized course enrollment from ACTIVE to REMOVED. The enrollment must cease to grant course access immediately after either transition.
-- Priority: Medium
+- Priority: Should-have
 
 ### FR-ENROLL-007 - Maintain Enrollment Status and History
 - Description: The system must keep Student, Course, current status, initial enrollment date, and latest status-change date on the Enrollment record. On initial creation and every status transition, the system must append an Enrollment Status History entry with the enrollment reference, previous status, new status, change timestamp, acting user, and optional reason. History entries must remain append-only through withdrawal, removal, and re-enrollment so Learning Analytics can derive periods of non-participation from transition history rather than current status alone; prior learning and assessment data must remain available for authorized historical reporting.
-- Priority: High
+- Priority: Must-have
 
 ### 3.1 Enrollment Status Model
 
@@ -57,7 +54,6 @@ An Enrollment has exactly three statuses: `ACTIVE` (current participation), `WIT
 No other transition is valid. A newly created Enrollment starts as `ACTIVE`; its first history entry has an empty previous-status field, which is not another status. For `WITHDRAWN` to `ACTIVE`, the audited Administrator override in UC-ENROLL-002/A3 is the sole exception to the enrollment-window condition above, not a new transition.
 
 ## 4. Use Cases
-
 ### UC-ENROLL-001 - Student Enrolls in a Course
 - Related Requirements: FR-ENROLL-001, FR-ENROLL-003, FR-ENROLL-007
 - Primary Actor: Student
@@ -188,7 +184,6 @@ No other transition is valid. A newly created Enrollment starts as `ACTIVE`; its
     * The Student no longer appears on the active roster; historical participation and learning data are retained.
 
 ## 5. Business Rules
-
 ### BR-ENROLL-001 - One Active Enrollment Per Student and Course
 - Description: A persistence-layer uniqueness constraint must permit at most one Enrollment record per (Student, Course) pair, regardless of status. Re-enrollment must conditionally update that record to ACTIVE rather than use check-then-insert. Concurrent requests must resolve to exactly one ACTIVE enrollment; losing requests follow the already-enrolled exception flow.
 

@@ -1,61 +1,57 @@
 # User Access Requirements
 
 ## 1. Overview
-
 - Module Description: Manages user accounts, authentication, and role-based access for the Smart Campus web platform.
 - Scope: Covers administrator-provisioned accounts, sign-in and sign-out, account status and role management, profile and credential updates, and authorization of protected resources. Course enrollment and lecturer-to-course assignments are managed by their respective modules; this module uses those relationships when checking access. External identity providers and public self-registration are outside the initial scope.
 - Cross-module note: Deactivating an account does not alter the user's enrollments; see BR-ENROLL-007.
 
 ## 2. Actors
-
 - Student: Signs in to participate in enrolled courses and manages their own account information.
 - Lecturer: Signs in to manage assigned courses and view information about students in those courses.
 - Administrator: Creates and manages accounts, roles, and account status across the platform.
 
 ## 3. Functional Requirements
-
 ### FR-ACCESS-001 - Create User Account
 - Description: The system must allow an administrator to create a user account with a unique login identifier, initial credentials, and at least one authorized role: Student, Lecturer, or Administrator. Accounts are active by default, but the Administrator may create an account in inactive state.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ACCESS-002 - Authenticate User
 - Description: The system must verify a user's login identifier and credentials, confirm that the account is active, and establish an authenticated session only when all checks succeed.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ACCESS-003 - Sign Out
 - Description: The system must allow an authenticated user to sign out and invalidate the current session so it can no longer access protected resources.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ACCESS-004 - Enforce Role and Resource Permissions
 - Description: The system must authorize each protected action using the user's role and relevant resource relationship. A Student may access their own permitted information and available content in courses with ACTIVE enrollment; a Lecturer may manage and inspect only assigned courses and their students; an Administrator may perform system-level management. The same checks must apply to direct requests as to navigation in the user interface.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ACCESS-005 - Manage Account Roles and Status
 - Description: The system must allow an administrator to view accounts, update their assigned roles, and activate or deactivate accounts. Role or status changes must invalidate the affected account's existing sessions so outdated permissions cannot be used.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ACCESS-006 - Update Own Profile
 - Description: The system must allow an authenticated user to view and update supported personal profile fields while preventing changes to their own roles, account status, or login identifier through profile editing.
-- Priority: Medium
+- Priority: Should-have
 
 ### FR-ACCESS-007 - Change or Reset Credentials
 - Description: The system must allow an authenticated user to change their own password after verifying the current password, and allow an Administrator to initiate a credential reset when the user cannot sign in. A reset must issue a single-use temporary credential to the account holder without disclosing a usable password to the Administrator; it must expire after a configured period and require a password change at the next successful sign-in before any protected resource is accessible. Existing sessions for that account must be invalidated after a successful password change or reset.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ACCESS-008 - Protect Learning and Analytics Data
 - Description: The system must allow a Student to view their own progress, activity, and assessment results, but must deny the Student access to their own risk level, risk factors, and contributing indicators as presented in a risk assessment. The system must restrict a Lecturer to records and risk assessments for Students in assigned courses, and an Administrator to authorized system-level views.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ACCESS-009 - Limit Authentication Attempts
 - Description: The system must rate-limit authentication attempts per account and per source, temporarily lock out attempts after a configured number of consecutive failures, and use the same generic failure response for invalid credentials and lockout.
-- Priority: High
+- Priority: Must-have
 
 ### FR-ACCESS-010 - Record Administrative Actions
 - Description: The system must append an administrative audit record for account creation, role change, account activation or deactivation, credential reset, enrollment override, and removal of a Student from a course. Each record must contain the acting user, target, action, timestamp, and reason where required. Audit records must be readable only by authorized Administrators and must never be modified or deleted.
-- Priority: High
+- Priority: Must-have
 
 ## 4. Use Cases
-
 ### UC-ACCESS-001 - Create User Account
 - Related Requirements: FR-ACCESS-001, FR-ACCESS-004, FR-ACCESS-010
 - Primary Actor: Administrator
@@ -234,7 +230,6 @@
     * No account is changed; only an authorized Administrator can view the results.
 
 ## 5. Business Rules
-
 ### BR-ACCESS-001 - Unique Account Identity
 - Description: Each account must have a unique login identifier. Only an administrator can create accounts or assign roles; a user cannot grant themselves additional permissions by editing their profile.
 
