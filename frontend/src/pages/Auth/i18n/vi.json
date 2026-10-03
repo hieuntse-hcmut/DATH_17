@@ -1,0 +1,10 @@
+{
+  "login": {
+    "title": "Đăng nhập",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "submit": "Đăng nhập",
+    "error": "Email hoặc mật khẩu không đúng"
+  },
+  "logout": "Đăng xuất"
+}
