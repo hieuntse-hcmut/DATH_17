@@ -1,4 +1,4 @@
-```js
+
 export default defineConfig([
   # Frontend
 
