@@ -90,7 +90,7 @@ Quy ước mở rộng phù hợp với cấu trúc hiện tại:
 - Đặt bản dịch dùng chung trong `i18n/shared/`; bản dịch chỉ thuộc một feature ở thư mục `i18n/` của feature và đăng ký trong `src/i18n/resources.ts`.
 - Import nội bộ qua alias `~/`, được cấu hình đồng bộ trong `vite.config.ts` và `tsconfig.app.json` để trỏ tới `src/`.
 
-## Lưy
+## Lưu ý
 
 ### Chạy các lệnh sau trước khi commit:
 
