@@ -1,0 +1,31 @@
+import { lazy } from "react"
+import { createBrowserRouter } from 'react-router'
+
+import MainLayout from '~/layouts/Main.layout'
+
+// Lazy load components
+const Home = lazy(() => import("~/pages/Home"));
+const Auth = lazy(() => import("~/pages/Auth"));
+
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <MainLayout />,
+    children: [
+      { index: true, element: <Home /> },
+    //   { 
+    //     path: '/example',
+    //     element: <div>Example Page</div>,
+    //     children: []
+    //   } => example routes
+    ],
+  },
+  {
+    path: '/log-in',
+    element: <Auth isLogin={true} />,
+  },
+  {
+    path: '/sign-up',
+    element: <Auth isLogin={false} />,
+  },
+])
