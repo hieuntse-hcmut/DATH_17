@@ -1,10 +1,67 @@
 {
   "login": {
     "title": "Đăng nhập",
-    "email": "Email",
+    "id": "Tên đăng nhập | Email",
     "password": "Mật khẩu",
-    "submit": "Đăng nhập",
-    "error": "Email hoặc mật khẩu không đúng"
+    "remember": "Ghi nhớ đăng nhập",
+    "forgot": "Quên mật khẩu?",
+    "dontHaveAccount": "Bạn chưa có tài khoản?",
+    "register": "Đăng ký ngay",
+    "submit": "Đăng nhập vào hệ thống",
+    "error": "Tên đăng nhập hoặc mật khẩu không đúng",
+    "more": "Hoặc tiếp tục với"
   },
-  "logout": "Đăng xuất"
+  "signin": {
+    "title": "Đăng ký tài khoản",
+    "email": "Email",
+    "id": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "passwordStrong": "Độ bảo mật mật khẩu:",
+    "strong": "Rất mạnh (Đạt chuẩn)",
+    "char": ">= 12 ký tự",
+    "upper": "Có chữ in hoa",
+    "number": "Có số",
+    "special": "Ký tự đặc biệt",
+    "confirmTOS": "Tôi đồng ý với ${Quy chế đào tạo số} và ${Chính sách quyền riêng tư dữ liệu học tập}",
+    "submit": "Đăng ký tài khoản",
+    "haveAccount": "Bạn đã có tài khoản?",
+    "login": "Đăng nhập ngay"
+  },
+  "security": "Bảo mật đa lớp chuẩn giáo dục số",
+  "version": "Phiên bản ${} - Smart Campus LMS",
+  "showcase": {
+    "title": "Chào mừng bạn đến Smart Campus!!!",
+    "features":
+      [
+        {
+          "title": "Tài nguyên bài giảng số chuẩn 1080p",
+          "description": "Kho video ghi hình trực quan cùng tài liệu tham khảo số hóa không giới hạn."
+        },
+        {
+          "title": "Đánh giá năng lực thích ứng",
+          "description": "Hệ thống gợi ý bài tập theo năng lực thực tế với phản hồi phân tích chi tiết."
+        },
+        {
+          "title": "Bảo mật quyền riêng tư",
+          "description": "Dữ liệu học tập, điểm số và thông tin định danh được bảo vệ tối đa theo tiêu chuẩn ISO."
+        }
+      ],
+    "slider":
+      [
+        {
+          "title": "KHÔNG GIAN HỌC TẬP SỐ111",
+          "description": "Tự do111 khám phá hơn 3,500+ học phần chuyên ngành"
+        },
+        {
+          "title": "KHÔNG GIAN HỌC TẬP SỐ222",
+          "description": "Tự do222 khám phá hơn 3,500+ học phần chuyên ngành"
+        }
+      ],
+    "support": {
+      "title": "Cần hỗ trợ nhập học?",
+      "description": "Liên hệ Phòng Công tác sinh viên",
+      "phone": "1900 6868"
+    }
+  }
 }

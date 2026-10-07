@@ -1,10 +1,67 @@
 {
   "login": {
-    "title": "Sign in",
-    "email": "Email",
+    "title": "Log in",
+    "id": "Username | Email",
     "password": "Password",
-    "submit": "Sign in",
-    "error": "Incorrect email or password"
+    "remember": "Remember me",
+    "forgot": "Forgot password?",
+    "dontHaveAccount": "Don't have an account?",
+    "register": "Sign up now",
+    "submit": "Log in to the system",
+    "error": "Incorrect username or password",
+    "more": "Or continue with"
   },
-  "logout": "Sign out"
+  "signin": {
+    "title": "Create an account",
+    "email": "Email",
+    "id": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "passwordStrong": "Password strength:",
+    "strong": "Very strong (Meets requirements)",
+    "char": ">= 12 characters",
+    "upper": "Contains an uppercase letter",
+    "number": "Contains a number",
+    "special": "Special character",
+    "confirmTOS": "I agree to the ${Digital Learning Regulations} and the ${Learning Data Privacy Policy}",
+    "submit": "Create account",
+    "haveAccount": "Already have an account?",
+    "login": "Log in now"
+  },
+  "security": "Multi-layer security for digital education standards",
+  "version": "Version ${} - Smart Campus LMS",
+  "showcase": {
+    "title": "Welcome to Smart Campus!!!",
+    "features":
+      [
+        {
+          "title": "1080p digital lecture resources",
+          "description": "A library of clear lecture videos and unlimited digitized reference materials."
+        },
+        {
+          "title": "Adaptive competency assessment",
+          "description": "The system recommends exercises based on your actual ability, with detailed analytical feedback."
+        },
+        {
+          "title": "Privacy protection",
+          "description": "Your learning data, grades, and identity information are protected to the highest level under ISO standards."
+        }
+      ],
+    "slider":
+      [
+        {
+          "title": "DIGITAL LEARNING SPACE111",
+          "description": "Freely111 explore more than 3,500+ specialized modules"
+        },
+        {
+          "title": "DIGITAL LEARNING SPACE222",
+          "description": "Freely222 explore more than 3,500+ specialized modules"
+        }
+      ],
+    "support": {
+      "title": "Need admission support?",
+      "description": "Contact the Student Affairs Office",
+      "phone": "1900 6868"
+    }
+  }
 }
