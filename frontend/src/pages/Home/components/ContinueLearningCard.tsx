@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { CurrentLesson } from '../types'
+import type { CurrentLesson } from '../services/home.type'
 import ProgressBar from './ProgressBar'
 import { ClockIcon, FileIcon, PlayIcon } from './Icons'
 

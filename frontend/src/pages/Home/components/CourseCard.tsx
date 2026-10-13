@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { Course } from '../types'
+import type { Course } from '../services/home.type'
 import ProgressBar from './ProgressBar'
 import { CheckCircleIcon, PlayIcon, RefreshIcon } from './Icons'
 

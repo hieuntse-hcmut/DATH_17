@@ -1,4 +1,4 @@
-import type { Course, CurrentLesson } from './types'
+import type { Course, CurrentLesson } from './services/home.type'
 
 export const mockUser = { name: 'Minh', streak: 6, xp: 1420 }
 
