@@ -10,7 +10,8 @@ import {
     faCalendarDays, 
     faPalette, 
     faGlobe, 
-    faRightFromBracket
+    faRightFromBracket,
+    faBars
 } from "@fortawesome/free-solid-svg-icons"
 import logo from "../../assets/logo.png"
 
@@ -20,13 +21,17 @@ export default function Header() {
     const [lang, setLang] = useState("vi")
 
     return (
-        <header className="fixed top-0 inset-x-0 h-16 bg-white/95 backdrop-blur-md border-b border-[#E2E7FF] px-10 flex items-center justify-between z-20">
+        <header className="fixed top-0 inset-x-0 h-16 bg-white/95 backdrop-blur-md border-b border-[#E2E7FF] px-4 md:px-10 flex items-center justify-between z-25">
             {/* Logo & Brand Container */}
-            <div className="flex items-center gap-4 w-[264px]">
-                <div className="w-8 h-8 flex items-center justify-center bg-[#4F46E5] text-white rounded-md font-bold overflow-hidden">
+            <div className="flex items-center gap-3 md:gap-4 w-auto md:w-[264px]">
+                {/* Nút mở menu cho mobile (nếu cần toggle sidebar sau này) */}
+                <button className="md:hidden text-[#464555] p-1">
+                    <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
+                </button>
+                <div className="w-8 h-8 flex items-center justify-center bg-[#4F46E5] text-white rounded-md font-bold overflow-hidden shrink-0">
                     <img src={logo} alt="Logo" className="w-full h-full object-cover" />
                 </div>
-                <div className="flex flex-col">
+                <div className="hidden sm:flex flex-col">
                     <span className="font-serif font-semibold text-lg leading-4.5 tracking-tight text-[#3525CD]">
                         Smart Campus
                     </span>
@@ -36,15 +41,15 @@ export default function Header() {
                 </div>
             </div>
 
-            {/* Search Input Container */}
-            <div className="flex-1 max-w-[640px] px-8 flex justify-center">
+            {/* Search Input Container (Thu gọn trên mobile, ẩn/hiện linh hoạt) */}
+            <div className="flex-1 max-w-[640px] px-2 md:px-8 flex justify-center">
                 <div className="relative w-full max-w-[448px] h-[30px] bg-[#F2F3FF] rounded-xl flex items-center px-3">
                     <FontAwesomeIcon icon={faMagnifyingGlass} className="w-[15px] h-[15px] text-[#777587] mr-2 shrink-0" />
                     <input 
-                        placeholder="Tìm kiếm khóa học, tài liệu, lớp học..." 
-                        className="w-full bg-transparent border-none outline-none font-sans text-sm text-[#777587] leading-4.5"
+                        placeholder="Tìm kiếm khóa học, tài liệu..." 
+                        className="w-full bg-transparent border-none outline-none font-sans text-xs md:text-sm text-[#777587] leading-4.5"
                     />
-                    <div className="px-1 py-0.5 bg-[#E2E7FF] rounded flex items-center gap-0.5 shrink-0">
+                    <div className="hidden md:flex px-1 py-0.5 bg-[#E2E7FF] rounded items-center gap-0.5 shrink-0">
                         <span className="font-sans font-semibold text-[11px] text-[#777587] tracking-[0.33px]">Ctrl</span>
                         <span className="font-sans font-semibold text-[11px] text-[#777587] tracking-[0.33px]">K</span>
                     </div>
@@ -52,7 +57,7 @@ export default function Header() {
             </div>
 
             {/* Right Actions & Profile Container */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
                 {/* Theme Toggle Button */}
                 <button className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors">
                     <FontAwesomeIcon icon={faMoon} className="w-4 h-4 text-[#464555]" />
@@ -64,16 +69,16 @@ export default function Header() {
                     <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#BA1A1A] rounded-full ring-2 ring-white"></span>
                 </button>
 
-                <div className="w-[1px] h-6 bg-[#E2E7FF] mx-1"></div>
+                <div className="hidden sm:block w-[1px] h-6 bg-[#E2E7FF] mx-1"></div>
 
                 {/* Profile Section with Dropdown Toggle */}
                 <div className="relative">
                     <div 
                         onClick={() => setIsOpen(!isOpen)}
-                        className="flex items-center gap-3 pl-1 cursor-pointer select-none py-1 px-2 rounded-xl hover:bg-gray-50 transition-colors"
+                        className="flex items-center gap-2 md:gap-3 pl-1 cursor-pointer select-none py-1 px-1.5 rounded-xl hover:bg-gray-50 transition-colors"
                     >
                         <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Avatar" className="w-8 h-8 rounded-full ring-1 ring-[#E2E7FF] object-cover" />
-                        <div className="flex flex-col">
+                        <div className="hidden lg:flex flex-col">
                             <span className="font-sans font-semibold text-xs leading-4 tracking-[0.24px] text-[#131B2E]">
                                 Nguyễn Văn Minh
                             </span>
@@ -81,13 +86,12 @@ export default function Header() {
                                 Sinh viên
                             </span>
                         </div>
-                        <FontAwesomeIcon icon={faChevronDown} className={`w-2 h-1.5 text-[#464555] ml-1 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                        <FontAwesomeIcon icon={faChevronDown} className={`w-2 h-1.5 text-[#464555] ml-0.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                     </div>
 
-                    {/* Dropdown Menu Popup */}
+                    {/* Dropdown Menu Popup (Căn chỉnh responsive góc màn hình nhỏ) */}
                     {isOpen && (
-                        <div className="absolute right-0 top-full mt-2 w-[340px] bg-white rounded-2xl shadow-xl border border-[#E2E7FF] py-3 flex flex-col z-50 animate-in fade-in zoom-in-95 duration-150">
-                            
+                        <div className="absolute right-0 top-full mt-2 w-[300px] md:w-[340px] bg-white rounded-2xl shadow-xl border border-[#E2E7FF] py-3 flex flex-col z-50 animate-in fade-in zoom-in-95 duration-150">
                             {/* Card thông tin sinh viên */}
                             <div className="px-4 pb-3 border-b border-[#E2E7FF] flex items-center gap-3">
                                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Avatar" className="w-12 h-12 rounded-xl object-cover ring-1 ring-[#E2E7FF]" />
@@ -128,39 +132,18 @@ export default function Header() {
                                         <span>Giao diện</span>
                                     </div>
                                     <div className="bg-[#F2F3FF] p-0.5 rounded-lg flex items-center text-xs font-semibold">
-                                        <button 
-                                            onClick={() => setTheme("light")} 
-                                            className={`px-3 py-1 rounded-md transition-all ${theme === "light" ? "bg-white text-[#3525CD] shadow-sm" : "text-[#777587]"}`}
-                                        >
-                                            Sáng
-                                        </button>
-                                        <button 
-                                            onClick={() => setTheme("dark")} 
-                                            className={`px-3 py-1 rounded-md transition-all ${theme === "dark" ? "bg-white text-[#3525CD] shadow-sm" : "text-[#777587]"}`}
-                                        >
-                                            Tối
-                                        </button>
+                                        <button onClick={() => setTheme("light")} className={`px-3 py-1 rounded-md transition-all ${theme === "light" ? "bg-white text-[#3525CD] shadow-sm" : "text-[#777587]"}`}>Sáng</button>
+                                        <button onClick={() => setTheme("dark")} className={`px-3 py-1 rounded-md transition-all ${theme === "dark" ? "bg-white text-[#3525CD] shadow-sm" : "text-[#777587]"}`}>Tối</button>
                                     </div>
                                 </div>
-
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <FontAwesomeIcon icon={faGlobe} className="w-4 h-4 text-[#777587]" />
                                         <span>Ngôn ngữ</span>
                                     </div>
                                     <div className="bg-[#F2F3FF] p-0.5 rounded-lg flex items-center text-xs font-semibold">
-                                        <button 
-                                            onClick={() => setLang("vi")} 
-                                            className={`px-3 py-1 rounded-md transition-all ${lang === "vi" ? "bg-white text-[#3525CD] shadow-sm" : "text-[#777587]"}`}
-                                        >
-                                            VI
-                                        </button>
-                                        <button 
-                                            onClick={() => setLang("en")} 
-                                            className={`px-3 py-1 rounded-md transition-all ${lang === "en" ? "bg-white text-[#3525CD] shadow-sm" : "text-[#777587]"}`}
-                                        >
-                                            EN
-                                        </button>
+                                        <button onClick={() => setLang("vi")} className={`px-3 py-1 rounded-md transition-all ${lang === "vi" ? "bg-white text-[#3525CD] shadow-sm" : "text-[#777587]"}`}>VI</button>
+                                        <button onClick={() => setLang("en")} className={`px-3 py-1 rounded-md transition-all ${lang === "en" ? "bg-white text-[#3525CD] shadow-sm" : "text-[#777587]"}`}>EN</button>
                                     </div>
                                 </div>
                             </div>
@@ -172,7 +155,6 @@ export default function Header() {
                                     <span>Đăng xuất tài khoản</span>
                                 </button>
                             </div>
-
                         </div>
                     )}
                 </div>
