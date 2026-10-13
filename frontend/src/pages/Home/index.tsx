@@ -1,40 +1,37 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next'
-
-import { useGetExample } from '~/services/example.query'
-import ThemeToggle from '~/components/ThemeToggle'
-
+import GreetingHeader from './components/GreetingHeader'
+import ContinueLearningCard from './components/ContinueLearningCard'
+import CourseCard from './components/CourseCard'
+import { ChevronRightIcon } from './components/Icons'
+import { mockCourses, mockCurrentLesson, mockUser } from './data'
 
 export default function Home() {
-    const { t } = useTranslation();
-    const [limit, setLimit] = useState(0);
+  const { t } = useTranslation('home')
 
-    const { data, isLoading, isError } = useGetExample(
-        {
-            _limit: limit},
-        {
-            staleTime: 60_000,
-        }
-    );
+  return (
+    <div className="mx-auto w-full max-w-6xl space-y-8 px-4 py-8 sm:px-6">
+      <GreetingHeader name={mockUser.name} streak={mockUser.streak} xp={mockUser.xp} />
 
-    if (isLoading) return <div>Loading...</div>;
-    if (isError) return <div>Error occurred</div>;
+      <ContinueLearningCard lesson={mockCurrentLesson} />
 
-    return (
-        <div className="px-16">
-            <div className="flex justify-between ">
-                <h1 className="text-xl font-bold">{t('nav.about')}</h1>
-                <ThemeToggle />
-            </div>
-            <div className="flex items-center gap-4">
-                <h2>Example Data - Current limit: {limit} </h2>
-                <button className="h-10 w-40 bg-black text-white" onClick={() => setLimit((prev) => prev + 5)}>Load More Data</button>
-            </div>
-            <ul>
-                {data && data.map((item: any) => (
-                    <li key={item.id}>{item.title}</li>
-                ))}
-            </ul>
+      <section aria-labelledby="my-courses">
+        <div className="mb-4 flex items-end justify-between gap-3">
+          <div>
+            <h2 id="my-courses" className="text-xl font-bold text-fg">{t('courses.title')}</h2>
+            <p className="text-sm text-fg-muted">{t('courses.subtitle', { count: mockCourses.length })}</p>
+          </div>
+          <a href="#" className="flex items-center gap-1 text-sm font-semibold text-link hover:underline">
+            {t('courses.viewAll')}
+            <ChevronRightIcon width={14} height={14} />
+          </a>
         </div>
-    )
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {mockCourses.map((c) => (
+            <CourseCard key={c.id} course={c} />
+          ))}
+        </div>
+      </section>
+    </div>
+  )
 }

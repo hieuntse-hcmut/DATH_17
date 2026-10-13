@@ -1,0 +1,36 @@
+{
+  "semester": "Semester {{term}} · {{year}}",
+  "greeting": "Good morning, {{name}}",
+  "subtitle": "Wishing you an inspiring and productive day of learning!",
+  "streak_one": "{{count}}-day streak",
+  "streak_other": "{{count}}-day streak",
+  "continue": {
+    "badge": "Continue learning",
+    "chapter": "Chapter {{n}}",
+    "lastStudied_one": "Studied {{count}} hour ago",
+    "lastStudied_other": "Studied {{count}} hours ago",
+    "currentProgress": "Current lesson progress",
+    "percentDone": "{{percent}}% complete",
+    "attachments_one": "Attachments: {{count}} PDF file",
+    "attachments_other": "Attachments: {{count}} PDF files",
+    "viewDetail": "View course details",
+    "resume": "Resume"
+  },
+  "courses": {
+    "title": "Your courses",
+    "subtitle_one": "Enrolled in {{count}} course this semester",
+    "subtitle_other": "Enrolled in {{count}} courses this semester",
+    "viewAll": "All courses"
+  },
+  "status": {
+    "inProgress": "In progress",
+    "notStarted": "Just started",
+    "completed": "Completed"
+  },
+  "course": {
+    "lessons": "{{done}}/{{total}} lessons",
+    "continue": "Resume",
+    "study": "Keep learning",
+    "review": "Review again"
+  }
+}
