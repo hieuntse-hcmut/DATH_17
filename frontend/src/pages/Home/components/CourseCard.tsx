@@ -26,7 +26,7 @@ export default function CourseCard({ course }: { course: Course }) {
           <img src={course.thumbnail} alt="" className="absolute inset-0 h-full w-full object-cover" />
         )}
         <span className={`absolute left-2 top-2 flex items-center gap-1 rounded-md px-2 py-0.5 font-label text-xs font-semibold ${BADGE_STYLE[course.status]}`}>
-{done && <FontAwesomeIcon icon={faCircleCheck} className="text-xs" />}          {t(`status.${course.status}`)}
+          {done && <FontAwesomeIcon icon={faCircleCheck} className="text-xs" />}          {t(`status.${course.status}`)}
         </span>
       </div>
 

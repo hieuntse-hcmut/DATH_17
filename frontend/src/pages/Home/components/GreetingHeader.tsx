@@ -23,11 +23,12 @@ export default function                                                         
 
       <ul className="flex items-center gap-2 font-label text-sm font-medium">
         <li className="flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3 py-1.5 text-fg">
-<FontAwesomeIcon icon={faFire} className="text-tertiary" />
+          <FontAwesomeIcon icon={faFire} className="text-tertiary" />
           {t('streak', { count: streak })}
         </li>
         <li className="flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3 py-1.5 text-fg">
-<FontAwesomeIcon icon={faTrophy} className="text-primary" />          {xp.toLocaleString(i18n.language)} XP
+          <FontAwesomeIcon icon={faTrophy} className="text-primary" />
+          {xp.toLocaleString(i18n.language)} XP
         </li>
       </ul>
     </header>

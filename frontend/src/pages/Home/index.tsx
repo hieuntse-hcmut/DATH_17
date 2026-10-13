@@ -23,7 +23,7 @@ export default function Home() {
           </div>
           <a href="#" className="flex items-center gap-1 text-sm font-semibold text-link hover:underline">
             {t('courses.viewAll')}
-<FontAwesomeIcon icon={faChevronRight} className="text-sm" />          </a>
+            <FontAwesomeIcon icon={faChevronRight} className="text-sm" />          </a>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
