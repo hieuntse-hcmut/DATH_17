@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import type { CurrentLesson } from '../services/home.type'
 import ProgressBar from './ProgressBar'
-import { ClockIcon, FileIcon, PlayIcon } from './Icons'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faClock, faFilePdf, faPlay } from '@fortawesome/free-solid-svg-icons'
 export default function ContinueLearningCard({ lesson }: { lesson: CurrentLesson }) {
   const { t } = useTranslation('home')
   return (
@@ -21,7 +21,7 @@ export default function ContinueLearningCard({ lesson }: { lesson: CurrentLesson
             aria-label={t('continue.resume')}
             className="absolute left-1/2 top-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-primary text-on-primary shadow-lg transition-colors hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            <PlayIcon width={18} height={18} />
+<FontAwesomeIcon icon={faPlay} className="text-lg" />
           </button>
           <span className="absolute bottom-2 left-2 rounded-md bg-black/70 px-2 py-0.5 font-label text-xs text-white">
             {lesson.position} / {lesson.duration}
@@ -35,7 +35,7 @@ export default function ContinueLearningCard({ lesson }: { lesson: CurrentLesson
               {t('continue.chapter', { n: lesson.chapter })}
             </p>
             <p className="flex shrink-0 items-center gap-1 font-label text-xs text-fg-subtle">
-              <ClockIcon width={14} height={14} />
+<FontAwesomeIcon icon={faClock} className="text-sm" />
               {t('continue.lastStudied', { count: lesson.studiedHoursAgo })}
             </p>
           </div>
@@ -56,7 +56,7 @@ export default function ContinueLearningCard({ lesson }: { lesson: CurrentLesson
 
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-surface-muted px-4 py-3">
         <p className="flex items-center gap-2 font-label text-xs text-fg-muted">
-          <FileIcon />
+<FontAwesomeIcon icon={faFilePdf} />
           {t('continue.attachments', { count: lesson.attachmentCount })}
         </p>
         <div className="flex items-center gap-2">
@@ -70,8 +70,7 @@ export default function ContinueLearningCard({ lesson }: { lesson: CurrentLesson
             type="button"
             className="flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
           >
-            <PlayIcon width={14} height={14} />
-            {t('continue.resume')}
+<FontAwesomeIcon icon={faPlay} className="text-sm" />            {t('continue.resume')}
           </button>
         </div>
       </div>

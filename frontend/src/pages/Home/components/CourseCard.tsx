@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import type { Course } from '../services/home.type'
 import ProgressBar from './ProgressBar'
-import { CheckCircleIcon, PlayIcon, RefreshIcon } from './Icons'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowRight, faCircleCheck, faPlay, faRotateRight } from '@fortawesome/free-solid-svg-icons'
 const BADGE_STYLE = {
   inProgress: 'bg-primary text-on-primary',
   notStarted: 'bg-surface text-fg border border-border',
@@ -15,11 +15,10 @@ export default function CourseCard({ course }: { course: Course }) {
   const percent = Math.round((course.completedLessons / course.totalLessons) * 100)
 
   const action = done
-    ? { label: t('course.review'), icon: <RefreshIcon width={14} height={14} />, cls: 'bg-surface-muted text-fg hover:bg-primary-soft' }
+    ? { label: t('course.review'), icon: <FontAwesomeIcon icon={faRotateRight} className="text-sm" />, cls: 'bg-surface-muted text-fg hover:bg-primary-soft' }
     : course.isCurrent
-      ? { label: t('course.continue'), icon: <ChevronGlyph />, cls: 'bg-primary-soft text-primary hover:bg-primary hover:text-on-primary' }
-      : { label: t('course.study'), icon: <PlayIcon width={10} height={10} />, cls: 'bg-surface-muted text-fg hover:bg-primary-soft' }
-
+      ? { label: t('course.continue'), icon: <FontAwesomeIcon icon={faArrowRight} className="text-sm" />, cls: 'bg-primary-soft text-primary hover:bg-primary hover:text-on-primary' }
+      : { label: t('course.study'), icon: <FontAwesomeIcon icon={faPlay} className="text-[10px]" />, cls: 'bg-surface-muted text-fg hover:bg-primary-soft' }
   return (
     <article className="flex flex-col rounded-2xl border border-border bg-surface p-3 shadow-sm">
       <div className="relative aspect-16/10 overflow-hidden rounded-xl bg-linear-to-br from-primary-soft to-surface-muted">
@@ -27,8 +26,7 @@ export default function CourseCard({ course }: { course: Course }) {
           <img src={course.thumbnail} alt="" className="absolute inset-0 h-full w-full object-cover" />
         )}
         <span className={`absolute left-2 top-2 flex items-center gap-1 rounded-md px-2 py-0.5 font-label text-xs font-semibold ${BADGE_STYLE[course.status]}`}>
-          {done && <CheckCircleIcon width={12} height={12} />}
-          {t(`status.${course.status}`)}
+{done && <FontAwesomeIcon icon={faCircleCheck} className="text-xs" />}          {t(`status.${course.status}`)}
         </span>
       </div>
 
@@ -56,8 +54,4 @@ export default function CourseCard({ course }: { course: Course }) {
       </button>
     </article>
   )
-}
-
-function ChevronGlyph() {
-  return <span aria-hidden>→</span>
 }

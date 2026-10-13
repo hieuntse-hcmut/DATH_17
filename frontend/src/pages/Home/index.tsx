@@ -2,7 +2,8 @@ import { useTranslation } from 'react-i18next'
 import GreetingHeader from './components/GreetingHeader'
 import ContinueLearningCard from './components/ContinueLearningCard'
 import CourseCard from './components/CourseCard'
-import { ChevronRightIcon } from './components/Icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { mockCourses, mockCurrentLesson, mockUser } from './data'
 
 export default function Home() {
@@ -22,8 +23,7 @@ export default function Home() {
           </div>
           <a href="#" className="flex items-center gap-1 text-sm font-semibold text-link hover:underline">
             {t('courses.viewAll')}
-            <ChevronRightIcon width={14} height={14} />
-          </a>
+<FontAwesomeIcon icon={faChevronRight} className="text-sm" />          </a>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

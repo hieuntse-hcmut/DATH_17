@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { FlameIcon, TrophyIcon } from './Icons'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFire, faTrophy } from '@fortawesome/free-solid-svg-icons'
 interface Props {
   name: string
   streak: number
@@ -23,12 +23,11 @@ export default function                                                         
 
       <ul className="flex items-center gap-2 font-label text-sm font-medium">
         <li className="flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3 py-1.5 text-fg">
-          <FlameIcon className="text-tertiary" />
+<FontAwesomeIcon icon={faFire} className="text-tertiary" />
           {t('streak', { count: streak })}
         </li>
         <li className="flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3 py-1.5 text-fg">
-          <TrophyIcon className="text-primary" />
-          {xp.toLocaleString(i18n.language)} XP
+<FontAwesomeIcon icon={faTrophy} className="text-primary" />          {xp.toLocaleString(i18n.language)} XP
         </li>
       </ul>
     </header>
