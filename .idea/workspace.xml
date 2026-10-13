@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BackgroundAgentGlobalSettings">
+    <option name="selectedModelId" value="auto" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="15826404-f2a7-4cee-8dea-27b8ceef8b58" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea_backup/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea_backup/.name" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea_backup/DATH_17.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea_backup/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea_backup/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea_backup/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea_backup/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea_backup/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea_backup/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea_backup/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/config/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/user/entity/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/user/entity/UserRole.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/user/entity/UserStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/user/repository/UserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/services/health.api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/DATH_17.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.env.example" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_D:/DATH_17" value="3KRsUgJJ47MG8zDBPhjTrma3YaQ" />
+    </persistenceIdMap>
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="115" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JsbtTreeLayoutManager">
+    <layout place="tools.popupGrunt">
+      <scroll-view-position x="0" y="0" />
+    </layout>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.4730288233629465" />
+      <entry key="MS500" value="1.866488884078524" />
+      <entry key="S2" value="4.015056312127773" />
+      <entry key="S5" value="10.632246670164392" />
+      <entry key="S10" value="16.309095656477318" />
+      <entry key="S30" value="22.172909065647918" />
+      <entry key="S60" value="23.999751729460883" />
+      <entry key="M2" value="24.985676598600765" />
+      <entry key="M5" value="26.26558033367351" />
+      <entry key="M10" value="30.097060051284753" />
+      <entry key="M15" value="34.50337295048809" />
+      <entry key="M30" value="44.317253427744035" />
+      <entry key="H1" value="56.39861853782833" />
+      <entry key="H2" value="80.32999955991012" />
+      <entry key="H4" value="121.90911415488026" />
+      <entry key="D1" value="248.32514636061347" />
+      <entry key="W1" value="314.66799053381106" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="1.196584527400438E-193" />
+      <entry key="S10" value="3.4591682922350534E-97" />
+      <entry key="S30" value="7.019786394202722E-33" />
+      <entry key="S60" value="8.3784165533845E-17" />
+      <entry key="M2" value="9.153369081045775E-9" />
+      <entry key="M5" value="6.090211706171201E-4" />
+      <entry key="M10" value="0.0246783546872663" />
+      <entry key="M15" value="0.08476472715859776" />
+      <entry key="M30" value="0.29298987522177394" />
+      <entry key="H1" value="0.6260613031912263" />
+      <entry key="H2" value="1.3650753564331908" />
+      <entry key="H4" value="2.8053029310585873" />
+      <entry key="D1" value="7.124092077011608" />
+      <entry key="W1" value="8.695571910938593" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.3966828780311535" />
+      <entry key="MS500" value="1.8470939678803369" />
+      <entry key="S2" value="4.004437950063835" />
+      <entry key="S5" value="10.620735296059046" />
+      <entry key="S10" value="16.300216588971765" />
+      <entry key="S30" value="22.16887408769926" />
+      <entry key="S60" value="23.997566788524075" />
+      <entry key="M2" value="24.984538447221166" />
+      <entry key="M5" value="26.265687187886627" />
+      <entry key="M10" value="30.12126315297093" />
+      <entry key="M15" value="34.58751025174753" />
+      <entry key="M30" value="44.60940830534871" />
+      <entry key="H1" value="57.023812307404675" />
+      <entry key="H2" value="81.69410890119637" />
+      <entry key="H4" value="124.71341284309156" />
+      <entry key="D1" value="255.44879825101856" />
+      <entry key="W1" value="323.36348465169334" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3K4szdm9SyPk8On3JDV7vG3z0vp" />
+  <component name="ProjectSessionTemplates">
+    <option name="panelTemplate">
+      <template>
+        <option name="modeId" value="Agent" />
+        <option name="model">
+          <model>
+            <option name="modelType" value="builtin_id" />
+            <option name="modelValue" value="auto" />
+          </model>
+        </option>
+        <option name="targetType" value="BACKGROUND" />
+        <option name="worktreeMode" value="WORKSPACE" />
+      </template>
+    </option>
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.BackendApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;Spring Boot.BackendApplication.executor&quot;: &quot;Run&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/DATH_17&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/never/AppData/Roaming/JetBrains/IntelliJIdea2026.1/node/versions/24.21.0/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.completions.CompletionsConfigurable&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2026.1.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
+    ]
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.25134.95" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.25134.95" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="15826404-f2a7-4cee-8dea-27b8ceef8b58" name="Changes" comment="" />
+      <created>1790828438710</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1790828438710</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-core" />
+    <option featureType="dependencySupport" implementationName="javascript:npm:react" />
+    <option featureType="dependencySupport" implementationName="executable:docker" />
+    <option featureType="dependencySupport" implementationName="javascript:npm:tailwindcss" />
+    <option featureType="dependencySupport" implementationName="java:jakarta.persistence:jakarta.persistence-api" />
+    <option featureType="dependencySupport" implementationName="java:org.flywaydb:flyway-core" />
+    <option featureType="dependencySupport" implementationName="javascript:npm:vite" />
+    <option featureType="dependencySupport" implementationName="executable:kubectl" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework.data:spring-data-commons" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework.boot:spring-boot" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-webmvc" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
