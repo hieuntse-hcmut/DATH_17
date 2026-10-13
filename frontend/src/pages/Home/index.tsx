@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next'
 
-import { useGetExample } from '~/services/example.query'
+import { useGetHealth } from '~/services/health.query'
 import ThemeToggle from '~/components/ThemeToggle'
 
 
@@ -9,16 +9,8 @@ export default function Home() {
     const { t } = useTranslation();
     const [limit, setLimit] = useState(0);
 
-    const { data, isLoading, isError } = useGetExample(
-        {
-            _limit: limit},
-        {
-            staleTime: 60_000,
-        }
-    );
-
-    if (isLoading) return <div>Loading...</div>;
-    if (isError) return <div>Error occurred</div>;
+    const { data: healthData, isLoading: isHealthLoading, isError: isHealthError } = useGetHealth();
+    console.log('Health Data:', healthData, 'Loading:', isHealthLoading, 'Error:', isHealthError);
 
     return (
         <div className="px-16">
@@ -30,11 +22,6 @@ export default function Home() {
                 <h2>Example Data - Current limit: {limit} </h2>
                 <button className="h-10 w-40 bg-black text-white" onClick={() => setLimit((prev) => prev + 5)}>Load More Data</button>
             </div>
-            <ul>
-                {data && data.map((item: any) => (
-                    <li key={item.id}>{item.title}</li>
-                ))}
-            </ul>
         </div>
     )
 }
