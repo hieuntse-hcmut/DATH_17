@@ -9,7 +9,8 @@ import {
   faUser,
   faEnvelope,
 } from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import { useLogin } from '../services/auth.query'
 
 const inputClass =
   'h-11 w-full rounded-xl border border-border bg-surface-muted pl-10 pr-10 text-sm text-fg outline-none placeholder:text-fg-subtle focus:border-primary focus:ring-2 focus:ring-primary/30'
@@ -18,6 +19,8 @@ export default function AuthForm({ isLogin } : { isLogin: boolean }) {
   const { t } = useTranslation("auth")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const { mutate, isPending, error } = useLogin();
+  const navigate = useNavigate()
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -26,8 +29,16 @@ export default function AuthForm({ isLogin } : { isLogin: boolean }) {
       username: String(form.get('username') ?? ''),
       password: String(form.get('password') ?? ''),
     }
-    // TODO: gọi mutate của useLogin ở đây
-    console.log(payload)
+    
+
+    mutate(payload, {
+      onSuccess: () => {
+        navigate('/');
+      },
+      onError: (error) => {
+        alert(`Login failed: ${error}`)
+      },
+    })
   }
 
   return (
@@ -117,36 +128,38 @@ export default function AuthForm({ isLogin } : { isLogin: boolean }) {
         </div>
 
         {/* Nhập lại mật khẩu */}
-        <div>
-          <label htmlFor="confirmPassword" className="mb-1.5 block text-sm font-medium">
-            {t('signin.confirmPassword')}
-            <span className="text-danger">*</span>
-          </label>
-          <div className="relative">
-            <FontAwesomeIcon
-              icon={faLock}
-              className="absolute top-1/2 left-3.5 -translate-y-1/2 text-fg-subtle"
-            />
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type={showConfirmPassword ? 'text' : 'password'}
-              autoComplete="current-password"
-              placeholder="......."
-              className={inputClass}
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword((v) => !v)}
-              // FIXME: aria-label ẩn/hiện mật khẩu
-              aria-label="FIXME"
-              className="absolute top-1/2 right-3 -translate-y-1/2 text-fg-subtle hover:text-fg"
-            >
-              <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
-            </button>
+        {!isLogin && (
+          <div>
+            <label htmlFor="confirmPassword" className="mb-1.5 block text-sm font-medium">
+              {t('signin.confirmPassword')}
+              <span className="text-danger">*</span>
+            </label>
+            <div className="relative">
+              <FontAwesomeIcon
+                icon={faLock}
+                className="absolute top-1/2 left-3.5 -translate-y-1/2 text-fg-subtle"
+              />
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                placeholder="......."
+                className={inputClass}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword((v) => !v)}
+                // FIXME: aria-label ẩn/hiện mật khẩu
+                aria-label="FIXME"
+                className="absolute top-1/2 right-3 -translate-y-1/2 text-fg-subtle hover:text-fg"
+              >
+                <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Ghi nhớ + quên mật khẩu TODO */}
         <div className="flex items-center justify-between text-xs">
