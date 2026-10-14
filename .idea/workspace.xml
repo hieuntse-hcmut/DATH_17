@@ -8,33 +8,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="15826404-f2a7-4cee-8dea-27b8ceef8b58" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea_backup/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea_backup/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea_backup/DATH_17.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea_backup/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea_backup/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea_backup/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea_backup/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea_backup/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea_backup/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea_backup/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/user/entity/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/user/entity/UserRole.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/user/entity/UserStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/user/repository/UserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/services/health.api.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/DATH_17.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/controller/AuthController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/dto/AuthResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/dto/LoginRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/security/CustomUserDetails.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/security/CustomUserDetailsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/security/JwtAuthenticationFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/security/JwtService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/service/AuthService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/test/java/com/smartcampus/backend/PasswordHashTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.env.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/enrollment/security/CurrentUserResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/enrollment/security/CurrentUserResolver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,61 +64,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.4730288233629465" />
-      <entry key="MS500" value="1.866488884078524" />
-      <entry key="S2" value="4.015056312127773" />
-      <entry key="S5" value="10.632246670164392" />
-      <entry key="S10" value="16.309095656477318" />
-      <entry key="S30" value="22.172909065647918" />
-      <entry key="S60" value="23.999751729460883" />
-      <entry key="M2" value="24.985676598600765" />
-      <entry key="M5" value="26.26558033367351" />
-      <entry key="M10" value="30.097060051284753" />
-      <entry key="M15" value="34.50337295048809" />
-      <entry key="M30" value="44.317253427744035" />
-      <entry key="H1" value="56.39861853782833" />
-      <entry key="H2" value="80.32999955991012" />
-      <entry key="H4" value="121.90911415488026" />
-      <entry key="D1" value="248.32514636061347" />
-      <entry key="W1" value="314.66799053381106" />
+      <entry key="MS100" value="1.0000000065634451" />
+      <entry key="MS500" value="1.0466710291028145" />
+      <entry key="S2" value="2.041551932951443" />
+      <entry key="S5" value="2.961922400610894" />
+      <entry key="S10" value="3.425430109282388" />
+      <entry key="S30" value="3.794592587309412" />
+      <entry key="S60" value="3.8955395431726907" />
+      <entry key="M2" value="3.9603179671311692" />
+      <entry key="M5" value="4.2477365305980275" />
+      <entry key="M10" value="4.775117708956245" />
+      <entry key="M15" value="5.2272183325663875" />
+      <entry key="M30" value="6.3843529322145836" />
+      <entry key="H1" value="7.847061062029186" />
+      <entry key="H2" value="9.268332018324925" />
+      <entry key="H4" value="12.242645978735712" />
+      <entry key="D1" value="142.53421690076897" />
+      <entry key="W1" value="329.3287464814577" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
       <entry key="MS500" value="0.0" />
-      <entry key="S2" value="0.0" />
-      <entry key="S5" value="1.196584527400438E-193" />
-      <entry key="S10" value="3.4591682922350534E-97" />
-      <entry key="S30" value="7.019786394202722E-33" />
-      <entry key="S60" value="8.3784165533845E-17" />
-      <entry key="M2" value="9.153369081045775E-9" />
-      <entry key="M5" value="6.090211706171201E-4" />
-      <entry key="M10" value="0.0246783546872663" />
-      <entry key="M15" value="0.08476472715859776" />
-      <entry key="M30" value="0.29298987522177394" />
-      <entry key="H1" value="0.6260613031912263" />
-      <entry key="H2" value="1.3650753564331908" />
-      <entry key="H4" value="2.8053029310585873" />
-      <entry key="D1" value="7.124092077011608" />
-      <entry key="W1" value="8.695571910938593" />
+      <entry key="S2" value="1.4128227019552273E-131" />
+      <entry key="S5" value="4.571250974213497E-53" />
+      <entry key="S10" value="6.761102701640832E-27" />
+      <entry key="S30" value="1.8909171944613614E-9" />
+      <entry key="S60" value="4.348467769756792E-5" />
+      <entry key="M2" value="0.006594291296734949" />
+      <entry key="M5" value="0.1341870289100501" />
+      <entry key="M10" value="0.36995423174786324" />
+      <entry key="M15" value="0.5356804902520264" />
+      <entry key="M30" value="0.8695692542024418" />
+      <entry key="H1" value="1.2383871324121922" />
+      <entry key="H2" value="1.5463093964282508" />
+      <entry key="H4" value="1.7728832138844497" />
+      <entry key="D1" value="5.138465386357042" />
+      <entry key="W1" value="9.743882596336027" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.3966828780311535" />
-      <entry key="MS500" value="1.8470939678803369" />
-      <entry key="S2" value="4.004437950063835" />
-      <entry key="S5" value="10.620735296059046" />
-      <entry key="S10" value="16.300216588971765" />
-      <entry key="S30" value="22.16887408769926" />
-      <entry key="S60" value="23.997566788524075" />
-      <entry key="M2" value="24.984538447221166" />
-      <entry key="M5" value="26.265687187886627" />
-      <entry key="M10" value="30.12126315297093" />
-      <entry key="M15" value="34.58751025174753" />
-      <entry key="M30" value="44.60940830534871" />
-      <entry key="H1" value="57.023812307404675" />
-      <entry key="H2" value="81.69410890119637" />
-      <entry key="H4" value="124.71341284309156" />
-      <entry key="D1" value="255.44879825101856" />
-      <entry key="W1" value="323.36348465169334" />
+      <entry key="MS100" value="0.9460576529239111" />
+      <entry key="MS500" value="1.0350420096188082" />
+      <entry key="S2" value="2.035164332626234" />
+      <entry key="S5" value="2.958037861606466" />
+      <entry key="S10" value="3.423149220894892" />
+      <entry key="S30" value="3.7937419319881895" />
+      <entry key="S60" value="3.8951448553548036" />
+      <entry key="M2" value="3.966654633768717" />
+      <entry key="M5" value="4.381542918360239" />
+      <entry key="M10" value="5.144617029413294" />
+      <entry key="M15" value="5.762466376315718" />
+      <entry key="M30" value="7.253579641198496" />
+      <entry key="H1" value="9.085212768404213" />
+      <entry key="H2" value="10.814497963016471" />
+      <entry key="H4" value="14.015439950907272" />
+      <entry key="D1" value="147.67246823677408" />
+      <entry key="W1" value="339.07255695621365" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -158,44 +145,83 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.BackendApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;true&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;Spring Boot.BackendApplication.executor&quot;: &quot;Run&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/DATH_17&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/never/AppData/Roaming/JetBrains/IntelliJIdea2026.1/node/versions/24.21.0/node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.completions.CompletionsConfigurable&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2026.1.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.BackendApplication.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "true",
+    "JUnit.PasswordHashTest.generateHash.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Spring Boot.BackendApplication.executor": "Run",
+    "TestNG.D:/DATH_17/backend/src/main/resources/application.yaml.executor": "Run",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "copilot.chat.legacySessionMetadata.migrated": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/DATH_17",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "C:/Users/never/AppData/Roaming/JetBrains/IntelliJIdea2026.1/node/versions/24.21.0/node",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "com.github.copilot.settings.completions.CompletionsConfigurable",
+    "ts.external.directory.path": "D:\\DATH_17\\frontend\\node_modules\\typescript\\lib"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
+  <component name="RunManager" selected="JUnit.PasswordHashTest.generateHash">
+    <configuration name="BackendApplication" type="Application" factoryName="Application">
+      <envs>
+        <env name="JWT_SECRET" value="udmcIXq03Zp5RYIRdrLgOB6LAa62LIY0JiRD4PKS3R4" />
+      </envs>
+      <option name="MAIN_CLASS_NAME" value="com.smartcampus.backend.BackendApplication" />
+      <module name="backend" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PasswordHashTest.generateHash" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.smartcampus.backend.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.smartcampus.backend" />
+      <option name="MAIN_CLASS_NAME" value="com.smartcampus.backend.PasswordHashTest" />
+      <option name="METHOD_NAME" value="generateHash" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.BackendApplication" />
+      <item itemvalue="JUnit.PasswordHashTest.generateHash" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.PasswordHashTest.generateHash" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
