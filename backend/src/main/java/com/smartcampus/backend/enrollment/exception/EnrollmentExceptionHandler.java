@@ -20,7 +20,6 @@ public class EnrollmentExceptionHandler {
                 .body(ApiResponse.error(ex.getCode(), ex.getMessage()));
     }
 
-    /** e.g. POST /api/courses/abc/enroll */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiResponse<Void>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         return ResponseEntity
