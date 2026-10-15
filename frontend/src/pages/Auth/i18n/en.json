@@ -1,30 +1,47 @@
 {
+  "common": {
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
+  "validation": {
+    "required": "This field is required",
+    "usernameLength": "Username must be between {{min}} and {{max}} characters",
+    "maxLength": "Maximum {{max}} characters",
+    "emailInvalid": "Invalid email address",
+    "passwordLength": "Password must be between {{min}} and {{max}} characters",
+    "confirmMismatch": "Passwords do not match"
+  },
   "login": {
     "title": "Log in",
-    "id": "Username | Email",
+    "id": "Username or email",
     "password": "Password",
     "remember": "Remember me",
     "forgot": "Forgot password?",
     "dontHaveAccount": "Don't have an account?",
     "register": "Sign up now",
     "submit": "Log in to the system",
+    "success": "Login successful",
+    "failed": "Login failed",
     "error": "Incorrect username or password",
     "more": "Or continue with"
   },
   "signin": {
     "title": "Create an account",
+    "fullName": "Full name",
     "email": "Email",
     "id": "Username",
     "password": "Password",
     "confirmPassword": "Confirm password",
     "passwordStrong": "Password strength:",
     "strong": "Very strong (Meets requirements)",
-    "char": ">= 12 characters",
+    "char": "At least 8 characters",
     "upper": "Contains an uppercase letter",
     "number": "Contains a number",
-    "special": "Special character",
-    "confirmTOS": "I agree to the ${Digital Learning Regulations} and the ${Learning Data Privacy Policy}",
+    "special": "Contains a special character",
+    "confirmTOS": "I agree to the <tos>Digital Learning Regulations</tos> and the <privacy>Learning Data Privacy Policy</privacy>",
     "submit": "Create account",
+    "success": "Registration successful",
+    "failed": "Registration failed",
     "haveAccount": "Already have an account?",
     "login": "Log in now"
   },

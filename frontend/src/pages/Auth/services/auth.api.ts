@@ -1,20 +1,19 @@
-import { getApi, postApi } from '~/config/axiosClient'
+import { postApi } from '~/config/axiosClient'
 import { accessTokenStorage } from '~/config/accessTokenStorage'
-
-// export interface User {
-//   id: string
-//   email: string
-//   name: string
-// }
 
 interface LoginPayload {
   username: string
   password: string
 }
 
+interface RegisterPayload {
+  username: string
+  fullName: string
+  password: string
+  email: string
+}
+
 interface LoginResponse {
-  // success: boolean
-  // data: { access_token: string; user: User }
   accessToken: string
   tokenType: string
   expiresIn: number
@@ -22,10 +21,19 @@ interface LoginResponse {
   username: string
 }
 
+interface RegisterResponse {
+  message?: string
+}
+
 export const login = async (payload: LoginPayload) => {
   const res = await postApi<LoginResponse>('/auth/login', payload)
   accessTokenStorage.setAccessToken(res.accessToken)
   return res.username
+}
+
+export const register = async (payload: RegisterPayload) => {
+  const res = await postApi<RegisterResponse>('/auth/register', payload)
+  return res?.message
 }
 
 export const logout = () => {
