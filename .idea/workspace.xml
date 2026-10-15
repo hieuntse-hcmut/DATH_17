@@ -8,20 +8,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="15826404-f2a7-4cee-8dea-27b8ceef8b58" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/controller/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/dto/AuthResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/dto/LoginRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/security/CustomUserDetails.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/security/CustomUserDetailsService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/security/JwtAuthenticationFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/security/JwtService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/service/AuthService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/test/java/com/smartcampus/backend/PasswordHashTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/auth/service/AuthService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/enrollment/security/CurrentUserResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/enrollment/security/CurrentUserResolver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/user/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/user/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/user/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartcampus/backend/user/repository/UserRepository.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +26,7 @@
     </persistenceIdMap>
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="115" />
+    <option name="cachedIndexableFilesCount" value="64" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -64,61 +56,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0000000065634451" />
-      <entry key="MS500" value="1.0466710291028145" />
-      <entry key="S2" value="2.041551932951443" />
-      <entry key="S5" value="2.961922400610894" />
-      <entry key="S10" value="3.425430109282388" />
-      <entry key="S30" value="3.794592587309412" />
-      <entry key="S60" value="3.8955395431726907" />
-      <entry key="M2" value="3.9603179671311692" />
-      <entry key="M5" value="4.2477365305980275" />
-      <entry key="M10" value="4.775117708956245" />
-      <entry key="M15" value="5.2272183325663875" />
-      <entry key="M30" value="6.3843529322145836" />
-      <entry key="H1" value="7.847061062029186" />
-      <entry key="H2" value="9.268332018324925" />
-      <entry key="H4" value="12.242645978735712" />
-      <entry key="D1" value="142.53421690076897" />
-      <entry key="W1" value="329.3287464814577" />
+      <entry key="MS100" value="1.4852072778091088" />
+      <entry key="MS500" value="2.798816343642182" />
+      <entry key="S2" value="5.711227999213862" />
+      <entry key="S5" value="8.349741524570486" />
+      <entry key="S10" value="12.754917094351752" />
+      <entry key="S30" value="23.497793656829742" />
+      <entry key="S60" value="29.092675578585528" />
+      <entry key="M2" value="32.70374496614575" />
+      <entry key="M5" value="35.4965473910009" />
+      <entry key="M10" value="37.367056383460444" />
+      <entry key="M15" value="38.565510451200744" />
+      <entry key="M30" value="40.81589206348663" />
+      <entry key="H1" value="43.1531279156197" />
+      <entry key="H2" value="45.232514736555366" />
+      <entry key="H4" value="48.55381271980185" />
+      <entry key="D1" value="178.2381835963312" />
+      <entry key="W1" value="365.9005204175225" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
       <entry key="MS500" value="0.0" />
-      <entry key="S2" value="1.4128227019552273E-131" />
-      <entry key="S5" value="4.571250974213497E-53" />
-      <entry key="S10" value="6.761102701640832E-27" />
-      <entry key="S30" value="1.8909171944613614E-9" />
-      <entry key="S60" value="4.348467769756792E-5" />
-      <entry key="M2" value="0.006594291296734949" />
-      <entry key="M5" value="0.1341870289100501" />
-      <entry key="M10" value="0.36995423174786324" />
-      <entry key="M15" value="0.5356804902520264" />
-      <entry key="M30" value="0.8695692542024418" />
-      <entry key="H1" value="1.2383871324121922" />
-      <entry key="H2" value="1.5463093964282508" />
-      <entry key="H4" value="1.7728832138844497" />
-      <entry key="D1" value="5.138465386357042" />
-      <entry key="W1" value="9.743882596336027" />
+      <entry key="S2" value="4.385631683750118E-302" />
+      <entry key="S5" value="2.862944060095782E-121" />
+      <entry key="S10" value="5.3506486149772386E-61" />
+      <entry key="S30" value="8.118369433532866E-21" />
+      <entry key="S60" value="9.010199461461918E-11" />
+      <entry key="M2" value="9.492207047493913E-6" />
+      <entry key="M5" value="0.009794678088197561" />
+      <entry key="M10" value="0.09995115438522642" />
+      <entry key="M15" value="0.223871618693902" />
+      <entry key="M30" value="0.5621481435398339" />
+      <entry key="H1" value="0.9957028111735636" />
+      <entry key="H2" value="1.3865420536441535" />
+      <entry key="H4" value="1.6787980405660439" />
+      <entry key="D1" value="5.091977660570433" />
+      <entry key="W1" value="9.73124021308041" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9460576529239111" />
-      <entry key="MS500" value="1.0350420096188082" />
-      <entry key="S2" value="2.035164332626234" />
-      <entry key="S5" value="2.958037861606466" />
-      <entry key="S10" value="3.423149220894892" />
-      <entry key="S30" value="3.7937419319881895" />
-      <entry key="S60" value="3.8951448553548036" />
-      <entry key="M2" value="3.966654633768717" />
-      <entry key="M5" value="4.381542918360239" />
-      <entry key="M10" value="5.144617029413294" />
-      <entry key="M15" value="5.762466376315718" />
-      <entry key="M30" value="7.253579641198496" />
-      <entry key="H1" value="9.085212768404213" />
-      <entry key="H2" value="10.814497963016471" />
-      <entry key="H4" value="14.015439950907272" />
-      <entry key="D1" value="147.67246823677408" />
-      <entry key="W1" value="339.07255695621365" />
+      <entry key="MS100" value="1.4254839763351626" />
+      <entry key="MS500" value="2.772065475656926" />
+      <entry key="S2" value="5.690263386028966" />
+      <entry key="S5" value="8.336418642003242" />
+      <entry key="S10" value="12.744380678215643" />
+      <entry key="S30" value="23.491149399787336" />
+      <entry key="S60" value="29.088543868111895" />
+      <entry key="M2" value="32.701428630552776" />
+      <entry key="M5" value="35.50531265590911" />
+      <entry key="M10" value="37.466371057949075" />
+      <entry key="M15" value="38.78885605536357" />
+      <entry key="M30" value="41.37764465110694" />
+      <entry key="H1" value="44.14855401060173" />
+      <entry key="H2" value="46.61888435408388" />
+      <entry key="H4" value="50.23250432829721" />
+      <entry key="D1" value="183.32994548543633" />
+      <entry key="W1" value="375.63168808000074" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -145,47 +137,47 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.BackendApplication.executor": "Run",
-    "Downloaded.Files.Path.Enabled": "true",
-    "JUnit.PasswordHashTest.generateHash.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "Spring Boot.BackendApplication.executor": "Run",
-    "TestNG.D:/DATH_17/backend/src/main/resources/application.yaml.executor": "Run",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "copilot.chat.legacySessionMetadata.migrated": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/DATH_17",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "C:/Users/never/AppData/Roaming/JetBrains/IntelliJIdea2026.1/node/versions/24.21.0/node",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "com.github.copilot.settings.completions.CompletionsConfigurable",
-    "ts.external.directory.path": "D:\\DATH_17\\frontend\\node_modules\\typescript\\lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.BackendApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;true&quot;,
+    &quot;JUnit.PasswordHashTest.generateHash.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;Spring Boot.BackendApplication.executor&quot;: &quot;Run&quot;,
+    &quot;TestNG.D:/DATH_17/backend/src/main/resources/application.yaml.executor&quot;: &quot;Run&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/DATH_17&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/never/AppData/Roaming/JetBrains/IntelliJIdea2026.1/node/versions/24.21.0/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.completions.CompletionsConfigurable&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\DATH_17\\frontend\\node_modules\\typescript\\lib&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
-  <component name="RunManager" selected="JUnit.PasswordHashTest.generateHash">
+}</component>
+  <component name="RunManager" selected="Application.BackendApplication">
     <configuration name="BackendApplication" type="Application" factoryName="Application">
       <envs>
         <env name="JWT_SECRET" value="udmcIXq03Zp5RYIRdrLgOB6LAa62LIY0JiRD4PKS3R4" />
@@ -212,12 +204,28 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="BackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UnknownPolicyInFreeMode" />
+      <module name="backend" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.smartcampus.backend.BackendApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.smartcampus.backend.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.BackendApplication" />
       <item itemvalue="JUnit.PasswordHashTest.generateHash" />
+      <item itemvalue="Spring Boot.BackendApplication" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Spring Boot.BackendApplication" />
         <item itemvalue="JUnit.PasswordHashTest.generateHash" />
       </list>
     </recent_temporary>
@@ -255,6 +263,17 @@
     <option featureType="dependencySupport" implementationName="java:org.springframework.data:spring-data-commons" />
     <option featureType="dependencySupport" implementationName="java:org.springframework.boot:spring-boot" />
     <option featureType="dependencySupport" implementationName="java:org.springframework:spring-webmvc" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

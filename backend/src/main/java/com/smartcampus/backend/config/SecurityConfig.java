@@ -41,9 +41,11 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+                        // Public endpoints
                         .requestMatchers(
                                 "/api/health",
                                 "/api/auth/login",
+                                "/api/auth/register",
                                 "/error"
                         ).permitAll()
 
@@ -54,9 +56,9 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
 
+                        // Các API còn lại yêu cầu JWT
                         .anyRequest().authenticated()
                 )
-
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class

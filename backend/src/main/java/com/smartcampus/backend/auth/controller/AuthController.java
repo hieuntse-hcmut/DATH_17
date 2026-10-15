@@ -2,6 +2,8 @@ package com.smartcampus.backend.auth.controller;
 
 import com.smartcampus.backend.auth.dto.AuthResponse;
 import com.smartcampus.backend.auth.dto.LoginRequest;
+import com.smartcampus.backend.auth.dto.RegisterRequest;
+import org.springframework.http.HttpStatus;
 import com.smartcampus.backend.auth.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -23,5 +25,10 @@ public class AuthController {
             @Valid @RequestBody LoginRequest request
     ) {
         return ResponseEntity.ok(authService.login(request));
+    }
+    @PostMapping("/register")
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
+        authService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
