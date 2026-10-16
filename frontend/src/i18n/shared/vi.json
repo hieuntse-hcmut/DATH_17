@@ -1,5 +1,28 @@
 {
   "nav": {
-    "about": "Chúng tôi là nhóm 17"
+    "about": "Chúng tôi là nhóm 17",
+    "learning": "HỌC TẬP",
+    "communication": "GIAO TIẾP",
+    "home": "Trang chủ",
+    "my_courses": "Khoá học của tôi",
+    "quizzes": "Bài kiểm tra",
+    "notifications": "Thông báo",
+    "discussions": "Thảo luận",
+    "semester": "Học kỳ II (2024 - 2025)",
+    "week": "Tuần 12",
+    "program": "Chính quy"
+  },
+  "header": {
+    "portal": "PORTAL SINH VIÊN",
+    "search_placeholder": "Tìm kiếm khóa học, tài liệu, lớp học...",
+    "student": "Sinh viên",
+    "profile": "Hồ sơ cá nhân",
+    "grades": "Bảng điểm chi tiết",
+    "schedule": "Lịch học & Thi",
+    "theme": "Giao diện",
+    "light": "Sáng",
+    "dark": "Tối",
+    "lang": "Ngôn ngữ",
+    "logout": "Đăng xuất tài khoản"
   }
 }

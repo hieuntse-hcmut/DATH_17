@@ -39,12 +39,12 @@ export default function AuthShowcase() {
   }, [slides.length])
 
   return (
-    <aside className="hidden flex-col gap-6 bg-linear-to-br from-page to-primary-soft pb-10 pt-38 lg:flex px-[6.25vw]">
+    <aside className="hidden flex-col gap-6 bg-linear-to-br from-page to-primary-soft pb-[2vw] pt-[4vw] lg:flex px-[6.25vw]">
       <h2 className="text-3xl font-bold">{t('showcase.title')}</h2>
 
       {/* Slider */}
       <div className="rounded-3xl bg-surface shadow-lg shadow-primary/10">
-        <div className="relative aspect-video overflow-hidden rounded-2xl">
+        <div className="relative aspect-[16/5] overflow-hidden rounded-2xl">
           {slides.map((slide, i) => (
             <div
               key={slide.title}

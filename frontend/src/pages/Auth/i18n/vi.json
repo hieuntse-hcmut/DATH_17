@@ -1,4 +1,16 @@
 {
+  "common": {
+    "showPassword": "Hiện mật khẩu",
+    "hidePassword": "Ẩn mật khẩu"
+  },
+  "validation": {
+    "required": "Trường này không được để trống",
+    "usernameLength": "Tên đăng nhập phải từ {{min}} đến {{max}} ký tự",
+    "maxLength": "Tối đa {{max}} ký tự",
+    "emailInvalid": "Email không hợp lệ",
+    "passwordLength": "Mật khẩu phải từ {{min}} đến {{max}} ký tự",
+    "confirmMismatch": "Mật khẩu nhập lại không khớp"
+  },
   "login": {
     "title": "Đăng nhập",
     "id": "Tên đăng nhập | Email",
@@ -8,23 +20,28 @@
     "dontHaveAccount": "Bạn chưa có tài khoản?",
     "register": "Đăng ký ngay",
     "submit": "Đăng nhập vào hệ thống",
+    "success": "Đăng nhập thành công",
+    "failed": "Đăng nhập thất bại",
     "error": "Tên đăng nhập hoặc mật khẩu không đúng",
     "more": "Hoặc tiếp tục với"
   },
   "signin": {
     "title": "Đăng ký tài khoản",
+    "fullName": "Họ và tên",
     "email": "Email",
     "id": "Tên đăng nhập",
     "password": "Mật khẩu",
     "confirmPassword": "Xác nhận mật khẩu",
     "passwordStrong": "Độ bảo mật mật khẩu:",
     "strong": "Rất mạnh (Đạt chuẩn)",
-    "char": ">= 12 ký tự",
+    "char": "Tối thiểu 12 ký tự",
     "upper": "Có chữ in hoa",
-    "number": "Có số",
-    "special": "Ký tự đặc biệt",
+    "number": "Có chữ số",
+    "special": "Có ký tự đặc biệt",
     "confirmTOS": "Tôi đồng ý với ${Quy chế đào tạo số} và ${Chính sách quyền riêng tư dữ liệu học tập}",
     "submit": "Đăng ký tài khoản",
+    "success": "Đăng ký thành công",
+    "failed": "Đăng ký thất bại",
     "haveAccount": "Bạn đã có tài khoản?",
     "login": "Đăng nhập ngay"
   },
