@@ -14,8 +14,9 @@ export default function Home() {
 
     return (
         <div className="px-16">
-            <div className="flex justify-between ">
-                <h1 className="text-xl font-bold">{t('nav.about')}</h1>
+            <div className="flex items-center">
+                <h1 className="text-xl font-bold pr-4">Username: </h1>
+                <h1 className="text-xl font-bold pr-10">{localStorage.getItem('username')}</h1>
                 <ThemeToggle />
             </div>
             <div className="flex items-center gap-4">
