@@ -71,20 +71,11 @@ export default function Header() {
                         placeholder={t('header.search_placeholder', 'Tìm kiếm khóa học, tài liệu, lớp học...')} 
                         className="w-full bg-transparent border-none outline-none font-sans text-sm text-[#777587] dark:text-gray-200 leading-4.5"
                     />
-                    <div className="px-1 py-0.5 bg-[#E2E7FF] dark:bg-gray-700 rounded flex items-center gap-0.5 shrink-0">
-                        <span className="font-sans font-semibold text-[11px] text-[#777587] dark:text-gray-300 tracking-[0.33px]">Ctrl</span>
-                        <span className="font-sans font-semibold text-[11px] text-[#777587] dark:text-gray-300 tracking-[0.33px]">K</span>
-                    </div>
                 </div>
             </div>
 
             {/* Right Actions & Profile Container */}
             <div className="flex items-center gap-2 md:gap-3">
-                {/* Notification Button */}
-                <button className="relative w-8 h-8 hidden md:flex items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <FontAwesomeIcon icon={faBell} className="w-3.5 h-4 text-[#464555] dark:text-gray-300" />
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#BA1A1A] rounded-full ring-2 ring-white dark:ring-gray-900"></span>
-                </button>
 
                 <div className="hidden md:block w-[1px] h-6 bg-[#E2E7FF] dark:bg-gray-800 mx-1"></div>
 
@@ -113,11 +104,7 @@ export default function Header() {
                             <div className="px-4 pb-3 border-b border-[#E2E7FF] dark:border-gray-800 flex items-center gap-3">
                                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Avatar" className="w-12 h-12 rounded-xl object-cover ring-1 ring-[#E2E7FF] dark:ring-gray-700" />
                                 <div className="flex flex-col">
-                                    <div className="flex items-center gap-2">
-                                        <span className="font-sans font-bold text-sm text-[#131B2E] dark:text-white">Nguyễn Văn Minh</span>
-                                        <span className="bg-[#66F59A]/30 text-[#0F763E] dark:text-green-400 text-[10px] font-semibold px-2 py-0.5 rounded-full">{t('nav.program', 'Chính quy')}</span>
-                                    </div>
-                                    <span className="font-sans text-xs text-[#3525CD] dark:text-indigo-400 font-medium mt-0.5">MSSV: 2021001</span>
+                                    <span className="font-sans font-bold text-sm text-[#131B2E] dark:text-white">Nguyễn Văn Minh</span>
                                     <span className="font-sans text-[11px] text-[#777587] dark:text-gray-400">minh.nv2021001@sis.campus.edu.vn</span>
                                 </div>
                             </div>
@@ -149,16 +136,16 @@ export default function Header() {
                                         <FontAwesomeIcon icon={faPalette} className="w-4 h-4 text-[#777587] dark:text-gray-400" />
                                         <span>{t('header.theme', 'Giao diện')}</span>
                                     </div>
-                                    <div className="bg-[#F2F3FF] dark:bg-gray-800 p-0.5 rounded-lg flex items-center text-xs font-semibold">
+                                    <div className="cursor-pointer bg-[#F2F3FF] dark:bg-gray-800 p-0.5 rounded-lg flex items-center text-xs font-semibold">
                                         <button 
                                             onClick={() => toggleTheme('light')} 
-                                            className={`px-3 py-1 rounded-md transition-all ${theme === 'light' ? 'bg-white dark:bg-gray-700 text-[#3525CD] dark:text-white shadow-sm' : 'text-[#777587] dark:text-gray-400'}`}
+                                            className={`cursor-pointer px-3 py-1 rounded-md transition-all ${theme === 'light' ? 'bg-white dark:bg-gray-700 text-[#3525CD] dark:text-white shadow-sm' : 'text-[#777587] dark:text-gray-400'}`}
                                         >
                                             {t('header.light', 'Sáng')}
                                         </button>
                                         <button 
                                             onClick={() => toggleTheme('dark')} 
-                                            className={`px-3 py-1 rounded-md transition-all ${theme === 'dark' ? 'bg-white dark:bg-gray-700 text-[#3525CD] dark:text-white shadow-sm' : 'text-[#777587] dark:text-gray-400'}`}
+                                            className={`cursor-pointer px-3 py-1 rounded-md transition-all ${theme === 'dark' ? 'bg-white dark:bg-gray-700 text-[#3525CD] dark:text-white shadow-sm' : 'text-[#777587] dark:text-gray-400'}`}
                                         >
                                             {t('header.dark', 'Tối')}
                                         </button>
@@ -171,14 +158,14 @@ export default function Header() {
                                         <FontAwesomeIcon icon={faGlobe} className="w-4 h-4 text-[#777587] dark:text-gray-400" />
                                         <span>{t('header.lang', 'Ngôn ngữ')}</span>
                                     </div>
-                                    <div className="bg-[#F2F3FF] dark:bg-gray-800 p-0.5 rounded-lg flex items-center text-xs font-semibold">
+                                    <div className="cursor-pointer bg-[#F2F3FF] dark:bg-gray-800 p-0.5 rounded-lg flex items-center text-xs font-semibold">
                                         {supportedLngs.map((lng) => {
                                             const isActive = i18n.resolvedLanguage === lng
                                             return (
                                                 <button
                                                     key={lng}
                                                     onClick={() => changeLanguage(lng)}
-                                                    className={`px-3 py-1 rounded-md uppercase transition-all ${isActive ? 'bg-white dark:bg-gray-700 text-[#3525CD] dark:text-white shadow-sm' : 'text-[#777587] dark:text-gray-400'}`}
+                                                    className={`cursor-pointer px-3 py-1 rounded-md uppercase transition-all ${isActive ? 'bg-white dark:bg-gray-700 text-[#3525CD] dark:text-white shadow-sm' : 'text-[#777587] dark:text-gray-400'}`}
                                                 >
                                                     {lng}
                                                 </button>
