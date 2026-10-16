@@ -1,5 +1,28 @@
 {
   "nav": {
-    "about": "We are group 17"
+    "about": "We are group 17",
+    "learning": "LEARNING",
+    "communication": "COMMUNICATION",
+    "home": "Home",
+    "my_courses": "My Courses",
+    "quizzes": "Quizzes & Tests",
+    "notifications": "Notifications",
+    "discussions": "Discussions",
+    "semester": "Semester II (2024 - 2025)",
+    "week": "Week 12",
+    "program": "Regular"
+  },
+  "header": {
+    "portal": "STUDENT PORTAL",
+    "search_placeholder": "Search courses, materials, classes...",
+    "student": "Student",
+    "profile": "Personal Profile",
+    "grades": "Detailed Grades",
+    "schedule": "Schedule & Exams",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "lang": "Language",
+    "logout": "Log out"
   }
 }
