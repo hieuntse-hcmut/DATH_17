@@ -1,0 +1,32 @@
+{
+  "semester": "Học kỳ {{term}} · {{year}}",
+  "greeting": "Chào buổi sáng, {{name}}",
+  "subtitle": "Chúc bạn có một ngày học tập hứng khởi và hiệu quả!",
+  "streak_other": "Chuỗi {{count}} ngày",
+  "continue": {
+    "badge": "Tiếp tục học",
+    "chapter": "Chương {{n}}",
+    "lastStudied_other": "Vừa học {{count}} giờ trước",
+    "currentProgress": "Tiến độ bài học hiện tại",
+    "percentDone": "{{percent}}% hoàn thành",
+    "attachments_other": "Tài liệu đính kèm: {{count}} file PDF",
+    "viewDetail": "Xem chi tiết khoá",
+    "resume": "Tiếp tục học"
+  },
+  "courses": {
+    "title": "Khoá học của bạn",
+    "subtitle_other": "Đang theo học {{count}} khoá trong học kỳ này",
+    "viewAll": "Tất cả khoá học"
+  },
+  "status": {
+    "inProgress": "Đang học",
+    "notStarted": "Mới bắt đầu",
+    "completed": "Hoàn thành"
+  },
+  "course": {
+    "lessons": "{{done}}/{{total}} bài học",
+    "continue": "Tiếp tục học",
+    "study": "Học tiếp",
+    "review": "Ôn tập lại"
+  }
+}

@@ -1,30 +1,58 @@
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from "react-i18next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
-import { useEnrollCourse, useGetCourse, useGetHealth } from '~/services/health.query'
-import ThemeToggle from '~/components/ThemeToggle'
-
+import GreetingHeader from "./components/GreetingHeader";
+import ContinueLearningCard from "./components/ContinueLearningCard";
+import CourseCard from "./components/CourseCard";
+import { useGetEnrollMe } from "./services/home.query";
+import { mockCurrentLesson, mockCourses } from "./data";
 
 export default function Home() {
-    const { t } = useTranslation();
-    const [limit, setLimit] = useState(0);
+    const { t } = useTranslation("home");
+    const { data: enrollMeList } = useGetEnrollMe();
 
-    const { data: healthData, isLoading: isHealthLoading, isError: isHealthError } = useGetCourse();
-    console.log('Health Data:', healthData, 'Loading:', isHealthLoading, 'Error:', isHealthError);
-    const { mutate, error} = useEnrollCourse();
-    
     return (
-        <div className="px-16">
-            <button onClick={() => mutate(2)}>click me</button>
-            <div className="flex items-center">
-                <h1 className="text-xl font-bold pr-4">Username: </h1>
-                <h1 className="text-xl font-bold pr-10">{localStorage.getItem('username')}</h1>
-                <ThemeToggle />
-            </div>
-            <div className="flex items-center gap-4">
-                <h2>Example Data - Current limit: {limit} </h2>
-                <button className="h-10 w-40 bg-black text-white" onClick={() => setLimit((prev) => prev + 5)}>Load More Data</button>
-            </div>
+        <div className="mx-auto w-full max-w-6xl space-y-8 px-4 py-8 sm:px-6">
+            <GreetingHeader name={"test"} />
+
+            <ContinueLearningCard lesson={mockCurrentLesson} />
+
+            <section aria-labelledby="my-courses">
+                <div className="mb-4 flex items-end justify-between gap-3">
+                    <div>
+                        <h2
+                            id="my-courses"
+                            className="text-xl font-bold text-fg"
+                        >
+                            {t("courses.title")}
+                        </h2>
+                        <p className="text-sm text-fg-muted">
+                            {t("courses.subtitle", {
+                                count: mockCourses.length,
+                            })}
+                        </p>
+                    </div>
+                    <a
+                        href="#"
+                        className="flex items-center gap-1 text-sm font-semibold text-link hover:underline"
+                    >
+                        {t("courses.viewAll")}
+                        <FontAwesomeIcon
+                            icon={faChevronRight}
+                            className="text-sm"
+                        />{" "}
+                    </a>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    {enrollMeList &&
+                        typeof enrollMeList !== "string" &&
+                        enrollMeList?.map((c) => (
+                            <CourseCard key={c.enrollmentId} course={c} />
+                        ))}
+                </div>
+            </section>
         </div>
-    )
+    );
 }
