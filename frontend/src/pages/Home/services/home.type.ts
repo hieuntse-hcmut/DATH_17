@@ -1,14 +1,14 @@
-export type CourseStatus = 'inProgress' | 'notStarted' | 'completed'
+export type CourseStatus = 'ACTIVE'
+export type PublicationState = 'PUBLISHED'
 
-export interface Course {
-  id: string
-  title: string
-  instructor: string
-  thumbnail?: string
+export interface Enrollment {
+  courseDescription: string
+  courseId: number
+  courseTitle: string
+  enrolledAt: string
+  enrollmentId: number
+  publicationState: PublicationState
   status: CourseStatus
-  completedLessons: number
-  totalLessons: number
-  isCurrent?: boolean
 }
 
 export interface CurrentLesson {
