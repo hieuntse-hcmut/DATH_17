@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { Link, useLocation, useNavigate } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { 
   faHouse, 
@@ -10,12 +11,18 @@ import {
   faCalendarDays 
 } from "@fortawesome/free-solid-svg-icons"
 
-export default function Sidebar() {
-  const { t } = useTranslation()
-  const [activeItem, setActiveItem] = useState('trang-chu')
+interface SidebarProps {
+  onOpenNotification?: () => void
+  onCloseNotification?: () => void
+}
 
-  const getItemClass = (id: string) => {
-    const isActive = activeItem === id
+export default function Sidebar({ onOpenNotification, onCloseNotification }: SidebarProps) {
+  const { t } = useTranslation()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [activeItem, setActiveItem] = useState('')
+
+  const getItemClass = (isActive: boolean) => {
     return `flex flex-col md:flex-row items-center justify-center md:justify-start px-0 md:px-3 py-0 md:py-2 gap-0 md:gap-3 w-[76.39px] md:w-full h-16 md:h-[38px] md:rounded-xl transition-colors cursor-pointer ${
       isActive 
         ? "md:bg-[#6750A3] text-white" 
@@ -23,8 +30,7 @@ export default function Sidebar() {
     }`
   }
 
-  const getIconWrapperClass = (id: string) => {
-    const isActive = activeItem === id
+  const getIconWrapperClass = (isActive: boolean) => {
     return `flex items-center justify-center w-[45px] h-[45px] md:w-5 md:h-5 shrink-0 rounded-full md:rounded-none transition-all ${
       isActive ? "bg-[#6750A3] text-white shadow-sm" : "bg-transparent text-[#464555] dark:text-gray-300"
     }`
@@ -44,34 +50,34 @@ export default function Sidebar() {
         </div>
 
         {/* 1. Trang chủ */}
-        <a href="#trang-chu" onClick={(e) => { e.preventDefault(); setActiveItem('trang-chu'); }} className={getItemClass('trang-chu')}>
-          <div className={getIconWrapperClass('trang-chu')}>
+        <Link to="/" onClick={() => { setActiveItem('trang-chu'); if (onCloseNotification) onCloseNotification(); }} className={getItemClass(location.pathname === '/')}>
+          <div className={getIconWrapperClass(location.pathname === '/')}>
             <FontAwesomeIcon icon={faHouse} className="w-4 h-4 md:w-[13.33px] md:h-[15px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.home', 'Trang chủ')}
           </span>
-        </a>
+        </Link>
 
         {/* 2. Khóa học của tôi */}
-        <a href="#khoa-hoc" onClick={(e) => { e.preventDefault(); setActiveItem('khoa-hoc'); }} className={getItemClass('khoa-hoc')}>
-          <div className={getIconWrapperClass('khoa-hoc')}>
+        <Link to="/" onClick={() => { setActiveItem('khoa-hoc'); if (onCloseNotification) onCloseNotification(); }} className={getItemClass(false)}>
+          <div className={getIconWrapperClass(false)}>
             <FontAwesomeIcon icon={faGraduationCap} className="w-4 h-4 md:w-[18.33px] md:h-[15px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.my_courses', 'Khoá học của tôi')}
           </span>
-        </a>
+        </Link>
 
         {/* 3. Bài kiểm tra */}
-        <a href="#bai-kiem-tra" onClick={(e) => { e.preventDefault(); setActiveItem('bai-kiem-tra'); }} className={getItemClass('bai-kiem-tra')}>
-          <div className={getIconWrapperClass('bai-kiem-tra')}>
+        <Link to="/" onClick={() => { setActiveItem('bai-kiem-tra'); if (onCloseNotification) onCloseNotification(); }} className={getItemClass(false)}>
+          <div className={getIconWrapperClass(false)}>
             <FontAwesomeIcon icon={faClipboardList} className="w-4 h-4 md:w-[15px] md:h-[16.67px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.quizzes', 'Bài kiểm tra')}
           </span>
-        </a>
+        </Link>
 
         {/* Nhóm GIAO TIẾP */}
         <div className="hidden md:block px-3 pt-[31px] pb-[7px] w-full">
@@ -81,8 +87,12 @@ export default function Sidebar() {
         </div>
 
         {/* 4. Thông báo */}
-        <a href="#thong-bao" onClick={(e) => { e.preventDefault(); setActiveItem('thong-bao'); }} className={getItemClass('thong-bao')}>
-          <div className={getIconWrapperClass('thong-bao')}>
+        <a href="#thong-bao" onClick={(e) => { 
+          e.preventDefault(); 
+          setActiveItem('thong-bao'); 
+          if (onOpenNotification) onOpenNotification(); 
+        }} className={getItemClass(false)}>
+          <div className={getIconWrapperClass(false)}>
             <FontAwesomeIcon icon={faBell} className="w-4 h-4 md:w-[13.33px] md:h-[16.67px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
@@ -90,15 +100,22 @@ export default function Sidebar() {
           </span>
         </a>
 
-        {/* 5. Thảo luận */}
-        <a href="#thao-luan" onClick={(e) => { e.preventDefault(); setActiveItem('thao-luan'); }} className={getItemClass('thao-luan')}>
-          <div className={getIconWrapperClass('thao-luan')}>
+        {/* 5. Thảo luận (Chuyển hướng đến /discuss bằng useNavigate) */}
+        <div 
+          onClick={() => { 
+            setActiveItem('thao-luan'); 
+            if (onCloseNotification) onCloseNotification(); 
+            navigate('/discuss');
+          }} 
+          className={getItemClass(location.pathname === '/discuss')}
+        >
+          <div className={getIconWrapperClass(location.pathname === '/discuss')}>
             <FontAwesomeIcon icon={faComments} className="w-4 h-4 md:w-[16.67px] md:h-[16.67px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.discussions', 'Thảo luận')}
           </span>
-        </a>
+        </div>
 
       </div>
 

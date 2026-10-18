@@ -1,13 +1,20 @@
+import { useState } from 'react'
 import { Outlet } from 'react-router'
 import Header from '~/components/layout/Header'
 import Footer from '~/components/layout/Footer'
 import Sidebar from '~/components/layout/Sidebar'
+import NotificationModal from '~/components/layout/NotificationModal' // Điều chỉnh lại đường dẫn nếu bạn đặt file NotificationModal ở thư mục khác
 
 export default function MainLayout() {
+    const [isNotifOpen, setIsNotifOpen] = useState(false)
+
     return (
         <div className="flex min-h-screen bg-[#F8FAFC] dark:bg-gray-950 transition-colors">
-            {/* Sidebar tự động chuyển đổi linh hoạt: Bottom Nav trên mobile, Sidebar dọc cố định từ màn hình md trở lên */}
-            <Sidebar />
+            {/* Sidebar tích hợp callback mở/đóng thông báo */}
+            <Sidebar 
+                onOpenNotification={() => setIsNotifOpen(true)} 
+                onCloseNotification={() => setIsNotifOpen(false)} 
+            />
 
             {/* Cột nội dung chính bên phải */}
             <div className="flex flex-col flex-1 min-w-0 pl-0 md:pl-[264px] w-full transition-all duration-200">
@@ -21,6 +28,12 @@ export default function MainLayout() {
                     <Footer />
                 </div>
             </div>
+
+            {/* Modal thông báo hệ thống */}
+            <NotificationModal 
+                isOpen={isNotifOpen} 
+                onClose={() => setIsNotifOpen(false)} 
+            />
         </div>
     )
 }
