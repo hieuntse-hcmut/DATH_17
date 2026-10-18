@@ -314,6 +314,45 @@ V3__update_example.sql
 
 ## 12. Useful Commands
 
+### Run backend tests
+
+The full test suite needs Java 21+ and a running Docker daemon. Start Docker Desktop and verify that Docker is ready:
+
+```bash
+docker info
+```
+
+From the project root, run:
+
+```bash
+cd backend
+./mvnw test             # macOS / Linux
+```
+
+On Windows, run `mvnw.cmd test` instead. A successful run ends with `BUILD SUCCESS` and `Tests run: 40, Failures: 0, Errors: 0` (the count may grow as tests are added).
+
+#### How the test environment is configured
+
+- `src/test/resources/application-test.yaml` contains the test datasource and a fixed JWT signing secret used only by tests. No local `.env`, `JWT_SECRET`, `DB_URL`, `DB_USERNAME`, or `DB_PASSWORD` is needed for `./mvnw test`.
+- Spring integration test classes use `@ActiveProfiles("test")`. Add this annotation to new `@SpringBootTest` classes so they use the isolated test configuration.
+- The datasource URL `jdbc:tc:mysql:8.4:///smart_campus_test` tells Testcontainers to start a disposable MySQL 8.4 container. Flyway creates its schema before the tests run. Testcontainers stops the container after the test JVM exits.
+- The test database is separate from the development database at `localhost:3306/smart_campus`. You do not need to run `docker compose up` or manually create `smart_campus_test` before testing. Docker Desktop only needs to be running.
+
+If the tests report `Could not find a valid Docker environment`, start Docker Desktop and check `docker info` before retrying. `Access denied for user 'smartcampus'@'localhost'` during a Spring test usually means that test class is missing `@ActiveProfiles("test")` and is using the development datasource.
+
+### Generate OpenAPI
+
+With Docker Desktop running, `./mvnw verify` and `./mvnw install` automatically regenerate `backend/target/openapi.json` (run the commands from `backend/`). During Maven's `integration-test` phase, the generator in `src/test/java` starts the backend on a temporary port with the `test` profile, reads `/v3/api-docs`, writes the file, and closes the application. The existing `springdoc-openapi-starter-webmvc-ui` dependency provides that endpoint; the Maven Exec plugin invokes the generator. The generated file is a Maven build artifact and is not committed to Git. `compile` and `test` stop before this phase and do not generate the file.
+
+```bash
+cd backend
+./mvnw clean verify
+```
+
+On Windows, use `mvnw.cmd clean verify`. Docker must be running for the integration tests and OpenAPI generation.
+
+### Other commands
+
 Start MySQL:
 
 ```bash
