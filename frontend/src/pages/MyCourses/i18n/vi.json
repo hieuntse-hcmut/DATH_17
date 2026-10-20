@@ -1,0 +1,71 @@
+{
+  "breadcrumb": {
+    "study": "Học tập",
+    "current": "Khoá học của tôi"
+  },
+  "title": "Khoá học của tôi",
+  "subtitle": "Quản lý tiến độ học tập và tiếp tục hành trình trau dồi tri thức kỳ học này",
+  "totalCredits": "Tổng số tín chỉ đang tích luỹ: {{count}} TC",
+  "register": "Đăng ký khoá mới",
+  "tabs": {
+    "learning": "Đang học",
+    "completed": "Đã hoàn thành"
+  },
+  "search": {
+    "placeholder": "Tìm theo tên khoá học, giảng viên...",
+    "label": "Tìm kiếm khoá học"
+  },
+  "sort": {
+    "label": "Sắp xếp",
+    "recent": "Truy cập gần nhất",
+    "name": "Tên khoá học",
+    "progress": "Tiến độ học"
+  },
+  "view": {
+    "grid": "Dạng lưới",
+    "list": "Dạng danh sách"
+  },
+  "card": {
+    "learningSemester": "Đang học · Kỳ {{semester}}",
+    "completedSemester": "Hoàn thành · Kỳ {{semester}}",
+    "locked": "Chưa mở nội dung mới",
+    "credits": "{{count}} tín chỉ",
+    "lastAccessed": "Học gần nhất: {{time}}",
+    "progress": "Tiến độ bài học",
+    "lessonsCount": "{{done}}/{{total}} bài",
+    "nextLesson": "Bài tiếp theo",
+    "nextLessonValue": "Chương {{chapter}} › Bài {{lesson}}: {{title}}",
+    "continue": "Tiếp tục học",
+    "review": "Ôn tập lại",
+    "overview": "Xem tổng quan khoá",
+    "onTrack": "Đang đúng tiến độ tuần",
+    "options": "Tuỳ chọn khoá học",
+    "unlockPlan": "Kế hoạch mở bài",
+    "unlockText": "Giảng viên sẽ mở module bài tập & bài giảng Chương {{chapter}} vào ngày {{date}}",
+    "unlockShort": "Mở module mới: {{date}}",
+    "paused": "Tạm khoá"
+  },
+  "time": {
+    "yesterday": "Hôm qua, {{time}}",
+    "today": "Hôm nay, {{time}}"
+  },
+  "empty": {
+    "learning": "Bạn chưa có khoá học nào đang học.",
+    "completed": "Bạn chưa hoàn thành khoá học nào.",
+    "search": "Không tìm thấy khoá học phù hợp với \"{{keyword}}\".",
+    "cta": "Khám phá danh mục khoá học"
+  },
+  "error": {
+    "load": "Không thể tải danh sách khoá học.",
+    "retry": "Thử lại"
+  },
+  "banner": {
+    "badge": "Định hướng học tập kỳ III",
+    "title": "Bạn muốn nâng cao kỹ năng và đón đầu công nghệ trong kỳ tới?",
+    "description": "Khám phá hơn 45+ môn học tự chọn chuyên sâu: Điện toán đám mây (AWS/GCP), An toàn thông tin mạng và Thiết kế hệ thống phân tán. Đăng ký sớm để giữ chỗ cùng giảng viên đầu ngành.",
+    "cta": "Xem Danh mục khoá học",
+    "mobileTitle": "Bạn muốn học thêm kỹ năng mới?",
+    "mobileDescription": "Hơn 120+ khoá học tự chọn đang mở đăng ký",
+    "mobileCta": "Khám phá danh mục khoá học"
+  }
+}
