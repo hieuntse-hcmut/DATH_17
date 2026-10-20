@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -30,17 +30,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * End-to-end tests of Enrollment (full), Learning Progress, Analytics and Notification
  * through the real Spring Security filter chain and the real database.
  *
- * Needs MySQL running (docker compose up -d). Every test runs in a transaction that is
- * rolled back, so the local database is left unchanged.
+ * Uses disposable MySQL through the test profile. Every test runs in a transaction
+ * that is rolled back.
  * Users: student_a 9001, student_b 9002 (INACTIVE), lecturer_a 9003 (owns every test course),
  * lecturer_b 9004 (owns nothing), admin_a 9005, student_c 9006.
  * Courses: 9101 published+open (lessons 9301-9303), 9102 draft, 9103 published+closed (lesson 9304).
  */
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 @Sql("/sql/week42-test-data.sql")
-@TestPropertySource(properties =
-        "JWT_SECRET=c21hcnQtY2FtcHVzLXRlc3Qtand0LXNlY3JldC1rZXktYXQtbGVhc3QtMzItYnl0ZXMtbG9uZw==")
 class Week42IntegrationTest {
 
     private static final String STUDENT_A = "student_a";
