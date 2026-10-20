@@ -12,7 +12,7 @@ import {
     faLock,
 } from "@fortawesome/free-solid-svg-icons";
 import type { CourseView, MyCourse } from "../services/myCourses.type";
-
+import { useNavigate } from "react-router";
 interface Props {
     course: MyCourse;
     layout: CourseView;
@@ -37,6 +37,8 @@ const startOfDay = (d: Date) =>
 
 export default function CourseCard({ course, layout }: Props) {
     const { t, i18n } = useTranslation("myCourses");
+    const navigate = useNavigate();
+    const goToCourse = () => navigate(`/courses/${course.id}/lessons`);
     const isGrid = layout === "grid";
     const percent = course.lessonsTotal
         ? Math.round((course.lessonsDone / course.lessonsTotal) * 100)
@@ -296,6 +298,7 @@ export default function CourseCard({ course, layout }: Props) {
                     ) : (
                         <button
                             type="button"
+                            onClick={goToCourse}
                             className={`flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
                                 isCompleted
                                     ? "border border-border bg-surface text-fg hover:bg-surface-muted"

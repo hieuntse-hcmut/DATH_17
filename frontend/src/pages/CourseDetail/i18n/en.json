@@ -1,0 +1,54 @@
+{
+    "pageTitle": "Course detail",
+    "toc": "Contents",
+    "lessonsCount": "{{count}} lessons",
+    "chapterProgress": "{{done}}/{{total}}",
+    "completion": "{{percent}}% completed",
+    "status": {
+        "completed": "Completed",
+        "current": "LEARNING"
+    },
+    "quizMeta": "{{minutes}} min • {{questions}} quiz questions",
+    "tabs": { "docs": "Docs & Notes", "discussion": "Discussion" },
+    "discussionEmpty": "No discussion for this lesson yet.",
+    "discussion": {
+        "title": "Discussion",
+        "sortBy": "Sort by:",
+        "sort": {
+            "newest": "Newest",
+            "oldest": "Oldest",
+            "popular": "Most liked"
+        },
+        "tools": {
+            "bold": "Bold",
+            "italic": "Italic",
+            "underline": "Underline",
+            "code": "Code",
+            "link": "Insert link",
+            "attach": "Attach file"
+        },
+        "placeholder": "Write a comment or ask a question...",
+        "post": "Post",
+        "replyingTo": "Replying to {{name}}",
+        "cancelReply": "Cancel reply",
+        "justNow": "Just now",
+        "options": "Options",
+        "like": "{{count}}",
+        "reply": "Reply",
+        "replying": "Replying",
+        "fileTooLarge": "Some files exceed {{max}} MB and were not added.",
+        "tooManyFiles": "You can attach up to {{max}} files per comment.",
+        "removeFile": "Remove {{name}}",
+        "linkText": "link"
+    },
+    "copy": "Copy",
+    "copied": "Copied",
+    "prev": "Previous",
+    "understood": "Got it",
+    "next": "Next lesson",
+    "locked": "This chapter is locked",
+    "notFound": "Lesson not found",
+    "close": "Close",
+    "docsEmpty": "No materials or notes for this lesson yet.",
+    "download": "Download {{name}}"
+}

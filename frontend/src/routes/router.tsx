@@ -7,6 +7,7 @@ import MainLayout from "~/layouts/Main.layout";
 const Home = lazy(() => import("~/pages/Home"));
 const Auth = lazy(() => import("~/pages/Auth"));
 const MyCourses = lazy(() => import("~/pages/MyCourses"));
+const CourseDetail = lazy(() => import("~/pages/CourseDetail"));
 
 export const router = createBrowserRouter([
     {
@@ -15,6 +16,10 @@ export const router = createBrowserRouter([
         children: [
             { index: true, element: <Home /> },
             { path: "my-courses", element: <MyCourses /> },
+            {
+                path: "courses/:courseId/lessons/:lessonId?",
+                element: <CourseDetail />,
+            },
             //   {
             //     path: '/example',
             //     element: <div>Example Page</div>,

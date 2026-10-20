@@ -1,0 +1,54 @@
+{
+    "pageTitle": "Chi tiết khóa học",
+    "toc": "Mục lục",
+    "lessonsCount": "{{count}} bài",
+    "chapterProgress": "{{done}}/{{total}}",
+    "completion": "{{percent}}% hoàn thành",
+    "status": {
+        "completed": "Đã hoàn thành",
+        "current": "ĐANG HỌC"
+    },
+    "quizMeta": "{{minutes}} phút • {{questions}} câu trắc nghiệm",
+    "tabs": { "docs": "Tài liệu & Ghi chú", "discussion": "Thảo luận" },
+    "discussionEmpty": "Chưa có thảo luận nào cho bài học này.",
+    "discussion": {
+        "title": "Thảo luận",
+        "sortBy": "Sắp xếp theo:",
+        "sort": {
+            "newest": "Mới nhất",
+            "oldest": "Cũ nhất",
+            "popular": "Nhiều thích nhất"
+        },
+        "tools": {
+            "bold": "In đậm",
+            "italic": "In nghiêng",
+            "underline": "Gạch chân",
+            "code": "Mã",
+            "link": "Chèn liên kết",
+            "attach": "Đính kèm tệp"
+        },
+        "placeholder": "Viết bình luận hoặc đặt câu hỏi...",
+        "post": "Đăng",
+        "replyingTo": "Đang trả lời {{name}}",
+        "cancelReply": "Hủy trả lời",
+        "justNow": "Vừa xong",
+        "options": "Tùy chọn",
+        "like": "{{count}}",
+        "reply": "Trả lời",
+        "replying": "Đang trả lời",
+        "fileTooLarge": "Có tệp vượt quá {{max}} MB nên không được thêm.",
+        "tooManyFiles": "Mỗi bình luận đính kèm tối đa {{max}} tệp.",
+        "removeFile": "Xóa tệp {{name}}",
+        "linkText": "liên kết"
+    },
+    "copy": "Sao chép",
+    "copied": "Đã chép",
+    "prev": "Bài trước",
+    "understood": "Đã hiểu bài",
+    "next": "Bài tiếp theo",
+    "locked": "Chương này đang bị khóa",
+    "notFound": "Không tìm thấy bài học",
+    "close": "Đóng",
+    "docsEmpty": "Bài học này chưa có tài liệu hoặc ghi chú.",
+    "download": "Tải xuống {{name}}"
+}
