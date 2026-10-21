@@ -73,8 +73,5 @@ export const postApi = <T>(path: string, body?: unknown) =>
 export const putApi = <T>(path: string, body?: unknown) =>
   api.put(path, body) as unknown as Promise<T>
 
-export const patchApi = <T>(path: string, body?: unknown) =>
-  api.patch(path, body) as unknown as Promise<T>
-
 export const deleteApi = <T>(path: string) =>
   api.delete(path) as unknown as Promise<T>
