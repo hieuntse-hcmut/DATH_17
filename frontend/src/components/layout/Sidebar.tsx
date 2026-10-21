@@ -1,6 +1,9 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { Link, useLocation } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { accessTokenStorage } from "~/config/accessTokenStorage"
+import { useGetUnreadNotificationCount } from "~/services/notification/notification.query"
 import { 
   faHouse, 
   faGraduationCap, 
@@ -10,12 +13,25 @@ import {
   faCalendarDays 
 } from "@fortawesome/free-solid-svg-icons"
 
-export default function Sidebar() {
-  const { t } = useTranslation()
-  const [activeItem, setActiveItem] = useState('trang-chu')
+interface SidebarProps {
+  onOpenNotification?: () => void
+  onCloseNotification?: () => void
+}
 
-  const getItemClass = (id: string) => {
-    const isActive = activeItem === id
+type ActiveItem = 'trang-chu' | 'khoa-hoc' | 'bai-kiem-tra' | 'thong-bao' | 'thao-luan'
+
+export default function Sidebar({ onOpenNotification, onCloseNotification }: SidebarProps) {
+  const { t } = useTranslation()
+  const location = useLocation()
+  const unreadCountQuery = useGetUnreadNotificationCount(Boolean(accessTokenStorage.getAccessToken()))
+  const unreadCount = unreadCountQuery.data?.unread ?? 0
+  const [selectedItem, setSelectedItem] = useState<{ item: ActiveItem; locationKey: string } | null>(null)
+  const activeItem = selectedItem?.locationKey === location.key
+    ? selectedItem.item
+    : location.pathname === '/discuss' ? 'thao-luan' : 'trang-chu'
+  const selectItem = (item: ActiveItem) => setSelectedItem({ item, locationKey: location.key })
+
+  const getItemClass = (isActive: boolean) => {
     return `flex flex-col md:flex-row items-center justify-center md:justify-start px-0 md:px-3 py-0 md:py-2 gap-0 md:gap-3 w-[76.39px] md:w-full h-16 md:h-[38px] md:rounded-xl transition-colors cursor-pointer ${
       isActive 
         ? "md:bg-[#6750A3] text-white" 
@@ -23,8 +39,7 @@ export default function Sidebar() {
     }`
   }
 
-  const getIconWrapperClass = (id: string) => {
-    const isActive = activeItem === id
+  const getIconWrapperClass = (isActive: boolean) => {
     return `flex items-center justify-center w-[45px] h-[45px] md:w-5 md:h-5 shrink-0 rounded-full md:rounded-none transition-all ${
       isActive ? "bg-[#6750A3] text-white shadow-sm" : "bg-transparent text-[#464555] dark:text-gray-300"
     }`
@@ -44,34 +59,34 @@ export default function Sidebar() {
         </div>
 
         {/* 1. Trang chủ */}
-        <a href="#trang-chu" onClick={(e) => { e.preventDefault(); setActiveItem('trang-chu'); }} className={getItemClass('trang-chu')}>
-          <div className={getIconWrapperClass('trang-chu')}>
+        <Link to="/" onClick={() => { setSelectedItem(null); if (onCloseNotification) onCloseNotification(); }} className={getItemClass(activeItem === 'trang-chu')}>
+          <div className={getIconWrapperClass(activeItem === 'trang-chu')}>
             <FontAwesomeIcon icon={faHouse} className="w-4 h-4 md:w-[13.33px] md:h-[15px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.home', 'Trang chủ')}
           </span>
-        </a>
+        </Link>
 
         {/* 2. Khóa học của tôi */}
-        <a href="#khoa-hoc" onClick={(e) => { e.preventDefault(); setActiveItem('khoa-hoc'); }} className={getItemClass('khoa-hoc')}>
-          <div className={getIconWrapperClass('khoa-hoc')}>
+        <button type="button" onClick={() => { selectItem('khoa-hoc'); if (onCloseNotification) onCloseNotification(); }} className={getItemClass(activeItem === 'khoa-hoc')}>
+          <div className={getIconWrapperClass(activeItem === 'khoa-hoc')}>
             <FontAwesomeIcon icon={faGraduationCap} className="w-4 h-4 md:w-[18.33px] md:h-[15px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.my_courses', 'Khoá học của tôi')}
           </span>
-        </a>
+        </button>
 
         {/* 3. Bài kiểm tra */}
-        <a href="#bai-kiem-tra" onClick={(e) => { e.preventDefault(); setActiveItem('bai-kiem-tra'); }} className={getItemClass('bai-kiem-tra')}>
-          <div className={getIconWrapperClass('bai-kiem-tra')}>
+        <button type="button" onClick={() => { selectItem('bai-kiem-tra'); if (onCloseNotification) onCloseNotification(); }} className={getItemClass(activeItem === 'bai-kiem-tra')}>
+          <div className={getIconWrapperClass(activeItem === 'bai-kiem-tra')}>
             <FontAwesomeIcon icon={faClipboardList} className="w-4 h-4 md:w-[15px] md:h-[16.67px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.quizzes', 'Bài kiểm tra')}
           </span>
-        </a>
+        </button>
 
         {/* Nhóm GIAO TIẾP */}
         <div className="hidden md:block px-3 pt-[31px] pb-[7px] w-full">
@@ -81,24 +96,44 @@ export default function Sidebar() {
         </div>
 
         {/* 4. Thông báo */}
-        <a href="#thong-bao" onClick={(e) => { e.preventDefault(); setActiveItem('thong-bao'); }} className={getItemClass('thong-bao')}>
-          <div className={getIconWrapperClass('thong-bao')}>
+        <button type="button" onClick={() => {
+          selectItem('thong-bao')
+          if (onOpenNotification) onOpenNotification(); 
+        }} className={getItemClass(activeItem === 'thong-bao')}>
+          <div className={`${getIconWrapperClass(activeItem === 'thong-bao')} relative`}>
             <FontAwesomeIcon icon={faBell} className="w-4 h-4 md:w-[13.33px] md:h-[16.67px]" />
+            {unreadCount > 0 && (
+              <span className="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold leading-none text-white md:hidden">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
           </div>
-          <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
+          <span className="hidden md:inline flex-1 text-left font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.notifications', 'Thông báo')}
           </span>
-        </a>
+          {unreadCount > 0 && (
+            <span className="hidden md:flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[10px] font-bold leading-none text-white">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
+        </button>
 
         {/* 5. Thảo luận */}
-        <a href="#thao-luan" onClick={(e) => { e.preventDefault(); setActiveItem('thao-luan'); }} className={getItemClass('thao-luan')}>
-          <div className={getIconWrapperClass('thao-luan')}>
+        <Link
+          to="/discuss"
+          onClick={() => {
+            setSelectedItem(null)
+            if (onCloseNotification) onCloseNotification()
+          }}
+          className={getItemClass(activeItem === 'thao-luan')}
+        >
+          <div className={getIconWrapperClass(activeItem === 'thao-luan')}>
             <FontAwesomeIcon icon={faComments} className="w-4 h-4 md:w-[16.67px] md:h-[16.67px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.discussions', 'Thảo luận')}
           </span>
-        </a>
+        </Link>
 
       </div>
 

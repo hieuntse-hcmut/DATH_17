@@ -2,8 +2,7 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { 
-    faMagnifyingGlass, 
-    faBell, 
+    faMagnifyingGlass,  
     faChevronDown, 
     faUser, 
     faFileLines, 
