@@ -1,15 +1,13 @@
 package com.smartcampus.backend.enrollment.exception;
 
+import com.smartcampus.backend.common.exception.ApiException;
 import org.springframework.http.HttpStatus;
 
-public class EnrollmentException extends RuntimeException {
-    private final HttpStatus status;
-    private final String code;
+/** Business error of the Enrollment module (handled by common ApiExceptionHandler). */
+public class EnrollmentException extends ApiException {
 
     public EnrollmentException(HttpStatus status, String code, String message) {
-        super(message);
-        this.status = status;
-        this.code = code;
+        super(status, code, message);
     }
 
     public static EnrollmentException unauthorized(String message) {
@@ -30,13 +28,5 @@ public class EnrollmentException extends RuntimeException {
 
     public static EnrollmentException conflict(String code, String message) {
         return new EnrollmentException(HttpStatus.CONFLICT, code, message);
-    }
-
-    public HttpStatus getStatus() {
-        return status;
-    }
-
-    public String getCode() {
-        return code;
     }
 }

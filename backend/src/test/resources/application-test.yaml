@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:tc:mysql:8.4:///smart_campus_test
+    username: test
+    password: test
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+
+app:
+  jwt:
+    secret: c21hcnQtY2FtcHVzLXRlc3Qtand0LXNlY3JldC1rZXktYXQtbGVhc3QtMzItYnl0ZXMtbG9uZw==

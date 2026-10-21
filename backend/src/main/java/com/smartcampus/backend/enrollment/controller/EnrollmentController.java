@@ -2,8 +2,11 @@ package com.smartcampus.backend.enrollment.controller;
 
 import com.smartcampus.backend.common.config.OpenApiConfig;
 import com.smartcampus.backend.common.response.ApiResponse;
+import com.smartcampus.backend.enrollment.dto.EnrollmentHistoryResponse;
 import com.smartcampus.backend.enrollment.dto.EnrollmentResponse;
+import com.smartcampus.backend.enrollment.dto.EnrollmentStatusResponse;
 import com.smartcampus.backend.enrollment.dto.MyEnrollmentResponse;
+import com.smartcampus.backend.enrollment.dto.ReasonRequest;
 import com.smartcampus.backend.enrollment.security.CurrentUserResolver;
 import com.smartcampus.backend.enrollment.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -50,7 +55,9 @@ public class EnrollmentController {
                     - the course is open for enrollment (is_enrollment_open = true)
                     - one enrollment per student and course (also enforced by a DB unique key)
 
-                    On success an ACTIVE enrollment and its first enrollment_histories row are created.
+                    No enrollment yet -> a new ACTIVE enrollment is created.
+                    A WITHDRAWN enrollment is reactivated (same record, history kept).
+                    A REMOVED student gets 403 ENROLLMENT_REMOVED: only the lecturer/admin can reinstate him.
                     """)
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -70,7 +77,7 @@ public class EnrollmentController {
                     responseCode = "401", description = "Missing, invalid or expired JWT",
                     content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "403", description = "The user is not a STUDENT, or the account is INACTIVE",
+                    responseCode = "403", description = "The user is not a STUDENT, the account is INACTIVE, or the student was REMOVED from this course (ENROLLMENT_REMOVED)",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ApiResponse.class),
                             examples = {
@@ -123,5 +130,38 @@ public class EnrollmentController {
     public ApiResponse<List<MyEnrollmentResponse>> getMyEnrollments() {
         Long studentId = currentUserResolver.getCurrentUserId();
         return ApiResponse.ok(enrollmentService.getMyEnrollments(studentId));
+    }
+
+    @Operation(
+            summary = "Withdraw the logged-in student from a course",
+            description = """
+                    ACTIVE -> WITHDRAWN for the student in the JWT. The record and its history are kept,
+                    and the student can enroll again later while the enrollment window is open.
+
+                    Errors: 404 NOT_ENROLLED, 409 ENROLLMENT_NOT_ACTIVE (already withdrawn or removed),
+                    403 NOT_A_STUDENT. The body is optional: {"reason": "..."}.
+                    """)
+    @PostMapping("/api/courses/{courseId}/withdraw")
+    public ApiResponse<EnrollmentStatusResponse> withdraw(
+            @Parameter(description = "Id of the course to leave", example = "9101", required = true)
+            @PathVariable("courseId") Long courseId,
+            @Valid @RequestBody(required = false) ReasonRequest body) {
+        Long studentId = currentUserResolver.getCurrentUserId();
+        return ApiResponse.ok(enrollmentService.withdraw(studentId, courseId, body == null ? null : body.reason()));
+    }
+
+    @Operation(
+            summary = "Status history of an enrollment",
+            description = """
+                    Append-only list of status changes, oldest first. Visible to the student who owns
+                    the enrollment and to the course's lecturer/admin.
+
+                    Errors: 404 ENROLLMENT_NOT_FOUND, 403 NOT_ALLOWED.
+                    """)
+    @GetMapping("/api/enrollments/{enrollmentId}/history")
+    public ApiResponse<List<EnrollmentHistoryResponse>> getHistory(
+            @Parameter(example = "1", required = true) @PathVariable("enrollmentId") Long enrollmentId) {
+        Long userId = currentUserResolver.getCurrentUserId();
+        return ApiResponse.ok(enrollmentService.getHistory(userId, enrollmentId));
     }
 }
