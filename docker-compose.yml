@@ -35,6 +35,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/smart_campus
       SPRING_DATASOURCE_USERNAME: smartcampus
       SPRING_DATASOURCE_PASSWORD: smartcampus
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET to a base64-encoded signing key}
     command: sh ./mvnw spring-boot:run
 
 volumes:

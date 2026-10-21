@@ -1,18 +1,14 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBell, faXmark, faTriangleExclamation, faCheckCircle } from "@fortawesome/free-solid-svg-icons"
-import { getApi, patchApi } from "~/config/axiosClient"
-
-interface NotificationItem {
-    id: number
-    type: string
-    title: string
-    message: string
-    link?: string
-    read: boolean
-    createdAt: string
-}
+import { useToast } from "~/components/Toast"
+import { getErrorMessage } from "~/utils/getErrorMessage"
+import {
+    useGetMyNotifications,
+    useMarkAllNotificationsAsRead,
+    useMarkNotificationAsRead,
+} from "~/services/notification/notification.query"
 
 interface NotificationModalProps {
     isOpen: boolean
@@ -23,59 +19,21 @@ type FilterTab = 'all' | 'courses' | 'discussion' | 'unread'
 
 export default function NotificationModal({ isOpen, onClose }: NotificationModalProps) {
     const { t } = useTranslation()
+    const toast = useToast()
     const [activeTab, setActiveTab] = useState<FilterTab>('all')
-    const [notifications, setNotifications] = useState<NotificationItem[]>([])
-    const [loading, setLoading] = useState<boolean>(false)
-
-    // Gọi API lấy danh sách thông báo khi modal được mở hoặc thay đổi tab
-    useEffect(() => {
-        if (!isOpen) return
-
-        const fetchNotifications = async () => {
-            try {
-                setLoading(true)
-                const data = await getApi<NotificationItem[]>('/notifications/me', {
-                    unreadOnly: activeTab === 'unread',
-                    limit: 50,
-                })
-                let filteredData = data
-                if (activeTab === 'courses') {
-                    filteredData = data.filter(item => item.type?.includes('COURSE'))
-                } else if (activeTab === 'discussion') {
-                    filteredData = data.filter(item => item.type?.includes('DISCUSSION') || item.type?.includes('REPLY'))
-                }
-                setNotifications(filteredData)
-            } catch (error) {
-                console.error("Lỗi khi tải thông báo:", error)
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        fetchNotifications()
-    }, [isOpen, activeTab])
-
-    // Đánh dấu 1 thông báo là đã đọc
-    const handleMarkAsRead = async (id: number) => {
-        try {
-            await patchApi(`/notifications/${id}/read`)
-            setNotifications(prev => prev.map(item => item.id === id ? { ...item, read: true } : item))
-        } catch (error) {
-            console.error("Lỗi cập nhật trạng thái đọc:", error)
-        }
-    }
-
-    // Đánh dấu tất cả là đã đọc
-    const handleMarkAllAsRead = async () => {
-        try {
-            await patchApi('/notifications/me/read-all')
-            setNotifications(prev => prev.map(item => ({ ...item, read: true })))
-        } catch (error) {
-            console.error("Lỗi đánh dấu tất cả đã đọc:", error)
-        }
-    }
+    const notificationsQuery = useGetMyNotifications(activeTab === 'unread', isOpen)
+    const markAsReadMutation = useMarkNotificationAsRead()
+    const markAllAsReadMutation = useMarkAllNotificationsAsRead()
 
     if (!isOpen) return null
+
+    const notifications = notificationsQuery.data?.filter(item => {
+        if (activeTab === 'courses') {
+            return ['ENROLLED_BY_STAFF', 'REMOVED_FROM_COURSE', 'COURSE_COMPLETED', 'NEW_CONTENT'].includes(item.type)
+        }
+        if (activeTab === 'discussion') return item.type === 'FORUM_REPLY'
+        return true
+    }) ?? []
 
     return (
         <div className="fixed inset-x-0 top-16 bottom-16 md:bottom-auto md:top-16 md:right-6 md:left-auto z-20 flex justify-end pointer-events-none">
@@ -146,7 +104,10 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
                     <div className="flex justify-between items-center text-xs font-semibold text-fg-subtle tracking-wider px-1">
                         <span className="uppercase">{t('notifications.groups.recent', 'Danh sách thông báo')}</span>
                         <button 
-                            onClick={handleMarkAllAsRead}
+                            onClick={() => markAllAsReadMutation.mutate(undefined, {
+                                onError: error => toast.error(getErrorMessage(error, 'Không thể đánh dấu thông báo đã đọc.')),
+                            })}
+                            disabled={markAllAsReadMutation.isPending}
                             className="hover:text-primary cursor-pointer text-[11px] font-semibold transition-colors flex items-center gap-1"
                         >
                             <FontAwesomeIcon icon={faCheckCircle} />
@@ -154,9 +115,13 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
                         </button>
                     </div>
 
-                    {loading ? (
+                    {notificationsQuery.isPending ? (
                         <div className="flex justify-center items-center py-10 text-xs text-fg-muted">
                             Đang tải thông báo...
+                        </div>
+                    ) : notificationsQuery.isError ? (
+                        <div role="alert" className="flex justify-center items-center py-10 text-xs text-danger">
+                            {getErrorMessage(notificationsQuery.error, 'Không thể tải thông báo. Vui lòng thử lại.')}
                         </div>
                     ) : notifications.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 text-fg-muted text-xs gap-2">
@@ -168,7 +133,11 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
                             <div 
                                 key={item.id}
                                 onClick={() => {
-                                    if (!item.read) handleMarkAsRead(item.id)
+                                    if (!item.read) {
+                                        markAsReadMutation.mutate(item.id, {
+                                            onError: error => toast.error(getErrorMessage(error, 'Không thể cập nhật trạng thái thông báo.')),
+                                        })
+                                    }
                                     if (item.link) window.location.href = item.link
                                 }}
                                 className={`flex flex-col p-3.5 gap-1 border rounded-2xl shadow-xs transition-all cursor-pointer ${
