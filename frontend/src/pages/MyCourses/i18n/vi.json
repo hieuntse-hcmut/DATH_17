@@ -5,7 +5,6 @@
   },
   "title": "Khoá học của tôi",
   "subtitle": "Quản lý tiến độ học tập và tiếp tục hành trình trau dồi tri thức kỳ học này",
-  "totalCredits": "Tổng số tín chỉ đang tích luỹ: {{count}} TC",
   "register": "Đăng ký khoá mới",
   "tabs": {
     "learning": "Đang học",

@@ -1,19 +1,16 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faChevronRight,
-    faCircleCheck,
-    faCirclePlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight, faCirclePlus} from "@fortawesome/free-solid-svg-icons";
+
 import CourseCard from "./components/CourseCard";
-import CourseToolbar, { type CourseTab } from "./components/CourseToolbar";
-import PromoBanner from "./components/PromoBanner";
+import CourseToolbar from "./components/CourseToolbar";
 import { useMyCourses } from "./services/myCourses.query";
 import type {
     CourseSort,
     CourseView,
     MyCourse,
+    CourseTab
 } from "./services/myCourses.type";
 
 const normalize = (s: string) =>
@@ -46,13 +43,12 @@ export default function MyCoursesPage() {
     const [sort, setSort] = useState<CourseSort>("recent");
     const [view, setView] = useState<CourseView>("grid");
 
-    const { learning, completed, totalCredits } = useMemo(() => {
+    const { learning, completed } = useMemo(() => {
         const learning = data.filter((c) => c.status !== "completed");
         const completed = data.filter((c) => c.status === "completed");
         return {
             learning,
             completed,
-            totalCredits: learning.reduce((sum, c) => sum + c.credits, 0),
         };
     }, [data]);
 
@@ -88,7 +84,7 @@ export default function MyCoursesPage() {
             </nav>
 
             {/* Header */}
-            <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-fg md:text-3xl">
                         {t("title")}
@@ -97,28 +93,18 @@ export default function MyCoursesPage() {
                         {t("subtitle")}
                     </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-3">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-tertiary-soft px-3 py-1.5 text-xs font-semibold text-tertiary">
-                        <FontAwesomeIcon
-                            icon={faCircleCheck}
-                            className="text-[14px]"
-                            aria-hidden
-                        />{" "}
-                        {t("totalCredits", { count: totalCredits })}
-                    </span>
-                    <button
-                        type="button"
-                        className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                    >
-                        <FontAwesomeIcon
-                            icon={faCirclePlus}
-                            className="text-[16px]"
-                            aria-hidden
-                        />{" "}
-                        {t("register")}
-                    </button>
-                </div>
-            </header>
+                <button
+                    type="button"
+                    className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                >
+                    <FontAwesomeIcon
+                        icon={faCirclePlus}
+                        className="text-[16px]"
+                        aria-hidden
+                    />{" "}
+                    {t("register")}
+                </button>
+            </div>
 
             <CourseToolbar
                 tab={tab}
@@ -194,8 +180,6 @@ export default function MyCoursesPage() {
                     ))}
                 </div>
             )}
-
-            <PromoBanner />
         </div>
     );
 }

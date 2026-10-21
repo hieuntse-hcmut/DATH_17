@@ -18,7 +18,6 @@ export default function MainLayout() {
                     <div className="flex-1 w-full p-4 md:p-6">
                         <Outlet />
                     </div>
-                    <Footer />
                 </div>
             </div>
         </div>

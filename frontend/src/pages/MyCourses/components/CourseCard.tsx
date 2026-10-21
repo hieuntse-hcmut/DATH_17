@@ -2,21 +2,11 @@ import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faArrowRight,
-    faCalendarDays,
-    faCircleCheck,
     faCircleInfo,
-    faCirclePlay,
-    faClock,
-    faEllipsisVertical,
     faGraduationCap,
-    faLock,
 } from "@fortawesome/free-solid-svg-icons";
-import type { CourseView, MyCourse } from "../services/myCourses.type";
+import type { CourseCardProps } from "../services/myCourses.type";
 import { useNavigate } from "react-router";
-interface Props {
-    course: MyCourse;
-    layout: CourseView;
-}
 
 const GRADIENTS = [
     "from-indigo-500 to-violet-600",
@@ -32,11 +22,8 @@ const pickGradient = (id: string) => {
     return GRADIENTS[Math.abs(hash) % GRADIENTS.length];
 };
 
-const startOfDay = (d: Date) =>
-    new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-
-export default function CourseCard({ course, layout }: Props) {
-    const { t, i18n } = useTranslation("myCourses");
+export default function CourseCard({ course, layout }: Readonly<CourseCardProps>) {
+    const { t } = useTranslation("myCourses");
     const navigate = useNavigate();
     const goToCourse = () => navigate(`/courses/${course.id}/lessons`);
     const isGrid = layout === "grid";
@@ -44,58 +31,16 @@ export default function CourseCard({ course, layout }: Props) {
         ? Math.round((course.lessonsDone / course.lessonsTotal) * 100)
         : 0;
 
-    const locale = i18n.language?.startsWith("vi") ? "vi-VN" : "en-US";
+    // const locale = i18n.language?.startsWith("vi") ? "vi-VN" : "en-US";
 
-    const formatLastAccessed = () => {
-        const date = new Date(course.lastAccessedAt);
-        const time = date.toLocaleTimeString(locale, {
-            hour: "2-digit",
-            minute: "2-digit",
-        });
-        const diffDays = Math.round(
-            (startOfDay(new Date()) - startOfDay(date)) / 86_400_000,
-        );
-        if (diffDays <= 0) return t("time.today", { time });
-        if (diffDays === 1) return t("time.yesterday", { time });
-        return new Intl.RelativeTimeFormat(locale, {
-            numeric: "always",
-        }).format(-diffDays, "day");
-    };
-
-    const formatShortDate = (iso: string) =>
-        new Date(iso).toLocaleDateString(locale, {
-            day: "2-digit",
-            month: "2-digit",
-        });
+    // const formatShortDate = (iso: string) =>
+    //     new Date(iso).toLocaleDateString(locale, {
+    //         day: "2-digit",
+    //         month: "2-digit",
+    //     });
 
     const isCompleted = course.status === "completed";
     const isLocked = course.status === "locked";
-
-    const badge = isLocked ? (
-        <span className="inline-flex items-center gap-1 rounded-md bg-amber-500 px-2 py-1 text-[11px] font-semibold text-white">
-            <FontAwesomeIcon
-                icon={faLock}
-                className="text-[12px]"
-                aria-hidden
-            />{" "}
-            {t("card.locked")}
-        </span>
-    ) : (
-        <span
-            className={`rounded-md px-2 py-1 text-[11px] font-semibold text-white ${
-                isCompleted ? "bg-tertiary" : "bg-primary"
-            }`}
-        >
-            {t(
-                isCompleted
-                    ? "card.completedSemester"
-                    : "card.learningSemester",
-                {
-                    semester: course.semester,
-                },
-            )}
-        </span>
-    );
 
     return (
         <article
@@ -128,31 +73,6 @@ export default function CourseCard({ course, layout }: Props) {
                         />
                     </div>
                 )}
-                <div className="absolute left-3 top-3">{badge}</div>
-                <button
-                    type="button"
-                    aria-label={t("card.options")}
-                    className="absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full bg-black/40 text-white backdrop-blur hover:bg-black/60 focus-visible:outline-2 focus-visible:outline-primary"
-                >
-                    <FontAwesomeIcon
-                        icon={faEllipsisVertical}
-                        className="text-[16px]"
-                        aria-hidden
-                    />
-                </button>
-                <div className="absolute inset-x-3 bottom-3 flex items-center justify-between text-[11px] font-medium text-white">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-black/45 px-2 py-0.5 backdrop-blur">
-                        <FontAwesomeIcon
-                            icon={faClock}
-                            className="text-[12px]"
-                            aria-hidden
-                        />{" "}
-                        {formatLastAccessed()}
-                    </span>
-                    <span className="rounded-full bg-black/45 px-2 py-0.5 backdrop-blur">
-                        {t("card.credits", { count: course.credits })}
-                    </span>
-                </div>
             </div>
 
             {/* Body */}
@@ -207,7 +127,7 @@ export default function CourseCard({ course, layout }: Props) {
                         </span>
                     </div>
                     <div
-                        role="progressbar"
+                        role="progress"
                         aria-valuenow={percent}
                         aria-valuemin={0}
                         aria-valuemax={100}
@@ -227,7 +147,7 @@ export default function CourseCard({ course, layout }: Props) {
                 </div>
 
                 {/* Next lesson / unlock plan */}
-                {course.status === "in_progress" && course.nextLesson && (
+                {/* {course.status === "in_progress" && course.nextLesson && (
                     <div className="flex gap-3 rounded-lg border-l-4 border-primary bg-primary-soft/60 px-3 py-2">
                         <FontAwesomeIcon
                             icon={faCirclePlay}
@@ -247,9 +167,9 @@ export default function CourseCard({ course, layout }: Props) {
                             </p>
                         </div>
                     </div>
-                )}
+                )} */}
 
-                {isLocked && course.unlock && (
+                {/* {isLocked && course.unlock && (
                     <div className="flex gap-3 rounded-lg bg-amber-500/10 px-3 py-2 text-amber-700 dark:text-amber-300">
                         <FontAwesomeIcon
                             icon={faCalendarDays}
@@ -268,9 +188,9 @@ export default function CourseCard({ course, layout }: Props) {
                             </p>
                         </div>
                     </div>
-                )}
+                )} */}
 
-                {isCompleted && (
+                {/* {isCompleted && (
                     <p className="inline-flex items-center gap-2 text-sm font-medium text-tertiary">
                         <FontAwesomeIcon
                             icon={faCircleCheck}
@@ -279,14 +199,14 @@ export default function CourseCard({ course, layout }: Props) {
                         />{" "}
                         {t("tabs.completed")}
                     </p>
-                )}
+                )} */}
 
                 {/* CTA */}
                 <div className="mt-auto">
                     {isLocked ? (
                         <button
                             type="button"
-                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary-soft px-4 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/20 focus-visible:outline-2 focus-visible:outline-primary"
+                            className=" cursor-pointer flex w-full items-center justify-center gap-2 rounded-lg bg-primary-soft px-4 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/20 focus-visible:outline-2 focus-visible:outline-primary"
                         >
                             <FontAwesomeIcon
                                 icon={faCircleInfo}
@@ -299,7 +219,7 @@ export default function CourseCard({ course, layout }: Props) {
                         <button
                             type="button"
                             onClick={goToCourse}
-                            className={`flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                            className={` cursor-pointer flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
                                 isCompleted
                                     ? "border border-border bg-surface text-fg hover:bg-surface-muted"
                                     : "bg-primary text-on-primary hover:bg-primary-hover"

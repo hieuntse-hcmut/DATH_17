@@ -6,22 +6,7 @@ import {
     faMagnifyingGlass,
     faTableCellsLarge,
 } from "@fortawesome/free-solid-svg-icons";
-import type { CourseSort, CourseView } from "../services/myCourses.type";
-
-export type CourseTab = "learning" | "completed";
-
-interface Props {
-    tab: CourseTab;
-    onTabChange: (tab: CourseTab) => void;
-    learningCount: number;
-    completedCount: number;
-    keyword: string;
-    onKeywordChange: (value: string) => void;
-    sort: CourseSort;
-    onSortChange: (value: CourseSort) => void;
-    view: CourseView;
-    onViewChange: (value: CourseView) => void;
-}
+import type { CourseSort, CourseToolbarProps, CourseTab } from "../services/myCourses.type";
 
 export default function CourseToolbar({
     tab,
@@ -34,7 +19,7 @@ export default function CourseToolbar({
     onSortChange,
     view,
     onViewChange,
-}: Props) {
+}: Readonly<CourseToolbarProps>) {
     const { t } = useTranslation("myCourses");
 
     const tabs: { key: CourseTab; count: number }[] = [
@@ -58,7 +43,7 @@ export default function CourseToolbar({
                             type="button"
                             aria-selected={active}
                             onClick={() => onTabChange(key)}
-                            className={`rounded-lg px-4 py-1.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-primary ${
+                            className={`cursor-pointer rounded-lg px-4 py-1.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-primary ${
                                 active
                                     ? "bg-surface text-primary shadow-sm"
                                     : "text-fg-muted hover:text-fg"
@@ -106,13 +91,11 @@ export default function CourseToolbar({
                             onChange={(e) =>
                                 onSortChange(e.target.value as CourseSort)
                             }
-                            className="w-full appearance-none rounded-xl border border-border bg-surface py-2 pl-3 pr-8 text-sm font-medium text-fg-muted focus:border-primary focus:outline-none"
+                            className="w-full cursor-pointer appearance-none rounded-xl border border-border bg-surface py-2 pl-3 pr-8 text-sm font-medium text-fg-muted focus:border-primary focus:outline-none"
                         >
                             <option value="recent">{t("sort.recent")}</option>
                             <option value="name">{t("sort.name")}</option>
-                            <option value="progress">
-                                {t("sort.progress")}
-                            </option>
+                            <option value="progress">{t("sort.progress")}</option>
                         </select>
                         <FontAwesomeIcon
                             icon={faChevronDown}
@@ -135,7 +118,7 @@ export default function CourseToolbar({
                                 aria-label={t(`view.${key}`)}
                                 aria-pressed={view === key}
                                 onClick={() => onViewChange(key)}
-                                className={`grid h-8 w-8 place-items-center rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-primary ${
+                                className={` cursor-pointer grid h-8 w-8 place-items-center rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-primary ${
                                     view === key
                                         ? "bg-primary-soft text-primary"
                                         : "text-fg-subtle hover:text-fg"

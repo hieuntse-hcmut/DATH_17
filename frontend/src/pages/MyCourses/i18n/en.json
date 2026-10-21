@@ -5,7 +5,6 @@
   },
   "title": "My courses",
   "subtitle": "Track your progress and keep building your knowledge this semester",
-  "totalCredits": "Credits in progress: {{count}}",
   "register": "Enroll in a new course",
   "tabs": {
     "learning": "In progress",

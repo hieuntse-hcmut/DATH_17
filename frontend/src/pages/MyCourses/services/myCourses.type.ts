@@ -1,4 +1,7 @@
 export type CourseStatus = "in_progress" | "locked" | "completed";
+export type CourseTab = "learning" | "completed";
+export type CourseSort = "recent" | "name" | "progress";
+export type CourseView = "grid" | "list";
 
 export interface MyCourse {
     id: string;
@@ -16,5 +19,20 @@ export interface MyCourse {
     unlock?: { date: string; chapter: number } | null; // dùng cho status = locked
 }
 
-export type CourseSort = "recent" | "name" | "progress";
-export type CourseView = "grid" | "list";
+export interface CourseCardProps {
+    course: MyCourse;
+    layout: CourseView;
+}
+
+export interface CourseToolbarProps {
+    tab: CourseTab;
+    onTabChange: (tab: CourseTab) => void;
+    learningCount: number;
+    completedCount: number;
+    keyword: string;
+    onKeywordChange: (value: string) => void;
+    sort: CourseSort;
+    onSortChange: (value: CourseSort) => void;
+    view: CourseView;
+    onViewChange: (value: CourseView) => void;
+}
