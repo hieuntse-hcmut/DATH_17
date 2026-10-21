@@ -1,12 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchMyCourses } from './myCourses.api';
+import { useQuery } from '@tanstack/react-query'
+import { getCourseProgress } from './myCourses.api'
+import type { ICourseProgress } from "./myCourses.type"
 
-export const myCoursesKeys = {
-  all: ['my-courses'] as const,
-};
-
-export const useMyCourses = () =>
-  useQuery({
-    queryKey: myCoursesKeys.all,
-    queryFn: fetchMyCourses,
-  });
+export const useGetCourseProgress = (options?: any) => {
+  return useQuery<ICourseProgress[]>({
+    queryKey: ['progess-list'],
+    queryFn: () => getCourseProgress(),
+    ...options
+  })
+}

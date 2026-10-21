@@ -21,13 +21,20 @@ export interface Chapter {
     lessons: Lesson[];
 }
 
-export interface CourseDetail {
-    id: string;
-    title: string;
-    chapters: Chapter[];
-    completedLessons: number;
-    totalLessons: number;
+export interface IProgress {
+    courseId: number
+    courseTitle: string
+    instructorName: string
+    totalLessons: number
+    completedLessons: number
+    progressPercent: number
+    status: string
+    enrolledAt: string
+    lastAccessedAt: any
+    lastLessonId: any
+    lastLessonTitle: any
 }
+
 export interface Attachment {
     id: string;
     filename: string;

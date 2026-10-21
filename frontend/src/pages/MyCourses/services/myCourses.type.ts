@@ -1,26 +1,23 @@
-export type CourseStatus = "in_progress" | "locked" | "completed";
 export type CourseTab = "learning" | "completed";
 export type CourseSort = "recent" | "name" | "progress";
 export type CourseView = "grid" | "list";
 
-export interface MyCourse {
-    id: string;
-    title: string;
-    instructor: string;
-    department: string;
-    thumbnailUrl?: string | null;
-    credits: number;
-    semester: string;
-    lessonsDone: number;
-    lessonsTotal: number;
-    lastAccessedAt: string;
-    status: CourseStatus;
-    nextLesson?: { chapter: number; lesson: number; title: string } | null;
-    unlock?: { date: string; chapter: number } | null; // dùng cho status = locked
+export interface ICourseProgress {
+    courseId: number
+    courseTitle: string
+    instructorName: string
+    totalLessons: number
+    completedLessons: number
+    progressPercent: number
+    status: string
+    enrolledAt: string
+    lastAccessedAt: any
+    lastLessonId: any
+    lastLessonTitle: any
 }
 
 export interface CourseCardProps {
-    course: MyCourse;
+    course: ICourseProgress;
     layout: CourseView;
 }
 

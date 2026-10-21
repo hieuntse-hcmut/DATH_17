@@ -5,11 +5,11 @@ import { faChevronRight, faCirclePlus} from "@fortawesome/free-solid-svg-icons";
 
 import CourseCard from "./components/CourseCard";
 import CourseToolbar from "./components/CourseToolbar";
-import { useMyCourses } from "./services/myCourses.query";
+import { useGetCourseProgress } from "./services/myCourses.query";
 import type {
     CourseSort,
     CourseView,
-    MyCourse,
+    ICourseProgress,
     CourseTab
 } from "./services/myCourses.type";
 
@@ -20,23 +20,33 @@ const normalize = (s: string) =>
         .replace(/đ/g, "d")
         .toLowerCase();
 
-const sortCourses = (list: MyCourse[], sort: CourseSort) =>
+const toTime = (value: unknown): number => {
+    if (!value) return 0;
+    const time = new Date(value as string).getTime();
+    return Number.isNaN(time) ? 0 : time;
+};
+
+const sortCourses = (list: ICourseProgress[], sort: CourseSort) =>
     [...list].sort((a, b) => {
-        if (sort === "name") return a.title.localeCompare(b.title);
+        const byName = a.courseTitle.localeCompare(b.courseTitle, "vi");
+
+        if (sort === "name") return byName;
+
         if (sort === "progress") {
-            const pa = a.lessonsTotal ? a.lessonsDone / a.lessonsTotal : 0;
-            const pb = b.lessonsTotal ? b.lessonsDone / b.lessonsTotal : 0;
-            return pb - pa;
+            return (b.progressPercent - a.progressPercent) || byName;
         }
-        return (
-            new Date(b.lastAccessedAt).getTime() -
-            new Date(a.lastAccessedAt).getTime()
-        );
+
+        // recent: ưu tiên lastAccessedAt, nếu chưa học thì dùng enrolledAt
+        const ta = toTime(a.lastAccessedAt) || toTime(a.enrolledAt);
+        const tb = toTime(b.lastAccessedAt) || toTime(b.enrolledAt);
+        return (tb - ta) || byName;
     });
 
 export default function MyCoursesPage() {
     const { t } = useTranslation("myCourses");
-    const { data = [], isLoading, isError, refetch } = useMyCourses();
+    const { data, isLoading, isError, refetch } = useGetCourseProgress({
+        staleTime: 30_000
+    });
 
     const [tab, setTab] = useState<CourseTab>("learning");
     const [keyword, setKeyword] = useState("");
@@ -44,11 +54,10 @@ export default function MyCoursesPage() {
     const [view, setView] = useState<CourseView>("grid");
 
     const { learning, completed } = useMemo(() => {
-        const learning = data.filter((c) => c.status !== "completed");
-        const completed = data.filter((c) => c.status === "completed");
+        const courses = Array.isArray(data) ? data : [];
         return {
-            learning,
-            completed,
+            learning: courses.filter((c) => c.status !== "completed"),
+            completed: courses.filter((c) => c.status === "completed"),
         };
     }, [data]);
 
@@ -58,7 +67,7 @@ export default function MyCoursesPage() {
         const filtered = q
             ? source.filter((c) =>
                   normalize(
-                      `${c.title} ${c.instructor} ${c.department}`,
+                      `${c.courseTitle} ${c.instructorName}`,
                   ).includes(q),
               )
             : source;
@@ -173,7 +182,7 @@ export default function MyCoursesPage() {
                 >
                     {visible.map((course) => (
                         <CourseCard
-                            key={course.id}
+                            key={course.courseId}
                             course={course}
                             layout={view}
                         />

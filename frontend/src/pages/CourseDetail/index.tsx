@@ -7,7 +7,7 @@ import CurriculumPanel from "./components/CurriculumPanel";
 import LessonActions from "./components/LessonActions";
 import LessonTabs from "./components/LessonTabs";
 import VideoPlayer from "./components/VideoPlayer";
-import { useCourseDetailQuery } from "./services/courseDetail.query";
+import { useGetProgressList } from "./services/courseDetail.query";
 
 export default function CourseDetailPage() {
     const { t } = useTranslation("courseDetail");

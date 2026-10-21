@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import type { Lesson } from "../services/courseDetail.type";
 import AttachmentCard from "./AttachmentCard";
 import CodeBlock from "./CodeBlock";
-import DiscussionPanel from "./DiscussionPanel";
 
 type Tab = "docs" | "discussion";
 
@@ -82,7 +81,7 @@ export default function LessonTabs({ lesson }: { lesson: Lesson }) {
                 hidden={tab !== "discussion"}
                 className="mt-4"
             >
-                <DiscussionPanel lessonId={lesson.id} />
+                {/* TODO */}
             </div>
         </div>
     );

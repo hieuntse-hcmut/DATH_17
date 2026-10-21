@@ -15,21 +15,17 @@ const GRADIENTS = [
     "from-emerald-500 to-sky-600",
 ];
 
-const pickGradient = (id: string) => {
-    let hash = 0;
-    for (let i = 0; i < id.length; i++)
-        hash = (hash * 31 + id.charCodeAt(i)) | 0;
-    return GRADIENTS[Math.abs(hash) % GRADIENTS.length];
+const pickGradient = (id: number) => {
+    const index = Math.abs(Math.trunc(id)) % GRADIENTS.length;
+    return GRADIENTS[index];
 };
 
 export default function CourseCard({ course, layout }: Readonly<CourseCardProps>) {
     const { t } = useTranslation("myCourses");
     const navigate = useNavigate();
-    const goToCourse = () => navigate(`/courses/${course.id}/lessons`);
+    const goToCourse = () => navigate(`/courses/${course.courseId}/lessons`);
     const isGrid = layout === "grid";
-    const percent = course.lessonsTotal
-        ? Math.round((course.lessonsDone / course.lessonsTotal) * 100)
-        : 0;
+    const percent = course.progressPercent
 
     // const locale = i18n.language?.startsWith("vi") ? "vi-VN" : "en-US";
 
@@ -54,46 +50,35 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                     isGrid ? "h-36 w-full" : "h-36 w-full sm:h-auto sm:w-64"
                 }`}
             >
-                {course.thumbnailUrl ? (
-                    <img
-                        src={course.thumbnailUrl}
-                        alt=""
-                        className="h-full w-full object-cover"
+                <div
+                    className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${pickGradient(
+                        course.courseId,
+                    )}`}
+                >
+                    <FontAwesomeIcon
+                        icon={faGraduationCap}
+                        className="text-[48px] text-white/70"
+                        aria-hidden
                     />
-                ) : (
-                    <div
-                        className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${pickGradient(
-                            course.id,
-                        )}`}
-                    >
-                        <FontAwesomeIcon
-                            icon={faGraduationCap}
-                            className="text-[48px] text-white/70"
-                            aria-hidden
-                        />
-                    </div>
-                )}
+                </div>
             </div>
 
             {/* Body */}
             <div className="flex flex-1 flex-col gap-4 p-5">
                 <div>
                     <h3 className="text-lg font-bold leading-snug text-fg">
-                        {course.title}
+                        {course.courseTitle}
                     </h3>
                     <div className="mt-2 flex items-center gap-2.5">
                         <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary-soft text-xs font-bold text-primary">
-                            {course.instructor
+                            {course.instructorName
                                 .split(" ")
                                 .slice(-1)[0]
                                 ?.charAt(0)}
                         </span>
                         <div className="min-w-0 text-sm leading-tight">
                             <p className="font-medium text-fg">
-                                {course.instructor}
-                            </p>
-                            <p className="mt-0.5 text-xs text-fg-subtle">
-                                {course.department}
+                                {course.instructorName}
                             </p>
                         </div>
                     </div>
@@ -108,8 +93,8 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                                 <span className="ml-1 text-fg-subtle">
                                     (
                                     {t("card.lessonsCount", {
-                                        done: course.lessonsDone,
-                                        total: course.lessonsTotal,
+                                        done: course.completedLessons,
+                                        total: course.totalLessons,
                                     })}
                                     )
                                 </span>
@@ -121,7 +106,7 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                             {percent}%
                             {isGrid && (
                                 <span className="ml-1 font-normal text-fg-subtle">
-                                    ({course.lessonsDone}/{course.lessonsTotal})
+                                    ({course.completedLessons}/{course.totalLessons})
                                 </span>
                             )}
                         </span>

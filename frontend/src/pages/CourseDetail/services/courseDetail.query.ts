@@ -1,9 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
-import { fetchCourseDetail } from './courseDetail.api'
+import { getCourseProgress } from './courseDetail.api'
 
-export const useCourseDetailQuery = (courseId: string) =>
-  useQuery({
-    queryKey: ['course-detail', courseId],
-    queryFn: () => fetchCourseDetail(courseId),
-    enabled: !!courseId,
+export type IGetCourseProgress = {
+  courseId?: string
+  options?: any
+}
+
+export const useGetCourseProgress = ({courseId, options} : Readonly<IGetCourseProgress>) => {
+  return useQuery({
+    queryKey: ['progess-list', courseId?.trim() ? courseId : "full"],
+    queryFn: () => getCourseProgress(courseId),
+    ...options
   })
+}
