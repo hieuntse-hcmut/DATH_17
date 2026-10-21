@@ -2,6 +2,8 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { accessTokenStorage } from "~/config/accessTokenStorage"
+import { useGetUnreadNotificationCount } from "~/services/notification/notification.query"
 import { 
   faHouse, 
   faGraduationCap, 
@@ -21,6 +23,8 @@ type ActiveItem = 'trang-chu' | 'khoa-hoc' | 'bai-kiem-tra' | 'thong-bao' | 'tha
 export default function Sidebar({ onOpenNotification, onCloseNotification }: SidebarProps) {
   const { t } = useTranslation()
   const location = useLocation()
+  const unreadCountQuery = useGetUnreadNotificationCount(Boolean(accessTokenStorage.getAccessToken()))
+  const unreadCount = unreadCountQuery.data?.unread ?? 0
   const [selectedItem, setSelectedItem] = useState<{ item: ActiveItem; locationKey: string } | null>(null)
   const activeItem = selectedItem?.locationKey === location.key
     ? selectedItem.item
@@ -96,12 +100,22 @@ export default function Sidebar({ onOpenNotification, onCloseNotification }: Sid
           selectItem('thong-bao')
           if (onOpenNotification) onOpenNotification(); 
         }} className={getItemClass(activeItem === 'thong-bao')}>
-          <div className={getIconWrapperClass(activeItem === 'thong-bao')}>
+          <div className={`${getIconWrapperClass(activeItem === 'thong-bao')} relative`}>
             <FontAwesomeIcon icon={faBell} className="w-4 h-4 md:w-[13.33px] md:h-[16.67px]" />
+            {unreadCount > 0 && (
+              <span className="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold leading-none text-white md:hidden">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
           </div>
-          <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
+          <span className="hidden md:inline flex-1 text-left font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.notifications', 'Thông báo')}
           </span>
+          {unreadCount > 0 && (
+            <span className="hidden md:flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[10px] font-bold leading-none text-white">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
         </button>
 
         {/* 5. Thảo luận */}

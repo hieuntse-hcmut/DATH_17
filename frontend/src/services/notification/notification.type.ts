@@ -8,3 +8,7 @@ export interface NotificationItem {
   createdAt: string
   readAt?: string
 }
+
+export interface UnreadNotificationCount {
+  unread: number
+}
