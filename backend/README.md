@@ -55,7 +55,7 @@ Install the following tools before running the project:
 
 - Git
 - Docker Desktop
-- Java 25+
+- Java 21+
 - Node.js
 - npm
 
