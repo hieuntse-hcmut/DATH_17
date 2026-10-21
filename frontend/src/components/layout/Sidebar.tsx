@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link, useLocation, useNavigate } from "react-router"
+import { Link, useLocation } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { 
   faHouse, 
@@ -16,11 +16,16 @@ interface SidebarProps {
   onCloseNotification?: () => void
 }
 
+type ActiveItem = 'trang-chu' | 'khoa-hoc' | 'bai-kiem-tra' | 'thong-bao' | 'thao-luan'
+
 export default function Sidebar({ onOpenNotification, onCloseNotification }: SidebarProps) {
   const { t } = useTranslation()
   const location = useLocation()
-  const navigate = useNavigate()
-  const [activeItem, setActiveItem] = useState('')
+  const [selectedItem, setSelectedItem] = useState<{ item: ActiveItem; locationKey: string } | null>(null)
+  const activeItem = selectedItem?.locationKey === location.key
+    ? selectedItem.item
+    : location.pathname === '/discuss' ? 'thao-luan' : 'trang-chu'
+  const selectItem = (item: ActiveItem) => setSelectedItem({ item, locationKey: location.key })
 
   const getItemClass = (isActive: boolean) => {
     return `flex flex-col md:flex-row items-center justify-center md:justify-start px-0 md:px-3 py-0 md:py-2 gap-0 md:gap-3 w-[76.39px] md:w-full h-16 md:h-[38px] md:rounded-xl transition-colors cursor-pointer ${
@@ -50,8 +55,8 @@ export default function Sidebar({ onOpenNotification, onCloseNotification }: Sid
         </div>
 
         {/* 1. Trang chủ */}
-        <Link to="/" onClick={() => { setActiveItem('trang-chu'); if (onCloseNotification) onCloseNotification(); }} className={getItemClass(location.pathname === '/')}>
-          <div className={getIconWrapperClass(location.pathname === '/')}>
+        <Link to="/" onClick={() => { setSelectedItem(null); if (onCloseNotification) onCloseNotification(); }} className={getItemClass(activeItem === 'trang-chu')}>
+          <div className={getIconWrapperClass(activeItem === 'trang-chu')}>
             <FontAwesomeIcon icon={faHouse} className="w-4 h-4 md:w-[13.33px] md:h-[15px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
@@ -60,24 +65,24 @@ export default function Sidebar({ onOpenNotification, onCloseNotification }: Sid
         </Link>
 
         {/* 2. Khóa học của tôi */}
-        <Link to="/" onClick={() => { setActiveItem('khoa-hoc'); if (onCloseNotification) onCloseNotification(); }} className={getItemClass(false)}>
-          <div className={getIconWrapperClass(false)}>
+        <button type="button" onClick={() => { selectItem('khoa-hoc'); if (onCloseNotification) onCloseNotification(); }} className={getItemClass(activeItem === 'khoa-hoc')}>
+          <div className={getIconWrapperClass(activeItem === 'khoa-hoc')}>
             <FontAwesomeIcon icon={faGraduationCap} className="w-4 h-4 md:w-[18.33px] md:h-[15px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.my_courses', 'Khoá học của tôi')}
           </span>
-        </Link>
+        </button>
 
         {/* 3. Bài kiểm tra */}
-        <Link to="/" onClick={() => { setActiveItem('bai-kiem-tra'); if (onCloseNotification) onCloseNotification(); }} className={getItemClass(false)}>
-          <div className={getIconWrapperClass(false)}>
+        <button type="button" onClick={() => { selectItem('bai-kiem-tra'); if (onCloseNotification) onCloseNotification(); }} className={getItemClass(activeItem === 'bai-kiem-tra')}>
+          <div className={getIconWrapperClass(activeItem === 'bai-kiem-tra')}>
             <FontAwesomeIcon icon={faClipboardList} className="w-4 h-4 md:w-[15px] md:h-[16.67px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.quizzes', 'Bài kiểm tra')}
           </span>
-        </Link>
+        </button>
 
         {/* Nhóm GIAO TIẾP */}
         <div className="hidden md:block px-3 pt-[31px] pb-[7px] w-full">
@@ -87,35 +92,34 @@ export default function Sidebar({ onOpenNotification, onCloseNotification }: Sid
         </div>
 
         {/* 4. Thông báo */}
-        <a href="#thong-bao" onClick={(e) => { 
-          e.preventDefault(); 
-          setActiveItem('thong-bao'); 
+        <button type="button" onClick={() => {
+          selectItem('thong-bao')
           if (onOpenNotification) onOpenNotification(); 
-        }} className={getItemClass(false)}>
-          <div className={getIconWrapperClass(false)}>
+        }} className={getItemClass(activeItem === 'thong-bao')}>
+          <div className={getIconWrapperClass(activeItem === 'thong-bao')}>
             <FontAwesomeIcon icon={faBell} className="w-4 h-4 md:w-[13.33px] md:h-[16.67px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.notifications', 'Thông báo')}
           </span>
-        </a>
+        </button>
 
-        {/* 5. Thảo luận (Chuyển hướng đến /discuss bằng useNavigate) */}
-        <div 
-          onClick={() => { 
-            setActiveItem('thao-luan'); 
-            if (onCloseNotification) onCloseNotification(); 
-            navigate('/discuss');
-          }} 
-          className={getItemClass(location.pathname === '/discuss')}
+        {/* 5. Thảo luận */}
+        <Link
+          to="/discuss"
+          onClick={() => {
+            setSelectedItem(null)
+            if (onCloseNotification) onCloseNotification()
+          }}
+          className={getItemClass(activeItem === 'thao-luan')}
         >
-          <div className={getIconWrapperClass(location.pathname === '/discuss')}>
+          <div className={getIconWrapperClass(activeItem === 'thao-luan')}>
             <FontAwesomeIcon icon={faComments} className="w-4 h-4 md:w-[16.67px] md:h-[16.67px]" />
           </div>
           <span className="hidden md:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]">
             {t('nav.discussions', 'Thảo luận')}
           </span>
-        </div>
+        </Link>
 
       </div>
 
