@@ -24,5 +24,24 @@
     "dark": "Tối",
     "lang": "Ngôn ngữ",
     "logout": "Đăng xuất tài khoản"
+  },
+  "notifications": {
+    "title": "Thông báo hệ thống",
+    "mark_all_read": "Đã đọc tất cả",
+    "tabs": {
+      "all": "Tất cả",
+      "courses": "Khóa học",
+      "discussion": "Thảo luận",
+      "unread": "Chưa đọc"
+    },
+    "groups": {
+      "this_week": "Tuần này"
+    },
+    "items": {
+      "ai102_title": "Cảnh báo học tập môn AI102",
+      "ai102_desc": "Giảng viên đã nhắc nhở tình trạng học tập đáng báo động của bạn ở môn AI102. Ấn vào để xem chi tiết",
+      "reply_title": "Giảng viên đã phản hồi câu hỏi thảo luận của bạn trong môn AI102",
+      "reply_desc": "Đây là 1 câu hỏi đã được nhắn đến trong bài học, hãy coi lại bài 2........"
+    }
   }
 }

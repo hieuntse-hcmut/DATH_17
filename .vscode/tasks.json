@@ -1,0 +1,44 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Smart Campus Stack",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$rng = [System.Security.Cryptography.RandomNumberGenerator]::Create(); $bytes = New-Object byte[] 32; $rng.GetBytes($bytes); $env:JWT_SECRET = [Convert]::ToBase64String($bytes); docker compose up"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build Smart Campus frontend",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$rng = [System.Security.Cryptography.RandomNumberGenerator]::Create(); $bytes = New-Object byte[] 32; $rng.GetBytes($bytes); $env:JWT_SECRET = [Convert]::ToBase64String($bytes); docker compose exec -T frontend npm run build"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Lint notification API changes",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"exec",
+				"dath_17-frontend-1",
+				"npx",
+				"eslint",
+				"src/components/layout/NotificationModal.tsx",
+				"src/config/axiosClient.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

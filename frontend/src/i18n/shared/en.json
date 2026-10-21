@@ -24,5 +24,24 @@
     "dark": "Dark",
     "lang": "Language",
     "logout": "Log out"
+  },
+  "notifications": {
+    "title": "System Notifications",
+    "mark_all_read": "Mark all as read",
+    "tabs": {
+      "all": "All",
+      "courses": "Courses",
+      "discussion": "Discussions",
+      "unread": "Unread"
+    },
+    "groups": {
+      "this_week": "This week"
+    },
+    "items": {
+      "ai102_title": "AI102 Learning Warning",
+      "ai102_desc": "The instructor has warned about your alarming academic status in AI102. Click to view details",
+      "reply_title": "Instructor replied to your discussion question in AI102",
+      "reply_desc": "This is a question mentioned in the lesson, please review lesson 2........"
+    }
   }
 }
