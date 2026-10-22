@@ -9,19 +9,17 @@ export default function MainLayout() {
     const [isNotifOpen, setIsNotifOpen] = useState(false)
 
     return (
-        <div className="flex min-h-screen bg-[#F8FAFC] dark:bg-gray-950 transition-colors">
-            {/* Sidebar tích hợp callback mở/đóng thông báo */}
-            <Sidebar 
-                onOpenNotification={() => setIsNotifOpen(true)} 
-                onCloseNotification={() => setIsNotifOpen(false)} 
-            />
-
+        <div className="flex h-screen bg-[#F8FAFC] dark:bg-gray-950 transition-colors overflow-hidden">
             {/* Cột nội dung chính bên phải */}
-            <div className="flex flex-col flex-1 min-w-0 pl-0 md:pl-[264px] w-full transition-all duration-200">
+            <div className="relative flex flex-col flex-1 min-w-0 pl-0  w-full transition-all duration-200">
                 <Header />
-                
+                {/* Sidebar tích hợp callback mở/đóng thông báo */}
+                <Sidebar 
+                    onOpenNotification={() => setIsNotifOpen(true)} 
+                    onCloseNotification={() => setIsNotifOpen(false)} 
+                />
                 {/* Khoảng đệm pb-16 trên mobile giúp nội dung không bị thanh điều hướng dưới đáy che khuất */}
-                <div className="pt-16 pb-16 md:pb-0 flex flex-col flex-1 w-full">
+                <div className="md:pl-66 pt-16 pb-16 md:pb-0 flex flex-col flex-1 w-full overflow-y-auto">
                     <div className="flex-1 w-full p-4 md:p-6">
                         <Outlet />
                     </div>

@@ -10,7 +10,7 @@ const getYoutubeId = (url?: string) => {
 
 interface Props {
   videoUrl?: string
-  title: string
+  title?: string
   onOpenToc: () => void
 }
 

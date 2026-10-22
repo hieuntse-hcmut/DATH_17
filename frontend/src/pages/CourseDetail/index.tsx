@@ -5,37 +5,72 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router";
 import CurriculumPanel from "./components/CurriculumPanel";
 import LessonActions from "./components/LessonActions";
-import LessonTabs from "./components/LessonTabs";
+import MaterialsTab from "./components/MaterialsTab";
 import VideoPlayer from "./components/VideoPlayer";
-import { useGetProgressList } from "./services/courseDetail.query";
+import { useCourseTocWithProgress } from "./services/useCourseProgress";
+import { useGetMaterials, usePostCompleteLesson } from "./services/courseDetail.query"; // chỉnh lại đường dẫn cho đúng
+import type { IMaterial } from "./services/courseDetail.type";
 
 export default function CourseDetailPage() {
     const { t } = useTranslation("courseDetail");
     const navigate = useNavigate();
-    const { courseId = "python-basic", lessonId } = useParams();
-    const { data: course, isLoading } = useCourseDetailQuery(courseId);
+    const params = useParams();
 
-    const [tocOpen, setTocOpen] = useState(false); // bottom sheet (mobile)
-    const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
+    const courseId = params.courseId ? Number(params.courseId) : undefined;
+    const lessonId = params.lessonId ? Number(params.lessonId) : undefined;
+    const { data, isLoading } = useCourseTocWithProgress(courseId);
 
-    // Danh sách bài học phẳng (bỏ chương khóa) để điều hướng prev/next
+    const [tocOpen, setTocOpen] = useState(false);
+    const [completedIds, setCompletedIds] = useState<Set<number>>(new Set());
+    const { mutate: completeLesson, isPending } = usePostCompleteLesson();
+
+    const chapters = data?.chapters;
+    const progressSummary = data?.progressSummary;
+
+    // Danh sách bài học phẳng để điều hướng prev/next
     const flat = useMemo(
         () =>
-            course?.chapters
-                .filter((c) => !c.locked)
-                .flatMap((c) => c.lessons.map((l) => ({ ...l, chapter: c }))) ??
-            [],
-        [course],
+            chapters?.flatMap((c) =>
+                c.lessons.map((l) => ({ ...l, chapter: c })),
+            ) ?? [],
+        [chapters],
     );
+
+    // Bài hiện tại: theo URL -> bài học dở (resume) -> bài chưa hoàn thành đầu tiên -> bài đầu
+    const current =
+        flat.find((l) => l.id === lessonId) ??
+        flat.find((l) => l.id === progressSummary?.resumeLessonId) ??
+        flat.find((l) => !l.completed) ??
+        flat[0];
+
+    // Materials chỉ tải cho bài đang xem
+    const { data: materials } = useGetMaterials(
+        courseId,
+        current?.chapterId,
+        current?.id,
+    );
+    
+    // Kiếm video url, nếu có video thì ko đc bấm understood liền
+    const { canUnderstoodClick, videoUrl, videoTitle } = useMemo(() => {
+        const video = materials?.find((m: IMaterial) =>
+            m.fileType?.toLowerCase().includes("video")
+        );
+
+        return {
+            canUnderstoodClick: !video,
+            videoUrl: video?.fileUrl,
+            videoTitle: video?.title
+        };
+    }, [materials]);
+
+    // Mục lục desktop: đứng yên theo màn hình
     const asideRef = useRef<HTMLElement>(null);
     const [asideTop, setAsideTop] = useState(16);
 
-    // Đo vị trí ban đầu của mục lục để nó đứng yên đúng chỗ khi cuộn
     useLayoutEffect(() => {
         const measure = () => {
             const el = asideRef.current;
             if (!el || el.offsetParent === null) return;
-            // vị trí của cột mục lục so với đầu trang (không phụ thuộc đang cuộn tới đâu)
             setAsideTop(
                 Math.round(el.getBoundingClientRect().top + window.scrollY),
             );
@@ -43,15 +78,11 @@ export default function CourseDetailPage() {
         measure();
         window.addEventListener("resize", measure);
         return () => window.removeEventListener("resize", measure);
-    }, [course]);
-    if (isLoading || !course) {
+    }, [data]);
+
+    if (isLoading || !data || !progressSummary) {
         return <div className="p-8 text-center text-fg-muted">...</div>;
     }
-
-    const current =
-        flat.find((l) => l.id === lessonId) ??
-        flat.find((l) => l.status === "current") ??
-        flat[0];
 
     if (!current) {
         return (
@@ -60,24 +91,25 @@ export default function CourseDetailPage() {
     }
 
     const index = flat.findIndex((l) => l.id === current.id);
-    const goTo = (id: string) => {
-        navigate(`/courses/${course.id}/lessons/${id}`);
+
+    const goTo = (id: number) => {
+        navigate(`/courses/${progressSummary.courseId}/lessons/${id}`);
         setTocOpen(false);
     };
 
+    // Bài vừa bấm "đã hiểu" ở FE nhưng server chưa ghi nhận
     const extraDone = [...completedIds].filter(
-        (id) => flat.find((l) => l.id === id)?.status !== "completed",
+        (id) => !flat.find((l) => l.id === id)?.completed,
     ).length;
-    const completedCount = course.completedLessons + extraDone;
-    const percent = Math.round((completedCount / course.totalLessons) * 100);
+    const completedCount = progressSummary.completedLessons + extraDone;
 
     const panel = (
         <CurriculumPanel
-            chapters={course.chapters}
+            chapters={chapters!}
             currentLessonId={current.id}
             completedIds={completedIds}
             completedCount={completedCount}
-            totalLessons={course.totalLessons}
+            totalLessons={progressSummary.totalLessons}
             defaultOpenChapterId={current.chapter.id}
             onSelectLesson={goTo}
         />
@@ -92,7 +124,7 @@ export default function CourseDetailPage() {
                     className="flex items-center gap-1.5 font-medium text-link"
                 >
                     <FontAwesomeIcon icon={faChevronLeft} className="text-xs" />
-                    {course.title}
+                    {progressSummary.courseTitle}
                 </Link>
                 <span className="hidden h-4 w-px bg-border sm:block" />
                 <span className="text-fg-muted">
@@ -103,26 +135,12 @@ export default function CourseDetailPage() {
                 </span>
             </nav>
 
-            {/* Thanh tiến độ (mobile) */}
-            <div className="flex items-center gap-3 px-4 pb-3 font-label text-xs text-fg-muted sm:px-0 lg:hidden">
-                <span className="truncate text-primary">{course.title}</span>
-                <span className="whitespace-nowrap">
-                    {t("completion", { percent })}
-                </span>
-                <div className="h-1.5 w-20 overflow-hidden rounded-full bg-primary-soft">
-                    <div
-                        className="h-full bg-primary"
-                        style={{ width: `${percent}%` }}
-                    />
-                </div>
-            </div>
-
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
                 {/* Cột chính */}
                 <section className="overflow-hidden border-border bg-surface lg:rounded-2xl lg:border lg:shadow-sm">
                     <VideoPlayer
-                        videoUrl={current.videoUrl}
-                        title={current.title}
+                        videoUrl={videoUrl}
+                        title={videoTitle}
                         onOpenToc={() => setTocOpen(true)}
                     />
 
@@ -131,41 +149,33 @@ export default function CourseDetailPage() {
                             {current.title}
                         </h1>
 
-                        <LessonTabs key={current.id} lesson={current} />
+                        <MaterialsTab
+                            key={current.id}
+                            lesson={current}
+                        />
 
                         {/* Action bar: cố định đáy ở mobile, nằm cuối card ở desktop */}
-                        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface/95 p-3 backdrop-blur lg:static lg:border-0 lg:bg-transparent lg:p-0">
+                        <div className="fixed inset-x-0 bottom-16 z-20 border-t border-border bg-surface/95 p-3 backdrop-blur md:static md:border-0 md:bg-transparent md:p-0">
                             <LessonActions
                                 hasPrev={index > 0}
                                 hasNext={index < flat.length - 1}
-                                understood={
-                                    completedIds.has(current.id) ||
-                                    current.status === "completed"
-                                }
+                                understood={canUnderstoodClick}
                                 onPrev={() => goTo(flat[index - 1].id)}
                                 onNext={() => goTo(flat[index + 1].id)}
-                                onUnderstood={() =>
-                                    setCompletedIds((prev) =>
+                                onUnderstood={() => {
+                                    completeLesson(current.id)
+
+                                    return setCompletedIds((prev) => 
                                         new Set(prev).add(current.id),
                                     )
-                                }
+                                }}
                             />
                         </div>
                     </div>
                 </section>
 
-                {/* Mục lục: desktop */}
                 {/* Mục lục: desktop, cố định theo màn hình */}
                 <aside ref={asideRef} className="hidden lg:block">
-                    <div
-                        className="fixed w-[340px] overflow-y-auto"
-                        style={{
-                            top: asideTop,
-                            maxHeight: `calc(100vh - ${asideTop}px - 1rem)`,
-                        }}
-                    >
-                        {panel}
-                    </div>
                     <div
                         data-toc-scroll
                         className="fixed w-[340px] overflow-y-auto"
@@ -188,9 +198,6 @@ export default function CourseDetailPage() {
                         className="absolute inset-0 bg-black/50"
                         onClick={() => setTocOpen(false)}
                     />
-                    <div className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-surface p-3">
-                        {panel}
-                    </div>
                     <div
                         data-toc-scroll
                         className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-surface p-3"

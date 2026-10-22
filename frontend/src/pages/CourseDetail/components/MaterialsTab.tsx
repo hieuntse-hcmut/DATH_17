@@ -6,7 +6,7 @@ import CodeBlock from "./CodeBlock";
 
 type Tab = "docs" | "discussion";
 
-export default function LessonTabs({ lesson }: { lesson: Lesson }) {
+export default function MaterialsTab({ lesson }: { lesson: Lesson }) {
     const { t } = useTranslation("courseDetail");
     const [tab, setTab] = useState<Tab>("docs");
 

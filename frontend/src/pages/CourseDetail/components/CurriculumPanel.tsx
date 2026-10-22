@@ -4,23 +4,33 @@ import {
     faChevronUp,
     faCircleCheck,
     faCirclePlay,
-    faLock,
-    faPenToSquare,
+    faFileLines,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import type { Chapter, Lesson } from "../services/courseDetail.type";
+import type {
+    IChapterWithProgress,
+    ILessonWithProgress,
+} from "../services/courseDetail.type";
 
 interface Props {
-    chapters: Chapter[];
-    currentLessonId: string;
-    completedIds: Set<string>;
+    chapters: IChapterWithProgress[];
+    currentLessonId: number;
+    completedIds: Set<number>;
     completedCount: number;
     totalLessons: number;
-    defaultOpenChapterId?: string;
-    onSelectLesson: (lessonId: string) => void;
+    defaultOpenChapterId?: number;
+    onSelectLesson: (lessonId: number) => void;
 }
+
+// 600 -> "10:00"
+const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${String(s).padStart(2, "0")}`;
+};
+
 function ProgressRing({
     done,
     total,
@@ -69,20 +79,26 @@ function ProgressRing({
         </svg>
     );
 }
+
 function LessonRow({
     lesson,
     active,
     completed,
     onClick,
 }: {
-    lesson: Lesson;
+    lesson: ILessonWithProgress;
     active: boolean;
     completed: boolean;
     onClick: () => void;
 }) {
     const { t } = useTranslation("courseDetail");
-    const isQuiz = lesson.kind === "quiz";
+    const isDocument = lesson.contentType === "DOCUMENT";
+    const isVideo = lesson.contentType === "VIDEO";
     const ref = useRef<HTMLButtonElement>(null);
+
+    const typeLabel = t(`contentType.${lesson.contentType}`, {
+        defaultValue: isDocument ? "Tài liệu" : isVideo ? "Video" : "",
+    });
 
     // Cuộn bài đang học vào tầm nhìn trong vùng cuộn của mục lục
     useEffect(() => {
@@ -114,22 +130,21 @@ function LessonRow({
             >
                 <div className="flex items-center gap-2">
                     <FontAwesomeIcon
-                        icon={faCirclePlay}
+                        icon={isDocument ? faFileLines : faCirclePlay}
                         className="text-primary"
                     />
                     <span className="rounded bg-primary px-1.5 py-0.5 font-label text-[10px] font-bold text-on-primary">
                         {t("status.current")}
                     </span>
-                    <span className="font-label text-xs text-fg-muted">
-                        12:34 / {lesson.duration}
-                    </span>
+                    {isVideo && lesson.lastPosition > 0 && (
+                        <span className="font-label text-xs text-fg-muted">
+                            {formatTime(lesson.lastPosition)}
+                        </span>
+                    )}
                 </div>
                 <p className="mt-2 text-sm font-semibold text-primary">
                     {lesson.title}
                 </p>
-                <div className="mt-2 h-1 overflow-hidden rounded-full bg-primary-soft">
-                    <div className="h-full w-[62%] rounded-full bg-primary" />
-                </div>
             </button>
         );
     }
@@ -146,9 +161,9 @@ function LessonRow({
                         icon={faCircleCheck}
                         className="text-tertiary"
                     />
-                ) : isQuiz ? (
+                ) : isDocument ? (
                     <FontAwesomeIcon
-                        icon={faPenToSquare}
+                        icon={faFileLines}
                         className="text-primary"
                     />
                 ) : (
@@ -158,16 +173,13 @@ function LessonRow({
             <span className="min-w-0">
                 <span className="block text-sm text-fg">{lesson.title}</span>
                 <span
-                    className={`mt-0.5 block font-label text-xs ${isQuiz ? "text-primary" : "text-fg-subtle"}`}
+                    className={`mt-0.5 block font-label text-xs ${
+                        isDocument ? "text-primary" : "text-fg-subtle"
+                    }`}
                 >
-                    {isQuiz
-                        ? t("quizMeta", {
-                              minutes: lesson.duration,
-                              questions: lesson.quizQuestions,
-                          })
-                        : completed
-                          ? `${lesson.duration} • ${t("status.completed")}`
-                          : lesson.duration}
+                    {completed
+                        ? `${typeLabel} • ${t("status.completed")}`
+                        : typeLabel}
                 </span>
             </span>
         </button>
@@ -184,15 +196,17 @@ export default function CurriculumPanel({
     onSelectLesson,
 }: Props) {
     const { t } = useTranslation("courseDetail");
-    const [openId, setOpenId] = useState<string | undefined>(
+    const [openId, setOpenId] = useState<number | undefined>(
         defaultOpenChapterId,
     );
     const percent = totalLessons
         ? Math.round((completedCount / totalLessons) * 100)
         : 0;
+
     useEffect(() => {
         setOpenId(defaultOpenChapterId);
     }, [currentLessonId, defaultOpenChapterId]);
+
     return (
         <div className="rounded-2xl border border-border bg-surface-muted p-4">
             <div className="mb-3 flex items-center justify-between">
@@ -210,14 +224,13 @@ export default function CurriculumPanel({
 
             <div className="space-y-2">
                 {chapters.map((chapter) => {
+                    // Gộp bài đã hoàn thành từ server và bài vừa bấm "đã hiểu" ở FE
                     const done = chapter.lessons.filter(
-                        (l) =>
-                            l.status === "completed" || completedIds.has(l.id),
+                        (l) => l.completed || completedIds.has(l.id),
                     ).length;
-                    const allDone =
-                        chapter.totalLessons > 0 &&
-                        done >= chapter.totalLessons;
-                    const open = openId === chapter.id && !chapter.locked;
+                    const total = chapter.totalLessons;
+                    const allDone = total > 0 && done >= total;
+                    const open = openId === chapter.id;
 
                     return (
                         <div
@@ -226,20 +239,12 @@ export default function CurriculumPanel({
                         >
                             <button
                                 type="button"
-                                disabled={chapter.locked}
-                                title={chapter.locked ? t("locked") : undefined}
                                 onClick={() =>
                                     setOpenId(open ? undefined : chapter.id)
                                 }
-                                className={`flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium ${
-                                    chapter.locked
-                                        ? "cursor-not-allowed text-fg-subtle"
-                                        : "text-fg"
-                                }`}
+                                className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-fg"
                             >
-                                {chapter.locked ? (
-                                    <FontAwesomeIcon icon={faLock} />
-                                ) : allDone ? (
+                                {allDone ? (
                                     <FontAwesomeIcon
                                         icon={faCircleCheck}
                                         className="text-tertiary"
@@ -248,10 +253,10 @@ export default function CurriculumPanel({
                                 ) : (
                                     <ProgressRing
                                         done={done}
-                                        total={chapter.totalLessons}
+                                        total={total}
                                         label={t("chapterProgress", {
                                             done,
-                                            total: chapter.totalLessons,
+                                            total,
                                         })}
                                     />
                                 )}
@@ -259,21 +264,12 @@ export default function CurriculumPanel({
                                     {chapter.title}
                                 </span>
                                 <span className="font-label text-xs text-fg-muted">
-                                    {chapter.locked
-                                        ? `0/${chapter.totalLessons}`
-                                        : t("chapterProgress", {
-                                              done,
-                                              total: chapter.totalLessons,
-                                          })}
+                                    {t("chapterProgress", { done, total })}
                                 </span>
-                                {!chapter.locked && (
-                                    <FontAwesomeIcon
-                                        icon={
-                                            open ? faChevronUp : faChevronDown
-                                        }
-                                        className="text-xs text-fg-muted"
-                                    />
-                                )}
+                                <FontAwesomeIcon
+                                    icon={open ? faChevronUp : faChevronDown}
+                                    className="text-xs text-fg-muted"
+                                />
                             </button>
 
                             {open && (
@@ -286,7 +282,7 @@ export default function CurriculumPanel({
                                                 lesson.id === currentLessonId
                                             }
                                             completed={
-                                                lesson.status === "completed" ||
+                                                lesson.completed ||
                                                 completedIds.has(lesson.id)
                                             }
                                             onClick={() =>

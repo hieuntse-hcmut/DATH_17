@@ -1,15 +1,34 @@
-import { useQuery } from '@tanstack/react-query'
-import { getCourseProgress } from './courseDetail.api'
+import { useQuery, useMutation } from '@tanstack/react-query'
+import { fetchCourseToc, getMaterials, getMyProgress, postCompleteLesson } from './courseDetail.api'
 
-export type IGetCourseProgress = {
-  courseId?: string
-  options?: any
-}
-
-export const useGetCourseProgress = ({courseId, options} : Readonly<IGetCourseProgress>) => {
-  return useQuery({
-    queryKey: ['progess-list', courseId?.trim() ? courseId : "full"],
-    queryFn: () => getCourseProgress(courseId),
-    ...options
+export const useGetCourseToc = (courseId?: number) =>
+  useQuery({
+    queryKey: ['course-toc', courseId],
+    queryFn: () => fetchCourseToc(courseId!),
+    enabled: !!courseId,
+    staleTime: 5 * 60 * 1000,
   })
-}
+
+export const useGetCourseProgress = (courseId?: number) =>
+  useQuery({
+    queryKey: ['course-progress', courseId],
+    queryFn: () => getMyProgress(courseId!),
+    enabled: !!courseId,
+  })
+
+export const useGetMaterials = (courseId?: number, chapterId?: number, lessonId?: number) =>
+  useQuery({
+    queryKey: ['materials', courseId, chapterId, lessonId],
+    queryFn: () => getMaterials(courseId!, chapterId!, lessonId!),
+    enabled: !!courseId && !!chapterId && !!lessonId,
+  })
+
+export const usePostCompleteLesson = () =>
+    useMutation({
+        mutationFn: (lessonId: number) => postCompleteLesson(lessonId),
+
+        onSuccess: (response) => {
+            
+        },
+    });
+
