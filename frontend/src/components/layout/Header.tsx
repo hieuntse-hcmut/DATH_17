@@ -36,7 +36,7 @@ export default function Header() {
     }
 
     return (
-        <header className="fixed top-0 inset-x-0 h-16 bg-[#FAF8FF]/95 md:bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-[#E2E7FF] dark:border-gray-800 px-4 md:px-10 flex items-center justify-between z-30 transition-colors">
+        <header className="fixed top-0 inset-x-0 h-16 bg-[#FAF8FF]/95 md:bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-[#E2E7FF] dark:border-gray-800 px-4 md:px-10 flex items-center justify-between z-50 transition-colors">
             {/* Logo & Brand Container */}
             <div className="flex items-center gap-3 md:gap-4 md:w-[264px]">
                 <div className="w-8 h-8 flex items-center justify-center bg-[#4F46E5] text-white rounded-md font-bold overflow-hidden shrink-0">
