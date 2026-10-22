@@ -316,7 +316,7 @@ V3__update_example.sql
 
 ### Run backend tests
 
-The full test suite needs Java 21+ and a running Docker daemon. Start Docker Desktop and verify that Docker is ready:
+The full test suite needs Java 25+ and a running Docker daemon. Start Docker Desktop and verify that Docker is ready:
 
 ```bash
 docker info

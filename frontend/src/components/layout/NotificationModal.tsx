@@ -59,7 +59,7 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
     }
 
     return (
-        <div className="fixed inset-x-0 top-16 bottom-16 md:bottom-auto md:top-16 md:right-6 md:left-auto z-20 flex justify-end pointer-events-none">
+        <div className="fixed inset-x-0 top-16 bottom-16 md:bottom-auto md:top-16 md:right-6 md:left-auto z-40 flex justify-end pointer-events-none">
             
             {/* Backdrop */}
             <div 

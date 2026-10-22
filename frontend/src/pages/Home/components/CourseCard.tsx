@@ -9,6 +9,8 @@ import {
 
 import type { Enrollment } from "../services/home.type";
 import ProgressBar from "./ProgressBar";
+import { useNavigate } from "react-router";
+
 const BADGE_STYLE = {
     inProgress: "bg-primary text-on-primary",
     notStarted: "bg-surface text-fg border border-border",
@@ -17,6 +19,7 @@ const BADGE_STYLE = {
 
 export default function CourseCard({ course }: { course: Enrollment }) {
     const { t } = useTranslation("home");
+    const navigate = useNavigate();
     // const percent = Math.round((course.completedLessons / course.totalLessons) * 100)
 
     // const action = done ? { label: t('course.review'), icon: <FontAwesomeIcon icon={faRotateRight} className="text-sm" />, cls: 'bg-surface-muted text-fg hover:bg-primary-soft' }  : course.isCurrent  ? { label: t('course.continue'), icon: <FontAwesomeIcon icon={faArrowRight} className="text-sm" />, cls: 'bg-primary-soft text-primary hover:bg-primary hover:text-on-primary' }  : { label: t('course.study'), icon: <FontAwesomeIcon icon={faPlay} className="text-[10px]" />, cls: 'bg-surface-muted text-fg hover:bg-primary-soft' }
@@ -54,6 +57,7 @@ export default function CourseCard({ course }: { course: Enrollment }) {
 
             <button
                 type="button"
+                onClick={() => navigate(`/courses/${course.courseId}/lessons`)}
                 className={
                     "mt-3 flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors bg-primary-soft text-primary cursor-pointer hover:bg-primary hover:text-on-primary"
                 } // + action.cls

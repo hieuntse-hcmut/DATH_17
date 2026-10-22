@@ -1,0 +1,70 @@
+{
+  "breadcrumb": {
+    "study": "Learning",
+    "current": "My courses"
+  },
+  "title": "My courses",
+  "subtitle": "Track your progress and keep building your knowledge this semester",
+  "register": "Enroll in a new course",
+  "tabs": {
+    "learning": "In progress",
+    "completed": "Completed"
+  },
+  "search": {
+    "placeholder": "Search by course or instructor...",
+    "label": "Search courses"
+  },
+  "sort": {
+    "label": "Sort by",
+    "recent": "Recently accessed",
+    "name": "Course name",
+    "progress": "Progress"
+  },
+  "view": {
+    "grid": "Grid view",
+    "list": "List view"
+  },
+  "card": {
+    "learningSemester": "In progress · Term {{semester}}",
+    "completedSemester": "Completed · Term {{semester}}",
+    "locked": "No new content yet",
+    "credits": "{{count}} credits",
+    "lastAccessed": "Last studied: {{time}}",
+    "progress": "Lesson progress",
+    "lessonsCount": "{{done}}/{{total}} lessons",
+    "nextLesson": "Up next",
+    "nextLessonValue": "Chapter {{chapter}} › Lesson {{lesson}}: {{title}}",
+    "continue": "Continue learning",
+    "review": "Review course",
+    "overview": "View course overview",
+    "onTrack": "On track this week",
+    "options": "Course options",
+    "unlockPlan": "Release plan",
+    "unlockText": "The instructor will release the Chapter {{chapter}} lessons and exercises on {{date}}",
+    "unlockShort": "New module opens: {{date}}",
+    "paused": "Locked"
+  },
+  "time": {
+    "yesterday": "Yesterday, {{time}}",
+    "today": "Today, {{time}}"
+  },
+  "empty": {
+    "learning": "You have no courses in progress.",
+    "completed": "You haven't completed any courses yet.",
+    "search": "No courses match \"{{keyword}}\".",
+    "cta": "Browse course catalog"
+  },
+  "error": {
+    "load": "Couldn't load your courses.",
+    "retry": "Try again"
+  },
+  "banner": {
+    "badge": "Term III planning",
+    "title": "Want to level up your skills and stay ahead in tech next term?",
+    "description": "Explore 45+ in-depth electives: Cloud Computing (AWS/GCP), Network Security and Distributed Systems Design. Enroll early to secure a seat with leading instructors.",
+    "cta": "Browse course catalog",
+    "mobileTitle": "Want to learn something new?",
+    "mobileDescription": "120+ elective courses are open for enrollment",
+    "mobileCta": "Explore course catalog"
+  }
+}
