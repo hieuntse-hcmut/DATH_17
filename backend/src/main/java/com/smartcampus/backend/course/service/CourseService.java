@@ -1,5 +1,6 @@
 package com.smartcampus.backend.course.service;
 
+import com.smartcampus.backend.auth.security.CustomUserDetails;
 import com.smartcampus.backend.course.dto.CourseResponse;
 import com.smartcampus.backend.course.dto.CreateCourseRequest;
 import com.smartcampus.backend.course.dto.UpdateCourseRequest;
@@ -48,5 +49,16 @@ public class CourseService {
 
     private Course requireCourse(Long id) {
         return repository.findById(id).orElseThrow(() -> new CourseNotFoundException(id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<CourseResponse> getMyCourses(
+            CustomUserDetails currentUser) {
+
+        return repository
+                .findByCreatedBy(currentUser.getId())
+                .stream()
+                .map(CourseResponse::from)
+                .toList();
     }
 }

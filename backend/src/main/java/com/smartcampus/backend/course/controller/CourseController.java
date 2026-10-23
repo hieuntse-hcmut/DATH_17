@@ -1,5 +1,7 @@
 package com.smartcampus.backend.course.controller;
 
+import com.smartcampus.backend.auth.security.CustomUserDetails;
+import com.smartcampus.backend.common.response.ApiResponse;
 import com.smartcampus.backend.course.dto.CourseResponse;
 import com.smartcampus.backend.course.dto.CreateCourseRequest;
 import com.smartcampus.backend.course.dto.UpdateCourseRequest;
@@ -9,6 +11,8 @@ import jakarta.validation.constraints.Positive;
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,5 +52,15 @@ public class CourseController {
     public CourseResponse update(@PathVariable @Positive Long id,
                                  @Valid @RequestBody UpdateCourseRequest request) {
         return service.update(id, request);
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('LECTURER')")
+    public ApiResponse<List<CourseResponse>> getMyCourses(
+            @AuthenticationPrincipal CustomUserDetails currentUser) {
+
+        return ApiResponse.ok(
+                service.getMyCourses(currentUser)
+        );
     }
 }

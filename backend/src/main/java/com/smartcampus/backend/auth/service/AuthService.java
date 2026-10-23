@@ -1,6 +1,7 @@
 package com.smartcampus.backend.auth.service;
 
 import com.smartcampus.backend.auth.dto.AuthResponse;
+import com.smartcampus.backend.auth.dto.CurrentUserResponse;
 import com.smartcampus.backend.auth.dto.LoginRequest;
 import com.smartcampus.backend.auth.dto.RegisterRequest;
 import com.smartcampus.backend.user.entity.User;
@@ -8,6 +9,7 @@ import com.smartcampus.backend.user.entity.UserRole;
 import com.smartcampus.backend.user.entity.UserStatus;
 import com.smartcampus.backend.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -83,4 +85,17 @@ public class AuthService {
                 fullName, email, UserRole.STUDENT, UserStatus.ACTIVE);
         userRepository.save(user);
     }
+
+    @Transactional(readOnly = true)
+    public CurrentUserResponse getCurrentUser(
+            CustomUserDetails currentUser) {
+
+        User user = userRepository.findById(currentUser.getId())
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found"));
+
+        return CurrentUserResponse.from(user);
+    }
+
+
 }
