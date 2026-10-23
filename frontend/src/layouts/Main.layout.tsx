@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Outlet } from 'react-router'
+import { Outlet, useLocation } from 'react-router'
 import Header from '~/components/layout/Header'
 import Footer from '~/components/layout/Footer'
 import Sidebar from '~/components/layout/Sidebar'
@@ -7,6 +7,8 @@ import NotificationModal from '~/components/layout/NotificationModal' // Điều
 
 export default function MainLayout() {
     const [isNotifOpen, setIsNotifOpen] = useState(false)
+    const location = useLocation()
+    const isDiscussPage = location.pathname.startsWith('/discuss')
 
     return (
         <div className="flex h-screen bg-[#F8FAFC] dark:bg-gray-950 transition-colors overflow-hidden">
@@ -22,6 +24,8 @@ export default function MainLayout() {
                 <div className="md:pl-66 pt-16 pb-16 md:pb-0 flex flex-col flex-1 w-full overflow-y-auto">
                     <div className="flex-1 w-full p-4 md:p-6">
                         <Outlet />
+                        {/* Chỉ hiển thị Footer nếu KHÔNG PHẢI trang Discuss */}
+                        {!isDiscussPage && <Footer />}  
                     </div>
                 </div>
             </div>
