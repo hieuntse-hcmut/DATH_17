@@ -4,6 +4,7 @@ import com.smartcampus.backend.auth.security.CustomUserDetails;
 import com.smartcampus.backend.common.response.ApiResponse;
 import com.smartcampus.backend.course.dto.CourseResponse;
 import com.smartcampus.backend.course.dto.CreateCourseRequest;
+import com.smartcampus.backend.course.dto.MyCourseResponse;
 import com.smartcampus.backend.course.dto.UpdateCourseRequest;
 import com.smartcampus.backend.course.service.CourseService;
 import jakarta.validation.Valid;
@@ -55,8 +56,8 @@ public class CourseController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('LECTURER')")
-    public ApiResponse<List<CourseResponse>> getMyCourses(
+    @PreAuthorize("hasAnyRole('STUDENT', 'LECTURER')")
+    public ApiResponse<List<MyCourseResponse>> getMyCourses(
             @AuthenticationPrincipal CustomUserDetails currentUser) {
 
         return ApiResponse.ok(

@@ -102,4 +102,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
                        @Param("targetUserId") Long targetUserId,
                        @Param("action") String action,
                        @Param("reason") String reason);
+
+    List<Enrollment> findByStudentIdAndStatus(Long studentId, EnrollmentStatus enrollmentStatus);
 }

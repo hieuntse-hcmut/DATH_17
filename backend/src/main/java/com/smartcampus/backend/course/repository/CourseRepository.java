@@ -4,8 +4,9 @@ import com.smartcampus.backend.course.entity.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    Collection<Course> findByCreatedBy(Long id);
+    List<Course> findByCreatedBy(Long lecturerId);
 }
