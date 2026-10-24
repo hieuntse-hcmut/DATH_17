@@ -10,7 +10,24 @@ import VideoPlayer from "./components/VideoPlayer";
 import { useCourseTocWithProgress } from "./services/useCourseProgress";
 import { useGetMaterials, usePostCompleteLesson } from "./services/courseDetail.query"; // chỉnh lại đường dẫn cho đúng
 import type { IMaterial } from "./services/courseDetail.type";
+const PROGRESS_KEY = 'lesson-progress'
 
+const readProgress = (): Record<string, number> => {
+  try {
+    return JSON.parse(localStorage.getItem(PROGRESS_KEY) ?? '{}')
+  } catch {
+    return {}
+  }
+}
+
+// TODO: thay bằng gọi API lưu vị trí xem
+const saveProgress = (lessonId: string, seconds: number) => {
+  try {
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify({ ...readProgress(), [lessonId]: seconds }))
+  } catch {
+    // bỏ qua nếu storage bị chặn
+  }
+}
 export default function CourseDetailPage() {
     const { t } = useTranslation("courseDetail");
     const navigate = useNavigate();
@@ -138,11 +155,18 @@ export default function CourseDetailPage() {
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
                 {/* Cột chính */}
                 <section className="overflow-hidden border-border bg-surface lg:rounded-2xl lg:border lg:shadow-sm">
-                    <VideoPlayer
-                        videoUrl={videoUrl}
-                        title={videoTitle}
-                        onOpenToc={() => setTocOpen(true)}
-                    />
+ <VideoPlayer
+  key={current.id}
+  videoUrl={videoUrl}
+  title={current.title}
+  startAt={readProgress()[current.id] ?? 0}
+  onOpenToc={() => setTocOpen(true)}
+  onProgress={(p) => {
+    saveProgress(String(current.id), p.furthest)
+    // p.position: vị trí hiện tại, p.percent: 0..1
+  }}
+  onDone={() => setCompletedIds((prev) => new Set(prev).add(current.id))}
+/>
 
                     <div className="space-y-5 p-4 sm:p-6">
                         <h1 className="text-xl font-bold leading-snug text-fg sm:text-3xl">

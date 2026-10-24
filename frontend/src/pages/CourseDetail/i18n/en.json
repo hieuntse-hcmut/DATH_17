@@ -50,5 +50,5 @@
     "notFound": "Lesson not found",
     "close": "Close",
     "docsEmpty": "No materials or notes for this lesson yet.",
-    "download": "Download {{name}}"
+    "download": "Download {{name}}","play": "Play", "pause": "Pause"
 }

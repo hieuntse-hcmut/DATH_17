@@ -50,5 +50,7 @@
     "notFound": "Không tìm thấy bài học",
     "close": "Đóng",
     "docsEmpty": "Bài học này chưa có tài liệu hoặc ghi chú.",
-    "download": "Tải xuống {{name}}"
+    "download": "Tải xuống {{name}}",
+    "play": "Phát", 
+    "pause": "Tạm dừng" 
 }
