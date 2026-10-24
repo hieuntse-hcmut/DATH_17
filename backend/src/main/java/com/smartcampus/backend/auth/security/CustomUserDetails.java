@@ -1,6 +1,7 @@
 package com.smartcampus.backend.auth.security;
 
 import com.smartcampus.backend.user.entity.User;
+import com.smartcampus.backend.user.entity.UserRole;
 import com.smartcampus.backend.user.entity.UserStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,5 +41,9 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return user.getStatus() == UserStatus.ACTIVE;
+    }
+
+    public UserRole getRole() {
+        return user.getRole();
     }
 }
