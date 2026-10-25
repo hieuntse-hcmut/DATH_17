@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
-const DONE_RATIO = 0.8 // xem đủ 80% thì tính là xong
+const DONE_RATIO = 0.9 // xem đủ 90% thì tính là xong
 const SEEK_TOLERANCE = 2 // giây: sai số cho phép khi so với vị trí xa nhất
 const TICK_MS = 250
 const EMIT_EVERY_MS = 5000
