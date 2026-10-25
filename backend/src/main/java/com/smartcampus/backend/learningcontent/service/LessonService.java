@@ -13,9 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 @Service
 public class LessonService {
+
+    /** Loại bài có độ dài đo được: VIDEO (giây), PDF (trang). TEXT không có totalLength. */
+    static final Set<String> MEASURABLE_TYPES = Set.of("VIDEO", "PDF");
 
     private final LessonRepository lessonRepository;
     private final ChapterRepository chapterRepository;
@@ -33,8 +38,9 @@ public class LessonService {
 
     @Transactional(readOnly = true)
     public List<LessonResponse> getLessons(
-            Long courseId, Long chapterId
+            Long courseId, Long chapterId, CustomUserDetails currentUser
     ) {
+        courseAccessService.requireViewPermission(courseId, currentUser);
         requireChapter(courseId, chapterId);
 
         return lessonRepository
@@ -69,7 +75,8 @@ public class LessonService {
                 chapterId,
                 request.title().trim(),
                 request.contentType().trim(),
-                request.orderIndex()
+                request.orderIndex(),
+                validTotalLength(request.contentType(), request.totalLength())
         );
 
         return toResponse(lessonRepository.save(lesson));
@@ -105,7 +112,8 @@ public class LessonService {
         lesson.update(
                 request.title().trim(),
                 request.contentType().trim(),
-                request.orderIndex()
+                request.orderIndex(),
+                validTotalLength(request.contentType(), request.totalLength())
         );
 
         return toResponse(lesson);
@@ -166,13 +174,29 @@ public class LessonService {
         return lesson;
     }
 
+    /** totalLength chỉ có nghĩa với VIDEO/PDF; gửi kèm bài TEXT là sai dữ liệu (400). */
+    static Integer validTotalLength(String contentType, Integer totalLength) {
+        if (totalLength == null) {
+            return null;
+        }
+        String type = contentType.trim().toUpperCase(Locale.ROOT);
+        if (!MEASURABLE_TYPES.contains(type)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "totalLength chỉ dùng cho bài VIDEO (số giây) hoặc PDF (số trang)"
+            );
+        }
+        return totalLength;
+    }
+
     private LessonResponse toResponse(Lesson lesson) {
         return new LessonResponse(
                 lesson.getId(),
                 lesson.getChapterId(),
                 lesson.getTitle(),
                 lesson.getContentType(),
-                lesson.getOrderIndex()
+                lesson.getOrderIndex(),
+                lesson.getTotalLength()
         );
     }
 }

@@ -27,9 +27,10 @@ public class LessonController {
     @GetMapping
     public List<LessonResponse> getLessons(
             @PathVariable Long courseId,
-            @PathVariable Long chapterId
+            @PathVariable Long chapterId,
+            @AuthenticationPrincipal CustomUserDetails currentUser
     ) {
-        return lessonService.getLessons(courseId, chapterId);
+        return lessonService.getLessons(courseId, chapterId, currentUser);
     }
 
     @PostMapping

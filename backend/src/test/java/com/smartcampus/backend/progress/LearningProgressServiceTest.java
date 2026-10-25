@@ -164,6 +164,47 @@ class LearningProgressServiceTest {
         verify(progressRepository).upsertPosition(STUDENT_ID, LESSON_ID, 120, false);
     }
 
+    /** V5: totalLength client gửi lên bị bỏ qua; {"position":1,"totalLength":1} không làm bài hoàn thành. */
+    @Test
+    void updatePosition_ignoresClientTotalLength_usesLessonLength() {
+        givenLessonAccess("PUBLISHED", "VIDEO", 600);
+        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
+                .thenReturn(Optional.empty(), Optional.of(progress(false, 1)));
+        when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(1L);
+        givenCounts(3, 0);
+
+        LessonProgressResponse response = service.updatePosition(STUDENT_ID, LESSON_ID, new UpdatePositionRequest(1, 1));
+
+        assertFalse(response.completed());
+        verify(progressRepository).upsertPosition(STUDENT_ID, LESSON_ID, 1, false);
+        verify(notificationService, never()).notify(any(), any(), any(), any(), any());
+    }
+
+    /** V5: bài chưa có total_length chỉ lưu vị trí, không bao giờ tự hoàn thành. */
+    @Test
+    void updatePosition_lessonWithoutLength_savesPositionButNeverCompletes() {
+        givenLessonAccess("PUBLISHED", "VIDEO", null);
+        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
+                .thenReturn(Optional.empty(), Optional.of(progress(false, 5000)));
+        when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(1L);
+        givenCounts(3, 0);
+
+        service.updatePosition(STUDENT_ID, LESSON_ID, new UpdatePositionRequest(5000, 600));
+
+        verify(progressRepository).upsertPosition(STUDENT_ID, LESSON_ID, 5000, false);
+        verify(activityRepository, never()).save(any());
+    }
+
+    @Test
+    void markComplete_videoLesson_isRejected() {
+        givenLessonAccess("PUBLISHED", "VIDEO", 600);
+
+        ApiException ex = assertThrows(ApiException.class, () -> service.markLessonComplete(STUDENT_ID, LESSON_ID));
+
+        assertEquals("MANUAL_COMPLETION_NOT_ALLOWED", ex.getCode());
+        verify(progressRepository, never()).upsertCompleted(any(), any());
+    }
+
     @Test
     void threshold_is90Percent() {
         assertTrue(invokeThreshold(540, 600));
@@ -273,8 +314,13 @@ class LearningProgressServiceTest {
     // =============================================================== helpers
 
     private void givenLessonAccess(String publicationState) {
+        givenLessonAccess(publicationState, "TEXT", 600);
+    }
+
+    private void givenLessonAccess(String publicationState, String contentType, Integer totalLength) {
         when(courseAccessGuard.requireUser(STUDENT_ID)).thenReturn(student(STUDENT_ID));
-        when(progressRepository.findLessonContext(LESSON_ID)).thenReturn(Optional.of(lesson(publicationState)));
+        when(progressRepository.findLessonContext(LESSON_ID))
+                .thenReturn(Optional.of(lesson(publicationState, contentType, totalLength)));
         when(progressRepository.countActiveEnrollment(STUDENT_ID, COURSE_ID)).thenReturn(1L);
     }
 
@@ -307,13 +353,19 @@ class LearningProgressServiceTest {
     }
 
     private static LessonContextView lesson(String publicationState) {
+        return lesson(publicationState, "TEXT", 600);
+    }
+
+    /** totalLength = lessons.total_length (V5); 600 cho khớp các test cũ dùng video 600 giây. */
+    private static LessonContextView lesson(String publicationState, String contentType, Integer totalLength) {
         return new LessonContextView() {
             @Override public Long getLessonId() { return LESSON_ID; }
             @Override public String getLessonTitle() { return "Lesson"; }
-            @Override public String getContentType() { return "VIDEO"; }
+            @Override public String getContentType() { return contentType; }
             @Override public Long getCourseId() { return COURSE_ID; }
             @Override public String getCourseTitle() { return "Spring Boot 101"; }
             @Override public String getPublicationState() { return publicationState; }
+            @Override public Integer getTotalLength() { return totalLength; }
         };
     }
 
@@ -330,3 +382,4 @@ class LearningProgressServiceTest {
         };
     }
 }
+

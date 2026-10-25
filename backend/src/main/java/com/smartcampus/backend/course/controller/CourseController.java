@@ -33,23 +33,29 @@ public class CourseController {
         this.service = service;
     }
 
+    /** Students only see PUBLISHED courses (filtered in CourseService). */
     @GetMapping
     public List<CourseResponse> findAll() {
         return service.findAll();
     }
 
+    /** A student gets 404 for a course that is not PUBLISHED. */
     @GetMapping("/{id}")
     public CourseResponse findById(@PathVariable @Positive Long id) {
         return service.findById(id);
     }
 
+    /** Only lecturers and admins create courses; the creator is the logged-in user. */
     @PostMapping
+    @PreAuthorize("hasAnyRole('LECTURER', 'ADMIN')")
     public ResponseEntity<CourseResponse> create(@Valid @RequestBody CreateCourseRequest request) {
         CourseResponse response = service.create(request);
         return ResponseEntity.created(URI.create("/api/courses/" + response.id())).body(response);
     }
 
+    /** Only the course's lecturer (created_by or course_lecturers) or an admin (checked in CourseService). */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('LECTURER', 'ADMIN')")
     public CourseResponse update(@PathVariable @Positive Long id,
                                  @Valid @RequestBody UpdateCourseRequest request) {
         return service.update(id, request);

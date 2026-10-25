@@ -1,4 +1,3 @@
-
 package com.smartcampus.backend.learningcontent;
 
 import com.smartcampus.backend.auth.security.CustomUserDetails;
@@ -16,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -70,7 +70,7 @@ class LearningContentTest {
                     .thenReturn(List.of(chapter));
 
             List<ChapterResponse> result =
-                    service.getChaptersByCourse(10L);
+                    service.getChaptersByCourse(10L, user);
 
             assertEquals(1, result.size());
             assertEquals("Introduction", result.get(0).title());
@@ -83,7 +83,7 @@ class LearningContentTest {
 
             assertHttpStatus(
                     HttpStatus.NOT_FOUND,
-                    () -> service.getChaptersByCourse(99L)
+                    () -> service.getChaptersByCourse(99L, user)
             );
         }
 
@@ -235,7 +235,7 @@ class LearningContentTest {
             chapterExists();
 
             assertTrue(
-                    service.getLessons(10L, 2L).isEmpty()
+                    service.getLessons(10L, 2L, user).isEmpty()
             );
         }
 
@@ -252,7 +252,7 @@ class LearningContentTest {
                             10L,
                             2L,
                             new CreateLessonRequest(
-                                    " Java ", "VIDEO", 0
+                                    " Java ", "VIDEO", 0, null
                             ),
                             user
                     );
@@ -262,6 +262,46 @@ class LearningContentTest {
 
             verify(accessService)
                     .requireManagePermission(10L, user);
+        }
+
+        @Test
+        void shouldStoreTotalLengthForVideoLesson() {
+            chapterExists();
+
+            when(lessonRepository.save(any(Lesson.class)))
+                    .thenAnswer(invocation ->
+                            invocation.getArgument(0));
+
+            LessonResponse result =
+                    service.createLesson(
+                            10L,
+                            2L,
+                            new CreateLessonRequest(
+                                    "Intro video", "VIDEO", 0, 600
+                            ),
+                            user
+                    );
+
+            assertEquals(600, result.totalLength());
+        }
+
+        @Test
+        void shouldRejectTotalLengthForTextLesson() {
+            chapterExists();
+
+            assertHttpStatus(
+                    HttpStatus.BAD_REQUEST,
+                    () -> service.createLesson(
+                            10L,
+                            2L,
+                            new CreateLessonRequest(
+                                    "Reading", "TEXT", 0, 10
+                            ),
+                            user
+                    )
+            );
+
+            verify(lessonRepository, never()).save(any());
         }
 
         @Test
@@ -278,7 +318,7 @@ class LearningContentTest {
                             10L,
                             2L,
                             new CreateLessonRequest(
-                                    "A", "VIDEO", 0
+                                    "A", "VIDEO", 0, null
                             ),
                             user
                     )
@@ -294,7 +334,7 @@ class LearningContentTest {
 
             assertHttpStatus(
                     HttpStatus.NOT_FOUND,
-                    () -> service.getLessons(10L, 2L)
+                    () -> service.getLessons(10L, 2L, user)
             );
         }
 
@@ -314,7 +354,7 @@ class LearningContentTest {
                             2L,
                             3L,
                             new UpdateLessonRequest(
-                                    "New", "VIDEO", 1
+                                    "New", "VIDEO", 1, null
                             ),
                             user
                     );
@@ -342,7 +382,7 @@ class LearningContentTest {
                             2L,
                             3L,
                             new UpdateLessonRequest(
-                                    "B", "PDF", 1
+                                    "B", "PDF", 1, null
                             ),
                             user
                     )
@@ -371,7 +411,7 @@ class LearningContentTest {
                             2L,
                             3L,
                             new UpdateLessonRequest(
-                                    "B", "PDF", 1
+                                    "B", "PDF", 1, null
                             ),
                             user
                     )
@@ -426,7 +466,7 @@ class LearningContentTest {
             lessonExists();
 
             assertTrue(
-                    service.getMaterials(10L, 2L, 3L).isEmpty()
+                    service.getMaterials(10L, 2L, 3L, user).isEmpty()
             );
         }
 
@@ -537,7 +577,7 @@ class LearningContentTest {
 
             assertHttpStatus(
                     HttpStatus.NOT_FOUND,
-                    () -> service.getMaterials(10L, 2L, 3L)
+                    () -> service.getMaterials(10L, 2L, 3L, user)
             );
         }
 
@@ -572,6 +612,7 @@ class LearningContentTest {
     class AuthorizationTests {
 
         @Mock CourseRepository courseRepository;
+        @Mock JdbcTemplate jdbcTemplate;
         @Mock CustomUserDetails user;
 
         @InjectMocks CourseAccessService service;
@@ -688,3 +729,4 @@ class LearningContentTest {
         }
     }
 }
+

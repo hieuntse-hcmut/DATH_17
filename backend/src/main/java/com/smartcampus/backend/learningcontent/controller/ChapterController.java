@@ -25,9 +25,10 @@ public class ChapterController {
 
     @GetMapping
     public List<ChapterResponse> getChapters(
-            @PathVariable Long courseId
+            @PathVariable Long courseId,
+            @AuthenticationPrincipal CustomUserDetails currentUser
     ) {
-        return chapterService.getChaptersByCourse(courseId);
+        return chapterService.getChaptersByCourse(courseId, currentUser);
     }
 
     @PostMapping
