@@ -5,7 +5,9 @@ import com.smartcampus.backend.auth.dto.LoginRequest;
 import com.smartcampus.backend.auth.dto.RegisterRequest;
 import org.springframework.http.HttpStatus;
 import com.smartcampus.backend.auth.service.AuthService;
-
+import com.smartcampus.backend.auth.dto.CurrentUserResponse;
+import com.smartcampus.backend.auth.security.CustomUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +32,13 @@ public class AuthController {
     public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
         authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+    @GetMapping("/me")
+    public ResponseEntity<CurrentUserResponse> me(
+            @AuthenticationPrincipal CustomUserDetails currentUser
+    ) {
+        return ResponseEntity.ok(
+                authService.getCurrentUser(currentUser)
+        );
     }
 }
