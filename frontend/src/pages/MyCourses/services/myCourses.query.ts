@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-import { getCourseProgress } from './myCourses.api'
-import type { ICourseProgress } from "./myCourses.type"
+import { getMyCourses } from './myCourses.api'
+import type { ICourse } from "./myCourses.type"
 
-export const useGetCourseProgress = (options?: any) => {
-  return useQuery<ICourseProgress[]>({
+export const useGetMyCourses = (options?: any) => {
+  return useQuery<ICourse[]>({
     queryKey: ['progess-list'],
-    queryFn: () => getCourseProgress(),
+    queryFn: () => getMyCourses(),
     ...options
   })
 }

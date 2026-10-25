@@ -49,6 +49,51 @@
     "locked": "Chương này đang bị khóa",
     "notFound": "Không tìm thấy bài học",
     "close": "Đóng",
+    "add": "Thêm",
     "docsEmpty": "Bài học này chưa có tài liệu hoặc ghi chú.",
-    "download": "Tải xuống {{name}}"
+    "download": "Tải xuống {{name}}",
+    "addCourse": {
+        "button": "Thêm chương mới",
+        "addChapterTitle": "Thêm chương mới cho môn:",
+        "chapterName": "Tên chương",
+        "chapterPlaceholder": "Ví dụ: Chương 3: Collections",
+        "success": "Thêm chương mới thành công"
+    },
+    "editChapter": {
+        "button": "Sửa chương",
+        "title": "Sửa chương cho môn:",
+        "save": "Lưu",
+        "delete": "Xóa",
+        "confirm": "Xác nhận xóa",
+        "confirmDelete": "Xóa chương này? Các bài học và tài liệu bên trong cũng có thể bị xóa theo.",
+        "success": "Đã cập nhật chương",
+        "deleted": "Đã xóa chương"
+    },
+    "lesson": {
+    "addButton": "Thêm bài học",
+    "addTitle": "Thêm bài học mới",
+    "editTitle": "Sửa bài học",
+    "edit": "Sửa bài học",
+    "name": "Tên bài học",
+    "placeholder": "VD: Bài 4: Kế thừa",
+    "type": "Loại nội dung",
+    "added": "Đã thêm bài học",
+    "updated": "Đã cập nhật bài học",
+    "deleted": "Đã xóa bài học",
+    "confirmDelete": "Xóa bài học này? Các tài liệu bên trong cũng có thể bị xóa theo."
+  },
+  "material": {
+    "manage": "Tài liệu của bài học",
+    "addButton": "Thêm tài liệu",
+    "addTitle": "Thêm tài liệu",
+    "editTitle": "Sửa tài liệu",
+    "edit": "Sửa tài liệu",
+    "name": "Tên tài liệu",
+    "url": "Đường dẫn file",
+    "type": "Loại file",
+    "added": "Đã thêm tài liệu",
+    "updated": "Đã cập nhật tài liệu",
+    "deleted": "Đã xóa tài liệu",
+    "confirmDelete": "Xóa tài liệu này?"
+  }
 }

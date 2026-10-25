@@ -1,12 +1,31 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { Lesson } from "../services/courseDetail.type";
+import type { ILesson, IMaterial } from "../services/courseDetail.type";
 import AttachmentCard from "./AttachmentCard";
 import CodeBlock from "./CodeBlock";
+import MaterialFormButton from "./MaterialFormButton";
 
 type Tab = "docs" | "discussion";
 
-export default function MaterialsTab({ lesson }: { lesson: Lesson }) {
+interface Props {
+    courseId?: number;
+    chapterId?: number;
+    lessonId?: number;
+    lessonTitle?: string;
+    isEdit?: boolean;
+    materials?: IMaterial[];
+    isStudent: boolean
+}
+
+export default function MaterialsTab({
+    courseId,
+    chapterId,
+    lessonId,
+    lessonTitle,
+    isEdit = false,
+    materials,
+    isStudent
+}: Readonly<Props>) {
     const { t } = useTranslation("courseDetail");
     const [tab, setTab] = useState<Tab>("docs");
 
@@ -15,8 +34,9 @@ export default function MaterialsTab({ lesson }: { lesson: Lesson }) {
         { key: "discussion", label: t("tabs.discussion") },
     ];
 
-    const hasAttachments = !!lesson.attachments?.length;
-    const docsEmpty = !lesson.note && !lesson.code && !hasAttachments;
+    // const hasAttachments = !!lesson.attachments?.length;
+    // const docsEmpty = !lesson.note && !lesson.code && !hasAttachments;
+    const docsEmpty = true;
 
     return (
         <div>
@@ -49,14 +69,14 @@ export default function MaterialsTab({ lesson }: { lesson: Lesson }) {
                 id="panel-docs"
                 aria-labelledby="tab-docs"
                 hidden={tab !== "docs"}
-                className="mt-4 space-y-4"
+                className="mt-4 space-y-4 rounded-xl border border-dashed border-border p-6 text-center text-sm text-fg-subtle"
             >
                 {docsEmpty && (
                     <p className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-fg-subtle">
                         {t("docsEmpty")}
                     </p>
                 )}
-                {lesson.note && (
+                {/* {lesson.note && (
                     <p className="text-sm text-fg-muted">{lesson.note}</p>
                 )}
                 {hasAttachments && (
@@ -71,7 +91,15 @@ export default function MaterialsTab({ lesson }: { lesson: Lesson }) {
                         filename={lesson.code.filename}
                         content={lesson.code.content}
                     />
-                )}
+                )} */}
+                <MaterialFormButton
+                    courseId={courseId}
+                    chapterId={chapterId}
+                    lessonId={lessonId}
+                    lessonTitle={lessonTitle}
+                    material={materials?.[0]}
+                    isEdit={true}
+                />
             </div>
 
             <div
@@ -81,7 +109,7 @@ export default function MaterialsTab({ lesson }: { lesson: Lesson }) {
                 hidden={tab !== "discussion"}
                 className="mt-4"
             >
-                {/* TODO */}
+                {/* TODO check type material with BE*/}
             </div>
         </div>
     );

@@ -4,22 +4,40 @@ import { useGetCourseToc, useGetCourseProgress } from './courseDetail.query'
 import type {
   IChapterWithProgress,
   ILessonWithProgress,
-  ICourseTocWithProgress
+  ICourseTocWithProgress,
+  ICourseToc,
 } from './courseDetail.type'
 
-export const useCourseTocWithProgress = (courseId?: number) => {
-  const tocQuery = useGetCourseToc(courseId)
-  const progressQuery = useGetCourseProgress(courseId)
+export interface ICourseTocData {
+  chapters: Array<ICourseToc | IChapterWithProgress>
+  progressSummary?: ICourseTocWithProgress['progressSummary']
+}
 
-  const data = useMemo<ICourseTocWithProgress | undefined>(() => {
-    if (!tocQuery.data || !progressQuery.data) return undefined
+export interface ICourseTocWithProgressReturn {
+  data: ICourseTocData | undefined
+  isLoading: boolean
+  isError: boolean
+}
+
+export const useCourseTocWithProgress = (
+  courseId?: number,
+  isStudent?: boolean
+): ICourseTocWithProgressReturn => {
+  const tocQuery = useGetCourseToc(courseId)
+  const progressQuery = useGetCourseProgress(courseId, isStudent)
+
+  const data = useMemo<ICourseTocData | undefined>(() => {
+    if (!tocQuery.data) return undefined
+
+    if (!isStudent) return { chapters: tocQuery.data }
+
+    if (!progressQuery.data) return undefined
 
     const { lessons, ...progressSummary } = progressQuery.data
-
     const progressMap = new Map(lessons.map((l) => [l.lessonId, l]))
 
     const chapters = tocQuery.data.map((ch): IChapterWithProgress => {
-      const lessons: ILessonWithProgress[] = ch.lessons.map((l) => {
+      const chLessons: ILessonWithProgress[] = ch.lessons.map((l) => {
         const p = progressMap.get(l.id)
         return {
           ...l,
@@ -29,23 +47,23 @@ export const useCourseTocWithProgress = (courseId?: number) => {
         }
       })
 
-      const completedLessons = lessons.filter((l) => l.completed).length
+      const completedLessons = chLessons.filter((l) => l.completed).length
 
       return {
         ...ch,
-        lessons,
-        totalLessons: lessons.length,
+        lessons: chLessons,
+        totalLessons: chLessons.length,
         completedLessons,
-        isCompleted: lessons.length > 0 && completedLessons === lessons.length,
+        isCompleted: chLessons.length > 0 && completedLessons === chLessons.length,
       }
     })
 
     return { chapters, progressSummary }
-  }, [tocQuery.data, progressQuery.data])
+  }, [isStudent, tocQuery.data, progressQuery.data])
 
   return {
     data,
-    isLoading: tocQuery.isLoading || progressQuery.isLoading,
-    isError: tocQuery.isError || progressQuery.isError,
+    isLoading: tocQuery.isLoading || (!!isStudent && progressQuery.isLoading),
+    isError: tocQuery.isError || (!!isStudent && progressQuery.isError),
   }
 }
