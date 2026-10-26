@@ -18,8 +18,8 @@ export default function MainLayout() {
                     onCloseNotification={() => setIsNotifOpen(false)} 
                 />
                 {/* Khoảng đệm pb-16 trên mobile giúp nội dung không bị thanh điều hướng dưới đáy che khuất */}
-                <div className="md:pl-66 pt-16 pb-16 md:pb-0 flex flex-col flex-1 w-full overflow-y-auto">
-                    <div className="flex-1 w-full p-4 md:p-6">
+                <div className="lg:pl-66 pt-16 pb-16 lg:pb-0 flex flex-col flex-1 w-full overflow-y-auto">
+                    <div className="flex-1 w-full p-4 lg:p-6">
                         <Outlet />
                     </div>
                 </div>

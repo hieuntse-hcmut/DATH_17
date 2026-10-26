@@ -244,7 +244,7 @@ export default function CourseDetailPage() {
                     />
                     <div
                         data-toc-scroll
-                        className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-surface p-3"
+                        className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-surface p-3 mb-16"
                     >
                         {panel}
                     </div>
