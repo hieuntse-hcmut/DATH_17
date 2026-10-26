@@ -1,0 +1,46 @@
+{
+  "profile": {
+    "title": "Profile",
+    "loading": "Loading profile...",
+    "role": "Role",
+    "personal_info": "Personal Information",
+    "username": "USERNAME",
+    "email": "EMAIL",
+    "account_id": "ACCOUNT ID",
+    "academic_email": "ACADEMIC EMAIL",
+    "personal_email": "PERSONAL EMAIL",
+    "student_id_major": "STUDENT ID & MAJOR",
+    "phone": "CONTACT PHONE",
+    "academic_advisor": "ACADEMIC ADVISOR",
+    "advisor_office": "Office C1-304",
+
+    "security_settings": "Settings & Security",
+    "change_password": "Change Password",
+    "click_to_change_pass": "This feature is not available on this page yet.",
+    "last_changed_days": "Last updated {{count}} days ago",
+    "theme": "Theme Mode",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "theme_desc": "Entire website",
+    "language": "Language Customization",
+    "lang_name": "English",
+
+    "help_legal": "Help & Legal",
+    "policies": "Policies & Terms",
+    "agreed_on_signup": "Platform information and terms",
+    "hotline": "Academic Support Hotline",
+    "logout": "Log out of account",
+
+    "academic_activities": "Academic Activities",
+    "academic_sub": "Track your learning progress",
+    "view_all_courses": "View all courses",
+    "lecturer": "Lecturer",
+    "progress": "Program progress",
+    "continue_learning": "Continue learning",
+    "lessons_complete": "{{complete}} / {{total}} lessons completed",
+    "load_error": "Could not load your profile. Please try again.",
+    "courses_error": "Could not load your courses. Please try again.",
+    "retry": "Try again",
+    "no_courses": "You do not have any courses yet."
+  }
+}

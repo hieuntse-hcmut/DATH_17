@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { Link } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { 
     faMagnifyingGlass,  
@@ -120,13 +121,13 @@ export default function Header() {
 
                             {/* Danh sách menu liên kết */}
                             <div className="py-1 border-b border-[#E2E7FF] dark:border-gray-800 text-sm text-[#464555] dark:text-gray-300">
-                                <a href="#" className="flex items-center justify-between px-4 py-2.5 hover:bg-[#F2F3FF] dark:hover:bg-gray-800 transition-colors">
+                                <Link to="/profile" onClick={() => setIsOpen(false)} className="flex items-center justify-between px-4 py-2.5 hover:bg-[#F2F3FF] dark:hover:bg-gray-800 transition-colors">
                                     <div className="flex items-center gap-3">
                                         <FontAwesomeIcon icon={faUser} className="w-4 h-4 text-[#777587] dark:text-gray-400" />
                                         <span>{t('header.profile', 'Hồ sơ cá nhân')}</span>
                                     </div>
                                     <span className="text-gray-400">›</span>
-                                </a>
+                                </Link>
                                 <a href="#" className="flex items-center px-4 py-2.5 hover:bg-[#F2F3FF] dark:hover:bg-gray-800 transition-colors gap-3">
                                     <FontAwesomeIcon icon={faFileLines} className="w-4 h-4 text-[#777587] dark:text-gray-400" />
                                     <span>{t('header.grades', 'Bảng điểm chi tiết')}</span>

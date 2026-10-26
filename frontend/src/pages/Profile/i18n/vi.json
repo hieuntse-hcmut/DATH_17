@@ -1,0 +1,46 @@
+{
+  "profile": {
+    "title": "Hồ sơ cá nhân",
+    "loading": "Đang tải hồ sơ...",
+    "role": "Vai trò",
+    "personal_info": "Thông tin cá nhân",
+    "username": "TÊN ĐĂNG NHẬP",
+    "email": "EMAIL",
+    "account_id": "MÃ TÀI KHOẢN",
+    "academic_email": "EMAIL HỌC VIỆN",
+    "personal_email": "EMAIL CÁ NHÂN",
+    "student_id_major": "MSSV • CHUYÊN NGÀNH",
+    "phone": "SỐ ĐIỆN THOẠI LIÊN LẠC",
+    "academic_advisor": "CỐ VẤN HỌC THUẬT",
+    "advisor_office": "Văn phòng C1-304",
+
+    "security_settings": "Cài đặt & bảo mật",
+    "change_password": "Đổi mật khẩu",
+    "click_to_change_pass": "Tính năng hiện chưa khả dụng trên trang này.",
+    "last_changed_days": "Cập nhật lần cuối {{count}} ngày trước",
+    "theme": "Chế độ giao diện",
+    "theme_light": "Sáng",
+    "theme_dark": "Tối",
+    "theme_desc": "Toàn bộ trang web",
+    "language": "Tùy chỉnh ngôn ngữ",
+    "lang_name": "Tiếng Việt",
+
+    "help_legal": "Trợ giúp & pháp lý",
+    "policies": "Các chính sách",
+    "agreed_on_signup": "Thông tin và điều khoản sử dụng",
+    "hotline": "Hotline hỗ trợ học vụ",
+    "logout": "Đăng xuất tài khoản",
+
+    "academic_activities": "Hoạt động học thuật",
+    "academic_sub": "Theo dõi tiến độ học tập của bạn",
+    "view_all_courses": "Xem toàn bộ khóa học",
+    "lecturer": "Giảng viên",
+    "progress": "Tiến độ chương trình",
+    "continue_learning": "Tiếp tục học",
+    "lessons_complete": "{{complete}} / {{total}} bài học đã hoàn thành",
+    "load_error": "Không thể tải hồ sơ. Vui lòng thử lại.",
+    "courses_error": "Không thể tải danh sách khóa học. Vui lòng thử lại.",
+    "retry": "Thử lại",
+    "no_courses": "Bạn chưa có khóa học nào."
+  }
+}
