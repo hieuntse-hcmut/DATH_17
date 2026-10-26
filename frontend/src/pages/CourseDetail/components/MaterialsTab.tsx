@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { ILesson, IMaterial } from "../services/courseDetail.type";
+import type { IMaterial } from "../services/courseDetail.type";
+import { isVideoMaterial } from "../services/material.util";
 import AttachmentCard from "./AttachmentCard";
-import CodeBlock from "./CodeBlock";
 import MaterialFormButton from "./MaterialFormButton";
 
 type Tab = "docs" | "discussion";
@@ -12,9 +12,9 @@ interface Props {
     chapterId?: number;
     lessonId?: number;
     lessonTitle?: string;
-    isEdit?: boolean;
     materials?: IMaterial[];
-    isStudent: boolean
+    loading?: boolean;
+    isStudent: boolean;
 }
 
 export default function MaterialsTab({
@@ -22,9 +22,9 @@ export default function MaterialsTab({
     chapterId,
     lessonId,
     lessonTitle,
-    isEdit = false,
     materials,
-    isStudent
+    loading,
+    isStudent,
 }: Readonly<Props>) {
     const { t } = useTranslation("courseDetail");
     const [tab, setTab] = useState<Tab>("docs");
@@ -34,9 +34,12 @@ export default function MaterialsTab({
         { key: "discussion", label: t("tabs.discussion") },
     ];
 
-    // const hasAttachments = !!lesson.attachments?.length;
-    // const docsEmpty = !lesson.note && !lesson.code && !hasAttachments;
-    const docsEmpty = true;
+    // Video đã có trình phát riêng, tab này chỉ hiện tài liệu
+    const docs = (materials ?? []).filter((m) => !isVideoMaterial(m));
+
+    // Chỉ giảng viên/admin mới quản lý được, và cần đủ id của chương + bài
+    const canManage =
+        !isStudent && chapterId !== undefined && lessonId !== undefined;
 
     return (
         <div>
@@ -69,37 +72,46 @@ export default function MaterialsTab({
                 id="panel-docs"
                 aria-labelledby="tab-docs"
                 hidden={tab !== "docs"}
-                className="mt-4 space-y-4 rounded-xl border border-dashed border-border p-6 text-center text-sm text-fg-subtle"
+                className="mt-4 space-y-4"
             >
-                {docsEmpty && (
+                {loading ? (
+                    <p className="p-6 text-center text-sm text-fg-subtle">
+                        ...
+                    </p>
+                ) : docs.length === 0 ? (
                     <p className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-fg-subtle">
                         {t("docsEmpty")}
                     </p>
-                )}
-                {/* {lesson.note && (
-                    <p className="text-sm text-fg-muted">{lesson.note}</p>
-                )}
-                {hasAttachments && (
+                ) : (
                     <div className="grid gap-3 sm:grid-cols-2">
-                        {lesson.attachments!.map((f) => (
-                            <AttachmentCard key={f.id} file={f} />
+                        {docs.map((m) => (
+                            <div key={m.id} className="flex items-start gap-1">
+                                <div className="min-w-0 flex-1">
+                                    <AttachmentCard material={m} />
+                                </div>
+                                {canManage && (
+                                    <MaterialFormButton
+                                        isEdit
+                                        courseId={courseId}
+                                        chapterId={chapterId}
+                                        lessonId={lessonId}
+                                        lessonTitle={lessonTitle}
+                                        material={m}
+                                    />
+                                )}
+                            </div>
                         ))}
                     </div>
                 )}
-                {lesson.code && (
-                    <CodeBlock
-                        filename={lesson.code.filename}
-                        content={lesson.code.content}
+
+                {canManage && (
+                    <MaterialFormButton
+                        courseId={courseId}
+                        chapterId={chapterId}
+                        lessonId={lessonId}
+                        lessonTitle={lessonTitle}
                     />
-                )} */}
-                <MaterialFormButton
-                    courseId={courseId}
-                    chapterId={chapterId}
-                    lessonId={lessonId}
-                    lessonTitle={lessonTitle}
-                    material={materials?.[0]}
-                    isEdit={true}
-                />
+                )}
             </div>
 
             <div
@@ -109,7 +121,7 @@ export default function MaterialsTab({
                 hidden={tab !== "discussion"}
                 className="mt-4"
             >
-                {/* TODO check type material with BE*/}
+                {/* TODO: thảo luận */}
             </div>
         </div>
     );

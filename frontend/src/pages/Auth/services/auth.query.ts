@@ -35,9 +35,11 @@ export const useRegister = () => {
 }
 
 export const useLogout = () => {
+  const navigate = useNavigate()
   const qc = useQueryClient()
   return () => {
     logout()
     qc.clear()
+    void navigate("/login");
   }
 }

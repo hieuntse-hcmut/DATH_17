@@ -103,7 +103,7 @@ export default function MyCoursesPage() {
                         {t("subtitle")}
                     </p>
                 </div>
-                <button
+                {/* <button
                     type="button"
                     className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
@@ -113,7 +113,8 @@ export default function MyCoursesPage() {
                         aria-hidden
                     />{" "}
                     {t("register")}
-                </button>
+                </button> */}
+                {/* TODO */}
             </div>
 
             <CourseToolbar

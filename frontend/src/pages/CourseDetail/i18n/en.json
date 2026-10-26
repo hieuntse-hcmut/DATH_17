@@ -51,7 +51,6 @@
     "close": "Close",
     "add": "Add",
     "docsEmpty": "No materials or notes for this lesson yet.",
-    "download": "Download {{name}}",
     "addCourse": {
         "button": "Add new chapter",
         "addChapterTitle": "Add new chapter for course:",
@@ -95,5 +94,8 @@
     "updated": "Material updated",
     "deleted": "Material deleted",
     "confirmDelete": "Delete this material?"
-  }
+  },
+    "download": "Download {{name}}",
+    "play": "Play",
+    "pause": "Pause"
 }

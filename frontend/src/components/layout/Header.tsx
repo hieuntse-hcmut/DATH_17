@@ -14,6 +14,7 @@ import {
 import { supportedLngs } from "~/i18n"
 import logo from "../../assets/logo.png"
 import { useMe } from "~/services/me.query"
+import { useLogout } from "~/pages/Auth/services/auth.query"
 
 type Theme = 'light' | 'dark'
 const STORAGE_KEY = 'theme'
@@ -26,6 +27,7 @@ export default function Header() {
     const {data: me} = useMe();
     const [isOpen, setIsOpen] = useState(false)
     const [theme, setTheme] = useState<Theme>(getCurrentTheme)
+    const logout = useLogout()
 
     const toggleTheme = (newTheme: Theme) => {
         document.documentElement.classList.toggle('dark', newTheme === 'dark')
@@ -37,7 +39,12 @@ export default function Header() {
         i18n.changeLanguage(lng)
     }
 
-    const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+    const capitalize = (str: string) => {
+        if (str?.trim()) {
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+        }
+        return ""
+    }
     return (
         <header className="fixed top-0 inset-x-0 h-16 bg-[#FAF8FF]/95 md:bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-[#E2E7FF] dark:border-gray-800 px-4 md:px-10 flex items-center justify-between z-50 transition-colors">
             {/* Logo & Brand Container */}
@@ -179,7 +186,7 @@ export default function Header() {
 
                             {/* Nút đăng xuất */}
                             <div className="pt-2 px-2">
-                                <button className="w-full flex items-center gap-3 px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl font-medium text-sm transition-colors">
+                                <button onClick={logout} className="w-full flex items-center gap-3 px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl font-medium text-sm transition-colors">
                                     <FontAwesomeIcon icon={faRightFromBracket} className="w-4 h-4" />
                                     <span>{t('header.logout', 'Đăng xuất tài khoản')}</span>
                                 </button>

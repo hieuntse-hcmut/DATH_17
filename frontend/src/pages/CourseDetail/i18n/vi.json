@@ -95,5 +95,7 @@
     "updated": "Đã cập nhật tài liệu",
     "deleted": "Đã xóa tài liệu",
     "confirmDelete": "Xóa tài liệu này?"
-  }
+  },
+    "play": "Phát", 
+    "pause": "Tạm dừng"
 }
