@@ -18,7 +18,6 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: login,
     onSuccess: (username) => {
-      localStorage.setItem('username', username)
       qc.setQueryData(['me'], username)
     },
   })
