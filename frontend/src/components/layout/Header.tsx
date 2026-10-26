@@ -13,6 +13,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { supportedLngs } from "~/i18n"
 import logo from "../../assets/logo.png"
+import { useMe } from "~/services/me.query"
+import { useLogout } from "~/pages/Auth/services/auth.query"
 
 type Theme = 'light' | 'dark'
 const STORAGE_KEY = 'theme'
@@ -22,8 +24,10 @@ const getCurrentTheme = (): Theme =>
 
 export default function Header() {
     const { t, i18n } = useTranslation()
+    const {data: me} = useMe();
     const [isOpen, setIsOpen] = useState(false)
     const [theme, setTheme] = useState<Theme>(getCurrentTheme)
+    const logout = useLogout()
 
     const toggleTheme = (newTheme: Theme) => {
         document.documentElement.classList.toggle('dark', newTheme === 'dark')
@@ -35,8 +39,14 @@ export default function Header() {
         i18n.changeLanguage(lng)
     }
 
+    const capitalize = (str: string) => {
+        if (str?.trim()) {
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+        }
+        return ""
+    }
     return (
-        <header className="fixed top-0 inset-x-0 h-16 bg-[#FAF8FF]/95 md:bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-[#E2E7FF] dark:border-gray-800 px-4 md:px-10 flex items-center justify-between z-30 transition-colors">
+        <header className="fixed top-0 inset-x-0 h-16 bg-[#FAF8FF]/95 md:bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-[#E2E7FF] dark:border-gray-800 px-4 md:px-10 flex items-center justify-between z-50 transition-colors">
             {/* Logo & Brand Container */}
             <div className="flex items-center gap-3 md:gap-4 md:w-[264px]">
                 <div className="w-8 h-8 flex items-center justify-center bg-[#4F46E5] text-white rounded-md font-bold overflow-hidden shrink-0">
@@ -87,10 +97,10 @@ export default function Header() {
                         <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Avatar" className="w-8 h-8 rounded-full ring-1 ring-[#E2E7FF] dark:ring-gray-700 object-cover" />
                         <div className="hidden md:flex flex-col">
                             <span className="font-sans font-semibold text-xs leading-4 tracking-[0.24px] text-[#131B2E] dark:text-white">
-                                Nguyễn Văn Minh
+                                {me?.fullName}
                             </span>
                             <span className="font-sans font-semibold text-[11px] leading-3.5 tracking-[0.33px] text-[#464555] dark:text-gray-400">
-                                {t('header.student', 'Sinh viên')}
+                                {me && capitalize(me?.role)}
                             </span>
                         </div>
                         <FontAwesomeIcon icon={faChevronDown} className={`hidden md:inline-block w-2 h-1.5 text-[#464555] dark:text-gray-400 ml-1 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -103,8 +113,8 @@ export default function Header() {
                             <div className="px-4 pb-3 border-b border-[#E2E7FF] dark:border-gray-800 flex items-center gap-3">
                                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Avatar" className="w-12 h-12 rounded-xl object-cover ring-1 ring-[#E2E7FF] dark:ring-gray-700" />
                                 <div className="flex flex-col">
-                                    <span className="font-sans font-bold text-sm text-[#131B2E] dark:text-white">Nguyễn Văn Minh</span>
-                                    <span className="font-sans text-[11px] text-[#777587] dark:text-gray-400">minh.nv2021001@sis.campus.edu.vn</span>
+                                    <span className="font-sans font-bold text-sm text-[#131B2E] dark:text-white">{me?.fullName}</span>
+                                    <span className="font-sans text-[11px] text-[#777587] dark:text-gray-400">{me?.email}</span>
                                 </div>
                             </div>
 
@@ -176,7 +186,7 @@ export default function Header() {
 
                             {/* Nút đăng xuất */}
                             <div className="pt-2 px-2">
-                                <button className="w-full flex items-center gap-3 px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl font-medium text-sm transition-colors">
+                                <button onClick={logout} className="w-full flex items-center gap-3 px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl font-medium text-sm transition-colors">
                                     <FontAwesomeIcon icon={faRightFromBracket} className="w-4 h-4" />
                                     <span>{t('header.logout', 'Đăng xuất tài khoản')}</span>
                                 </button>

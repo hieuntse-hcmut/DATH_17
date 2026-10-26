@@ -7,21 +7,28 @@ import {
     faFileLines,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type {
     IChapterWithProgress,
     ILessonWithProgress,
+    ICourseToc,
+    ILesson
 } from "../services/courseDetail.type";
+import ChapterFormButton from "./ChapterFormButton";
+import LessonFormButton from "./LessonFormButton";
 
 interface Props {
-    chapters: IChapterWithProgress[];
+    chapters: Array<ICourseToc | IChapterWithProgress>
     currentLessonId: number;
     completedIds: Set<number>;
     completedCount: number;
     totalLessons: number;
     defaultOpenChapterId?: number;
     onSelectLesson: (lessonId: number) => void;
+    isStudent: boolean;
+    courseId?: number
+    courseTitle?: string
 }
 
 // 600 -> "10:00"
@@ -84,21 +91,28 @@ function LessonRow({
     lesson,
     active,
     completed,
+    showProgress = true,
     onClick,
+    children
 }: {
-    lesson: ILessonWithProgress;
+    lesson: ILessonWithProgress | ILesson;
     active: boolean;
     completed: boolean;
+    showProgress?: boolean;
     onClick: () => void;
+    children?: ReactNode;
 }) {
     const { t } = useTranslation("courseDetail");
-    const isDocument = lesson.contentType === "DOCUMENT";
-    const isVideo = lesson.contentType === "VIDEO";
+    const contentType = "contentType" in lesson ? lesson.contentType : undefined;
+    const lastPosition = showProgress && "lastPosition" in lesson ? (lesson.lastPosition ?? 0) : 0;
+    const isDocument = contentType === "DOCUMENT";
+    const isVideo = contentType === "VIDEO";
+    const typeLabel = contentType
+        ? t(`contentType.${contentType}`, {
+              defaultValue: isDocument ? "Tài liệu" : isVideo ? "Video" : "",
+          })
+        : "";
     const ref = useRef<HTMLButtonElement>(null);
-
-    const typeLabel = t(`contentType.${lesson.contentType}`, {
-        defaultValue: isDocument ? "Tài liệu" : isVideo ? "Video" : "",
-    });
 
     // Cuộn bài đang học vào tầm nhìn trong vùng cuộn của mục lục
     useEffect(() => {
@@ -126,25 +140,28 @@ function LessonRow({
                 ref={ref}
                 type="button"
                 onClick={onClick}
-                className="w-full rounded-xl border border-primary/30 bg-surface p-3 text-left shadow-sm"
+                className="w-full rounded-xl border border-primary/30 bg-surface p-3 text-left shadow-sm flex justify-between"
             >
-                <div className="flex items-center gap-2">
-                    <FontAwesomeIcon
-                        icon={isDocument ? faFileLines : faCirclePlay}
-                        className="text-primary"
-                    />
-                    <span className="rounded bg-primary px-1.5 py-0.5 font-label text-[10px] font-bold text-on-primary">
-                        {t("status.current")}
-                    </span>
-                    {isVideo && lesson.lastPosition > 0 && (
-                        <span className="font-label text-xs text-fg-muted">
-                            {formatTime(lesson.lastPosition)}
+                <div>
+                    <div className="flex items-center gap-2">
+                        <FontAwesomeIcon
+                            icon={isDocument ? faFileLines : faCirclePlay}
+                            className="text-primary"
+                        />
+                        <span className="rounded bg-primary px-1.5 py-0.5 font-label text-[10px] font-bold text-on-primary">
+                            {t("status.current")}
                         </span>
-                    )}
+                        {isVideo && lastPosition > 0 && (
+                            <span className="font-label text-xs text-fg-muted">
+                                {formatTime(lastPosition)}
+                            </span>
+                        )}
+                    </div>
+                    <p className="mt-2 text-sm font-semibold text-primary">
+                        {lesson.title}
+                    </p>
                 </div>
-                <p className="mt-2 text-sm font-semibold text-primary">
-                    {lesson.title}
-                </p>
+                {children}
             </button>
         );
     }
@@ -190,15 +207,19 @@ export default function CurriculumPanel({
     chapters,
     currentLessonId,
     completedIds,
-    completedCount,
+    completedCount = 0,
     totalLessons,
     defaultOpenChapterId,
     onSelectLesson,
+    isStudent,
+    courseId,
+    courseTitle
 }: Props) {
     const { t } = useTranslation("courseDetail");
     const [openId, setOpenId] = useState<number | undefined>(
         defaultOpenChapterId,
     );
+
     const percent = totalLessons
         ? Math.round((completedCount / totalLessons) * 100)
         : 0;
@@ -206,6 +227,12 @@ export default function CurriculumPanel({
     useEffect(() => {
         setOpenId(defaultOpenChapterId);
     }, [currentLessonId, defaultOpenChapterId]);
+
+    // Gộp bài đã hoàn thành từ server và bài vừa bấm "đã hiểu" ở FE
+    const isDone = (l: ILesson) =>
+        isStudent &&
+        (("completed" in l && Boolean(l.completed)) ||
+            Boolean(completedIds?.has(l.id)));
 
     return (
         <div className="rounded-2xl border border-border bg-surface-muted p-4">
@@ -224,12 +251,11 @@ export default function CurriculumPanel({
 
             <div className="space-y-2">
                 {chapters.map((chapter) => {
-                    // Gộp bài đã hoàn thành từ server và bài vừa bấm "đã hiểu" ở FE
-                    const done = chapter.lessons.filter(
-                        (l) => l.completed || completedIds.has(l.id),
-                    ).length;
-                    const total = chapter.totalLessons;
-                    const allDone = total > 0 && done >= total;
+                    const total = chapter.lessons.length;
+                    const done = isStudent
+                        ? chapter.lessons.filter(isDone).length
+                        : 0;
+                    const allDone = isStudent && total > 0 && done >= total;
                     const open = openId === chapter.id;
 
                     return (
@@ -244,32 +270,36 @@ export default function CurriculumPanel({
                                 }
                                 className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-fg"
                             >
-                                {allDone ? (
-                                    <FontAwesomeIcon
-                                        icon={faCircleCheck}
-                                        className="text-tertiary"
-                                        aria-hidden
-                                    />
-                                ) : (
-                                    <ProgressRing
-                                        done={done}
-                                        total={total}
-                                        label={t("chapterProgress", {
-                                            done,
-                                            total,
-                                        })}
-                                    />
-                                )}
+                                {isStudent &&
+                                    (allDone ? (
+                                        <FontAwesomeIcon
+                                            icon={faCircleCheck}
+                                            className="text-tertiary"
+                                            aria-hidden
+                                        />
+                                    ) : (
+                                        <ProgressRing
+                                            done={done}
+                                            total={total}
+                                            label={t("chapterProgress", {
+                                                done,
+                                                total,
+                                            })}
+                                        />
+                                    ))}
                                 <span className="flex-1 truncate">
                                     {chapter.title}
                                 </span>
                                 <span className="font-label text-xs text-fg-muted">
-                                    {t("chapterProgress", { done, total })}
+                                    {isStudent
+                                        ? t("chapterProgress", { done, total })
+                                        : t("lessonsCount", { count: total })}
                                 </span>
                                 <FontAwesomeIcon
                                     icon={open ? faChevronUp : faChevronDown}
                                     className="text-xs text-fg-muted"
                                 />
+                                {!isStudent && <ChapterFormButton courseId={courseId} courseTitle={courseTitle} nextOrderIndex={chapters.length} isEdit={true} chapter={chapter}/>}
                             </button>
 
                             {open && (
@@ -281,15 +311,16 @@ export default function CurriculumPanel({
                                             active={
                                                 lesson.id === currentLessonId
                                             }
-                                            completed={
-                                                lesson.completed ||
-                                                completedIds.has(lesson.id)
-                                            }
+                                            showProgress={isStudent}
+                                            completed={isDone(lesson)}
                                             onClick={() =>
                                                 onSelectLesson(lesson.id)
                                             }
-                                        />
+                                        >
+                                            {!isStudent && <LessonFormButton courseId={courseId} chapterId={chapter.id} chapterTitle={chapter.title} nextOrderIndex={chapter.lessons.length} isEdit={true} lesson={lesson}/>} 
+                                        </LessonRow>
                                     ))}
+                                    {!isStudent && <LessonFormButton courseId={courseId} chapterId={chapter.id} chapterTitle={chapter.title} nextOrderIndex={chapter.lessons.length} />}
                                 </div>
                             )}
                         </div>
@@ -297,20 +328,24 @@ export default function CurriculumPanel({
                 })}
             </div>
 
-            <div className="mt-4 flex items-center gap-3 rounded-xl bg-surface px-3 py-2.5">
-                <span className="font-label text-xs font-semibold text-fg">
-                    {percent}%
-                </span>
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-primary-soft">
-                    <div
-                        className="h-full rounded-full bg-primary"
-                        style={{ width: `${percent}%` }}
-                    />
+            {isStudent ? (
+                <div className="mt-4 flex items-center gap-3 rounded-xl bg-surface px-3 py-2.5">
+                    <span className="font-label text-xs font-semibold text-fg">
+                        {percent}%
+                    </span>
+                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-primary-soft">
+                        <div
+                            className="h-full rounded-full bg-primary"
+                            style={{ width: `${percent}%` }}
+                        />
+                    </div>
+                    <span className="font-label text-xs text-fg-muted">
+                        {completedCount}/{totalLessons}
+                    </span>
                 </div>
-                <span className="font-label text-xs text-fg-muted">
-                    {completedCount}/{totalLessons}
-                </span>
-            </div>
+            ) : (
+                <ChapterFormButton courseId={courseId} courseTitle={courseTitle} nextOrderIndex={chapters.length} />
+            )}
         </div>
     );
 }
