@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,18 +8,16 @@ import {
   useDeleteDiscussionComment,
   useGetCourseDiscussions,
   useUpdateDiscussionComment,
-} from '~/services/discussion/discussion.query'
-import type { DiscussionComment } from '~/services/discussion/discussion.type'
+} from './services/discussion.query'
+import type { DiscussionComment } from './services/discussion.type'
 
 type SortOrder = 'newest' | 'oldest'
 
-const EMPTY_COMMENTS: DiscussionComment[] = []
-
-const getInitialCourseId = () => {
-  const value = new URLSearchParams(window.location.search).get('courseId')
-  const courseId = Number(value)
-  return Number.isInteger(courseId) && courseId > 0 ? courseId : undefined
+type DiscussProps = {
+  courseId?: number
 }
+
+const EMPTY_COMMENTS: DiscussionComment[] = []
 
 const formatDate = (value: string, language: string) => {
   const date = new Date(value)
@@ -40,12 +38,8 @@ const getInitials = (name: string) =>
     .join('')
     .toLocaleUpperCase()
 
-export default function DiscussPage() {
-  const { t, i18n } = useTranslation('home')
-  const [courseId, setCourseId] = useState<number | undefined>(getInitialCourseId)
-  const [courseIdInput, setCourseIdInput] = useState(
-    () => String(getInitialCourseId() ?? ''),
-  )
+export default function Discuss({ courseId }: Readonly<DiscussProps>) {
+  const { t, i18n } = useTranslation('discussion')
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest')
   const [newContent, setNewContent] = useState('')
   const [replyToId, setReplyToId] = useState<number | null>(null)
@@ -53,10 +47,19 @@ export default function DiscussPage() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editContent, setEditContent] = useState('')
 
+  // Reset trạng thái reply/edit khi chuyển sang khóa học khác
+  useEffect(() => {
+    setNewContent('')
+    setReplyToId(null)
+    setReplyContent('')
+    setEditingId(null)
+    setEditContent('')
+  }, [courseId])
+
   const discussionsQuery = useGetCourseDiscussions(courseId)
-  const createComment = useCreateDiscussionComment()
-  const updateComment = useUpdateDiscussionComment()
-  const deleteComment = useDeleteDiscussionComment()
+  const createComment = useCreateDiscussionComment(courseId)
+  const updateComment = useUpdateDiscussionComment(courseId)
+  const deleteComment = useDeleteDiscussionComment(courseId)
   const comments = Array.isArray(discussionsQuery.data)
     ? discussionsQuery.data
     : EMPTY_COMMENTS
@@ -73,13 +76,11 @@ export default function DiscussPage() {
 
   const submitComment = (event: FormEvent<HTMLFormElement>, parentId?: number) => {
     event.preventDefault()
-    if (courseId === undefined) return
 
     const content = (parentId === undefined ? newContent : replyContent).trim()
     if (!content) return
 
-    createComment.mutate(
-      { courseId, input: { content, parentId } },
+    createComment.mutate({ content, parentId },
       {
         onSuccess: () => {
           if (parentId === undefined) setNewContent('')
@@ -94,10 +95,10 @@ export default function DiscussPage() {
 
   const submitEdit = (event: FormEvent<HTMLFormElement>, id: number) => {
     event.preventDefault()
-    if (courseId === undefined || !editContent.trim()) return
+    if (!editContent.trim()) return
 
     updateComment.mutate(
-      { courseId, id, content: editContent.trim() },
+      { id: id, content: editContent.trim() },
       {
         onSuccess: () => {
           setEditingId(null)
@@ -108,8 +109,8 @@ export default function DiscussPage() {
   }
 
   const removeComment = (id: number) => {
-    if (courseId === undefined || !window.confirm(t('discussion.confirm_delete'))) return
-    deleteComment.mutate({ courseId, id })
+    if (!window.confirm(t('confirm_delete'))) return
+    deleteComment.mutate(id)
   }
 
   const renderComment = (comment: DiscussionComment, depth = 0): ReactNode => {
@@ -120,7 +121,7 @@ export default function DiscussPage() {
           new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime(),
       )
     const isEditing = editingId === comment.id
-      return (
+    return (
       <article
         key={comment.id}
         className={`rounded-xl border border-border/60 bg-white p-4 shadow-xs dark:bg-surface md:p-5 ${
@@ -153,7 +154,7 @@ export default function DiscussPage() {
                     }}
                     className="text-primary hover:underline"
                   >
-                    {t('discussion.reply')}
+                    {t('reply')}
                   </button>
                   <button
                     type="button"
@@ -164,7 +165,7 @@ export default function DiscussPage() {
                     }}
                     className="text-fg-muted hover:text-primary"
                   >
-                    {t('discussion.edit')}
+                    {t('edit')}
                   </button>
                   <button
                     type="button"
@@ -172,7 +173,7 @@ export default function DiscussPage() {
                     disabled={deleteComment.isPending}
                     className="text-red-600 hover:underline disabled:opacity-50"
                   >
-                    {t('discussion.delete')}
+                    {t('delete')}
                   </button>
                 </div>
               )}
@@ -188,8 +189,7 @@ export default function DiscussPage() {
                   onChange={(event) => setEditContent(event.target.value)}
                   maxLength={5000}
                   required
-                  autoFocus
-                  aria-label={t('discussion.edit_placeholder')}
+                  aria-label={t('edit_placeholder')}
                   className="min-h-20 w-full resize-y rounded-lg border border-border bg-surface-muted px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <div className="flex justify-end gap-2">
@@ -198,20 +198,20 @@ export default function DiscussPage() {
                     onClick={() => setEditingId(null)}
                     className="rounded-lg px-3 py-2 text-xs font-semibold text-fg-muted hover:bg-surface-muted"
                   >
-                    {t('discussion.cancel')}
+                    {t('cancel')}
                   </button>
                   <button
                     type="submit"
                     disabled={!editContent.trim() || updateComment.isPending}
                     className="rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-on-primary disabled:opacity-50"
                   >
-                    {t('discussion.save')}
+                    {t('save')}
                   </button>
                 </div>
               </form>
             ) : (
-              <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-relaxed text-fg">
-                {comment.deleted ? t('discussion.deleted_comment') : comment.content}
+              <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-fg">
+                {comment.deleted ? t('deleted_comment') : comment.content}
               </p>
             )}
 
@@ -223,10 +223,9 @@ export default function DiscussPage() {
                 <textarea
                   value={replyContent}
                   onChange={(event) => setReplyContent(event.target.value)}
-                  placeholder={t('discussion.reply_placeholder')}
+                  placeholder={t('reply_placeholder')}
                   maxLength={5000}
                   required
-                  autoFocus
                   className="min-h-20 w-full resize-y rounded-lg border border-border bg-surface-muted px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <div className="flex justify-end gap-2">
@@ -235,14 +234,14 @@ export default function DiscussPage() {
                     onClick={() => setReplyToId(null)}
                     className="rounded-lg px-3 py-2 text-xs font-semibold text-fg-muted hover:bg-surface-muted"
                   >
-                    {t('discussion.cancel')}
+                    {t('cancel')}
                   </button>
                   <button
                     type="submit"
                     disabled={!replyContent.trim() || createComment.isPending}
                     className="rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-on-primary disabled:opacity-50"
                   >
-                    {t('discussion.reply')}
+                    {t('reply')}
                   </button>
                 </div>
               </form>
@@ -265,82 +264,42 @@ export default function DiscussPage() {
       <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl bg-white dark:bg-surface">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border px-4 py-4 md:px-8">
           <h1 className="font-['Be_Vietnam_Pro'] text-xl font-semibold tracking-tight text-fg">
-            {t('discussion.title')}
+            {t('title')}
           </h1>
-          <div className="flex flex-wrap items-center gap-3">
-            <form
-              onSubmit={(event) => {
-                event.preventDefault()
-                const parsedCourseId = Number(courseIdInput)
-                if (Number.isInteger(parsedCourseId) && parsedCourseId > 0) {
-                  setCourseId(parsedCourseId)
-                  setReplyToId(null)
-                  setEditingId(null)
-                  setReplyContent('')
-                  setEditContent('')
-                }
-              }}
-              className="flex items-center gap-2"
+          <label className="flex items-center gap-2 text-xs font-semibold text-fg-muted">
+            <span>{t('sort_by')}</span>
+            <select
+              value={sortOrder}
+              onChange={(event) =>
+                setSortOrder(event.target.value === 'oldest' ? 'oldest' : 'newest')
+              }
+              className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm text-fg"
             >
-              <label htmlFor="discussion-course-id" className="text-xs font-semibold text-fg-muted">
-                {t('discussion.course_id')}
-              </label>
-              <input
-                id="discussion-course-id"
-                type="number"
-                min="1"
-                required
-                value={courseIdInput}
-                onChange={(event) => setCourseIdInput(event.target.value)}
-                placeholder={t('discussion.course_id_placeholder')}
-                className="w-28 rounded-lg border border-border bg-surface px-2.5 py-2 text-sm text-fg"
-              />
-              <button
-                type="submit"
-                className="rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-on-primary"
-              >
-                {t('discussion.load')}
-              </button>
-            </form>
-            <label className="flex items-center gap-2 text-xs font-semibold text-fg-muted">
-              <span>{t('discussion.sort_by')}</span>
-              <select
-                value={sortOrder}
-                onChange={(event) =>
-                  setSortOrder(event.target.value === 'oldest' ? 'oldest' : 'newest')
-                }
-                className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm text-fg"
-              >
-                <option value="newest">{t('discussion.sort_newest')}</option>
-                <option value="oldest">{t('discussion.sort_oldest')}</option>
-              </select>
-            </label>
-          </div>
+              <option value="newest">{t('sort_newest')}</option>
+              <option value="oldest">{t('sort_oldest')}</option>
+            </select>
+          </label>
         </div>
 
         <div className="flex-1 overflow-y-auto bg-[#FAF8FF] px-4 py-5 dark:bg-surface-muted/30 md:px-8">
-          {courseId === undefined ? (
-            <p className="rounded-xl border border-dashed border-border bg-surface p-8 text-center text-sm text-fg-muted">
-              {t('discussion.enter_course_id')}
-            </p>
-          ) : discussionsQuery.isLoading ? (
-            <p className="p-5 text-center text-sm text-fg-muted">{t('discussion.loading_comments')}</p>
+          {discussionsQuery.isLoading ? (
+            <p className="p-5 text-center text-sm text-fg-muted">{t('loading_comments')}</p>
           ) : discussionsQuery.isError ? (
             <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-surface p-6 text-center">
               <p role="alert" className="text-sm text-fg-muted">
-                {discussionsQuery.error.message || t('discussion.comments_error')}
+                {discussionsQuery.error.message || t('comments_error')}
               </p>
               <button
                 type="button"
                 onClick={() => discussionsQuery.refetch()}
                 className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-on-primary"
               >
-                {t('discussion.retry')}
+                {t('retry')}
               </button>
             </div>
           ) : roots.length === 0 ? (
             <p className="rounded-xl border border-dashed border-border bg-surface p-8 text-center text-sm text-fg-muted">
-              {t('discussion.no_comments')}
+              {t('no_comments')}
             </p>
           ) : (
             <div className="flex flex-col gap-4">
@@ -349,40 +308,38 @@ export default function DiscussPage() {
           )}
         </div>
 
-        {courseId !== undefined && (
-          <form
-            onSubmit={(event) => submitComment(event)}
-            className="border-t border-border bg-white p-4 shadow-[0px_-4px_16px_rgba(0,0,0,0.03)] dark:bg-surface md:p-5"
-          >
-            {mutationError && (
-              <p role="alert" className="mb-3 text-sm text-red-600">
-                {mutationError.message || t('discussion.submit_error')}
-              </p>
-            )}
-            <label htmlFor="new-discussion" className="sr-only">
-              {t('discussion.placeholder')}
-            </label>
-            <div className="flex items-end gap-3">
-              <textarea
-                id="new-discussion"
-                value={newContent}
-                onChange={(event) => setNewContent(event.target.value)}
-                placeholder={t('discussion.placeholder')}
-                maxLength={5000}
-                required
-                className="min-h-20 flex-1 resize-y rounded-xl bg-surface-muted px-3.5 py-3 text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button
-                type="submit"
-                disabled={!newContent.trim() || createComment.isPending}
-                className="flex shrink-0 items-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <span>{t('discussion.submit')}</span>
-                <FontAwesomeIcon icon={faPaperPlane} className="h-3 w-3" />
-              </button>
-            </div>
-          </form>
-        )}
+        <form
+          onSubmit={(event) => submitComment(event)}
+          className="border-t border-border bg-white p-4 shadow-[0px_-4px_16px_rgba(0,0,0,0.03)] dark:bg-surface md:p-5"
+        >
+          {mutationError && (
+            <p role="alert" className="mb-3 text-sm text-red-600">
+              {mutationError.message || t('submit_error')}
+            </p>
+          )}
+          <label htmlFor="new-discussion" className="sr-only">
+            {t('placeholder')}
+          </label>
+          <div className="flex items-end gap-3">
+            <textarea
+              id="new-discussion"
+              value={newContent}
+              onChange={(event) => setNewContent(event.target.value)}
+              placeholder={t('placeholder')}
+              maxLength={5000}
+              required
+              className="min-h-20 flex-1 resize-y rounded-xl bg-surface-muted px-3.5 py-3 text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <button
+              type="submit"
+              disabled={!newContent.trim() || createComment.isPending}
+              className="flex shrink-0 items-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <span>{t('submit')}</span>
+              <FontAwesomeIcon icon={faPaperPlane} className="h-3 w-3" />
+            </button>
+          </div>
+        </form>
       </section>
     </div>
   )

@@ -4,6 +4,7 @@ import type { IMaterial } from "../services/courseDetail.type";
 import { isVideoMaterial } from "../services/material.util";
 import AttachmentCard from "./AttachmentCard";
 import MaterialFormButton from "./MaterialFormButton";
+import Discuss from "~/components/Discuss";
 
 type Tab = "docs" | "discussion";
 
@@ -122,6 +123,7 @@ export default function MaterialsTab({
                 className="mt-4"
             >
                 {/* TODO: thảo luận */}
+                <Discuss courseId={courseId} />
             </div>
         </div>
     );

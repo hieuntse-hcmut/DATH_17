@@ -8,12 +8,15 @@ import myCoursesVi from "../pages/MyCourses/i18n/vi.json";
 import myCoursesEn from "../pages/MyCourses/i18n/en.json";
 import courseDetailVi from "~/pages/CourseDetail/i18n/vi.json";
 import courseDetailEn from "~/pages/CourseDetail/i18n/en.json";
+import discussionVi from "~/components/Discuss/i18n/vi.json";
+import discussionEn from "~/components/Discuss/i18n/en.json";
 const vi = {
     common: commonVi,
     auth: authVi,
     home: homeVi,
     myCourses: myCoursesVi,
     courseDetail: courseDetailVi,
+    discussion: discussionVi,
 };
 
 const en: typeof vi = {
@@ -22,6 +25,7 @@ const en: typeof vi = {
     home: homeEn,
     myCourses: myCoursesEn,
     courseDetail: courseDetailEn,
+    discussion: discussionEn,
 };
 
 export const resources = { vi, en } as const;

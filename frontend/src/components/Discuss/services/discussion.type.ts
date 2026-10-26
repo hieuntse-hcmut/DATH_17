@@ -10,7 +10,7 @@ export interface DiscussionComment {
   updatedAt: string
 }
 
-export interface DiscussionInput {
+export interface DiscussionPayload {
   content: string
   parentId?: number
 }
