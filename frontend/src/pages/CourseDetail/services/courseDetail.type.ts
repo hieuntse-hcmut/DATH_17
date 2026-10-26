@@ -5,11 +5,23 @@ export interface IChapter {
   orderIndex: number
 }
 
+export interface ICourse {
+  id: number
+  title: string
+  description: string
+  publicationState: string
+  enrollmentOpen: boolean
+  createdBy: number
+  createdAt: string
+  updatedAt: string
+}
+
 export interface ILesson {
   id: number
   chapterId: number
   title: string
   orderIndex: number
+  contentType: 'VIDEO' | 'DOCUMENT' | string
 }
 
 export interface IMaterial {
@@ -18,6 +30,14 @@ export interface IMaterial {
   title: string
   fileUrl: string
   fileType: string
+}
+
+export interface ICourseToc {
+  id: number
+  courseId: number
+  orderIndex: number
+  title: string
+  lessons: ILesson[]
 }
 
 export interface IPostCompleteLesson {
@@ -67,7 +87,6 @@ export interface ICourseProgress extends ICourseProgressSummary {
 export interface ILessonWithProgress extends ILesson {
   completed: boolean
   lastPosition: number
-  contentType?: string
 }
 
 export interface IChapterWithProgress extends IChapter {
@@ -81,3 +100,15 @@ export interface ICourseTocWithProgress {
   chapters: IChapterWithProgress[]
   progressSummary: ICourseProgressSummary
 }
+
+export interface IChapterPayload {
+  title: string
+  orderIndex: number
+}
+
+export interface ILessonPayload {
+  title: string
+  orderIndex: number
+  contentType: 'VIDEO' | 'DOCUMENT' | string
+}
+

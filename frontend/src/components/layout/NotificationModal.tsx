@@ -63,7 +63,7 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
             
             {/* Backdrop */}
             <div 
-                className="fixed inset-0 z-0 pointer-events-auto bg-transparent md:bg-black/20 md:backdrop-blur-xs transition-opacity"
+                className="fixed inset-x-0 md:inset-0 z-0 pointer-events-auto bg-transparent top-16 bottom-16 md:top-0 md:bottom-0 md:bg-black/20 md:backdrop-blur-xs transition-opacity"
                 onClick={onClose}
             ></div>
 

@@ -23,7 +23,7 @@ const pickGradient = (id: number) => {
 export default function CourseCard({ course, layout }: Readonly<CourseCardProps>) {
     const { t } = useTranslation("myCourses");
     const navigate = useNavigate();
-    const goToCourse = () => navigate(`/courses/${course.courseId}/lessons`);
+    const goToCourse = () => navigate(`/courses/${course.id}/lessons`);
     const isGrid = layout === "grid";
     const percent = course.progressPercent
 
@@ -35,8 +35,8 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
     //         month: "2-digit",
     //     });
 
-    const isCompleted = course.status === "completed";
-    const isLocked = course.status === "locked";
+    const isCompleted = false; // course.status === "completed";
+    const isLocked = false; // course.status === "locked";
 
     return (
         <article
@@ -52,7 +52,7 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
             >
                 <div
                     className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${pickGradient(
-                        course.courseId,
+                        course.id,
                     )}`}
                 >
                     <FontAwesomeIcon
@@ -67,7 +67,7 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
             <div className="flex flex-1 flex-col gap-4 p-5">
                 <div>
                     <h3 className="text-lg font-bold leading-snug text-fg">
-                        {course.courseTitle}
+                        {course.title}
                     </h3>
                     <div className="mt-2 flex items-center gap-2.5">
                         <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary-soft text-xs font-bold text-primary">
@@ -93,8 +93,8 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                                 <span className="ml-1 text-fg-subtle">
                                     (
                                     {t("card.lessonsCount", {
-                                        done: course.completedLessons,
-                                        total: course.totalLessons,
+                                        done: course.completeLesson,
+                                        total: course.totalLesson,
                                     })}
                                     )
                                 </span>
@@ -106,7 +106,7 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                             {percent}%
                             {isGrid && (
                                 <span className="ml-1 font-normal text-fg-subtle">
-                                    ({course.completedLessons}/{course.totalLessons})
+                                    ({course.completeLesson}/{course.totalLesson})
                                 </span>
                             )}
                         </span>

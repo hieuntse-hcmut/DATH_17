@@ -5,11 +5,11 @@ import { faChevronRight, faCirclePlus} from "@fortawesome/free-solid-svg-icons";
 
 import CourseCard from "./components/CourseCard";
 import CourseToolbar from "./components/CourseToolbar";
-import { useGetCourseProgress } from "./services/myCourses.query";
+import { useGetMyCourses } from "./services/myCourses.query";
 import type {
     CourseSort,
     CourseView,
-    ICourseProgress,
+    ICourse,
     CourseTab
 } from "./services/myCourses.type";
 
@@ -26,9 +26,9 @@ const toTime = (value: unknown): number => {
     return Number.isNaN(time) ? 0 : time;
 };
 
-const sortCourses = (list: ICourseProgress[], sort: CourseSort) =>
+const sortCourses = (list: ICourse[], sort: CourseSort) =>
     [...list].sort((a, b) => {
-        const byName = a.courseTitle.localeCompare(b.courseTitle, "vi");
+        const byName = a.title.localeCompare(b.title, "vi");
 
         if (sort === "name") return byName;
 
@@ -37,27 +37,28 @@ const sortCourses = (list: ICourseProgress[], sort: CourseSort) =>
         }
 
         // recent: ưu tiên lastAccessedAt, nếu chưa học thì dùng enrolledAt
-        const ta = toTime(a.lastAccessedAt) || toTime(a.enrolledAt);
-        const tb = toTime(b.lastAccessedAt) || toTime(b.enrolledAt);
-        return (tb - ta) || byName;
+        // const ta = toTime(a.lastAccessedAt) || toTime(a.enrolledAt);
+        // const tb = toTime(b.lastAccessedAt) || toTime(b.enrolledAt);
+        // return (tb - ta) || byName;
+        return byName;
     });
 
 export default function MyCoursesPage() {
     const { t } = useTranslation("myCourses");
-    const { data, isLoading, isError, refetch } = useGetCourseProgress({
+    const { data, isLoading, isError, refetch } = useGetMyCourses({
         staleTime: 30_000
     });
 
     const [tab, setTab] = useState<CourseTab>("learning");
     const [keyword, setKeyword] = useState("");
-    const [sort, setSort] = useState<CourseSort>("recent");
+    const [sort, setSort] = useState<CourseSort>("name");
     const [view, setView] = useState<CourseView>("grid");
 
     const { learning, completed } = useMemo(() => {
         const courses = Array.isArray(data) ? data : [];
         return {
-            learning: courses.filter((c) => c.status !== "completed"),
-            completed: courses.filter((c) => c.status === "completed"),
+            learning: courses.filter((c) => c.progressPercent !== 100),
+            completed: courses.filter((c) => c.progressPercent === 100),
         };
     }, [data]);
 
@@ -67,7 +68,7 @@ export default function MyCoursesPage() {
         const filtered = q
             ? source.filter((c) =>
                   normalize(
-                      `${c.courseTitle} ${c.instructorName}`,
+                      `${c.title} ${c.instructorName}`,
                   ).includes(q),
               )
             : source;
@@ -102,7 +103,7 @@ export default function MyCoursesPage() {
                         {t("subtitle")}
                     </p>
                 </div>
-                <button
+                {/* <button
                     type="button"
                     className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
@@ -112,7 +113,8 @@ export default function MyCoursesPage() {
                         aria-hidden
                     />{" "}
                     {t("register")}
-                </button>
+                </button> */}
+                {/* TODO */}
             </div>
 
             <CourseToolbar
@@ -182,7 +184,7 @@ export default function MyCoursesPage() {
                 >
                     {visible.map((course) => (
                         <CourseCard
-                            key={course.courseId}
+                            key={course.id}
                             course={course}
                             layout={view}
                         />

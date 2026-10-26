@@ -49,6 +49,53 @@
     "locked": "This chapter is locked",
     "notFound": "Lesson not found",
     "close": "Close",
+    "add": "Add",
     "docsEmpty": "No materials or notes for this lesson yet.",
-    "download": "Download {{name}}"
+    "addCourse": {
+        "button": "Add new chapter",
+        "addChapterTitle": "Add new chapter for course:",
+        "chapterName": "Chapter name",
+        "chapterPlaceholder": "Example: Chapter 3: Collections",
+        "success": "Add new chapter successfully"
+    },
+    "editChapter": {
+        "button": "Edit chapter",
+        "title": "Edit chapter for course:",
+        "save": "Save",
+        "delete": "Delete",
+        "confirm": "Confirm delete",
+        "confirmDelete": "Delete this chapter? The lessons and materials inside may also be deleted.",
+        "success": "Chapter updated",
+        "deleted": "Chapter deleted"
+    },
+    "lesson": {
+    "addButton": "Add lesson",
+    "addTitle": "Add new lesson",
+    "editTitle": "Edit lesson",
+    "edit": "Edit lesson",
+    "name": "Lesson name",
+    "placeholder": "Example: Lesson 4: Inheritance",
+    "type": "Content type",
+    "added": "Lesson added",
+    "updated": "Lesson updated",
+    "deleted": "Lesson deleted",
+    "confirmDelete": "Delete this lesson? Its materials may also be deleted."
+  },
+  "material": {
+    "manage": "Lesson materials",
+    "addButton": "Add material",
+    "addTitle": "Add material",
+    "editTitle": "Edit material",
+    "edit": "Edit material",
+    "name": "Material name",
+    "url": "File URL",
+    "type": "File type",
+    "added": "Material added",
+    "updated": "Material updated",
+    "deleted": "Material deleted",
+    "confirmDelete": "Delete this material?"
+  },
+    "download": "Download {{name}}",
+    "play": "Play",
+    "pause": "Pause"
 }

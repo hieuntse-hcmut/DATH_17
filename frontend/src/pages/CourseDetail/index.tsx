@@ -8,60 +8,71 @@ import LessonActions from "./components/LessonActions";
 import MaterialsTab from "./components/MaterialsTab";
 import VideoPlayer from "./components/VideoPlayer";
 import { useCourseTocWithProgress } from "./services/useCourseProgress";
-import { useGetMaterials, usePostCompleteLesson } from "./services/courseDetail.query"; // chỉnh lại đường dẫn cho đúng
-import type { IMaterial } from "./services/courseDetail.type";
+import { useGetCourse, useGetMaterials } from "./services/courseDetail.query";
+import { usePostCompleteLesson } from "./services/courseDetail.mutation";
+import { getSentPosition, saveProgress } from "./services/progress.api";
+import { isVideoMaterial } from "./services/material.util";
+import { useMe } from "~/services/me.query";
 
 export default function CourseDetailPage() {
     const { t } = useTranslation("courseDetail");
     const navigate = useNavigate();
     const params = useParams();
+    const { data: me, isLoading: isMeLoading } = useMe();
 
     const courseId = params.courseId ? Number(params.courseId) : undefined;
     const lessonId = params.lessonId ? Number(params.lessonId) : undefined;
-    const { data, isLoading } = useCourseTocWithProgress(courseId);
 
+    const isStudent = me?.role === "STUDENT";
+    const { data, isLoading } = useCourseTocWithProgress(courseId, isStudent);
+    const { data: course } = useGetCourse(courseId, isStudent);
+
+    // --- State (phải khai báo trước mọi early return) ---
     const [tocOpen, setTocOpen] = useState(false);
     const [completedIds, setCompletedIds] = useState<Set<number>>(new Set());
-    const { mutate: completeLesson, isPending } = usePostCompleteLesson();
+    const { mutate: completeLesson } = usePostCompleteLesson();
 
     const chapters = data?.chapters;
-    const progressSummary = data?.progressSummary;
+    const progressSummary = data?.progressSummary; // undefined với non-student
 
-    // Danh sách bài học phẳng để điều hướng prev/next
+    // Danh sách bài học phẳng; chuẩn hóa `completed`, `lastPosition` để không lỗi kiểu
     const flat = useMemo(
         () =>
             chapters?.flatMap((c) =>
-                c.lessons.map((l) => ({ ...l, chapter: c })),
+                c.lessons.map((l) => ({
+                    ...l,
+                    completed: "completed" in l ? Boolean(l.completed) : false,
+                    lastPosition:
+                        "lastPosition" in l ? Number(l.lastPosition) : 0,
+                    chapter: c,
+                })),
             ) ?? [],
         [chapters],
     );
 
-    // Bài hiện tại: theo URL -> bài học dở (resume) -> bài chưa hoàn thành đầu tiên -> bài đầu
+    // Bài hiện tại: URL -> bài học dở (resume) -> bài chưa hoàn thành đầu tiên -> bài đầu
     const current =
         flat.find((l) => l.id === lessonId) ??
         flat.find((l) => l.id === progressSummary?.resumeLessonId) ??
         flat.find((l) => !l.completed) ??
         flat[0];
 
-    // Materials chỉ tải cho bài đang xem
-    const { data: materials } = useGetMaterials(
+    const { data: materials, isLoading: materialsLoading } = useGetMaterials(
         courseId,
         current?.chapterId,
         current?.id,
     );
-    
-    // Kiếm video url, nếu có video thì ko đc bấm understood liền
-    const { canUnderstoodClick, videoUrl, videoTitle } = useMemo(() => {
-        const video = materials?.find((m: IMaterial) =>
-            m.fileType?.toLowerCase().includes("video")
-        );
 
+    const { canUnderstoodClick, videoUrl, videoTitle } = useMemo(() => {
+        const video = materials?.find(isVideoMaterial);
+        // Bài video (theo contentType hoặc có file video) phải xem đủ mới được hoàn thành
+        const isVideoLesson = current?.contentType === "VIDEO" || !!video;
         return {
-            canUnderstoodClick: !video,
+            canUnderstoodClick: !isVideoLesson,
             videoUrl: video?.fileUrl,
-            videoTitle: video?.title
+            videoTitle: video?.title,
         };
-    }, [materials]);
+    }, [materials, current?.contentType]);
 
     // Mục lục desktop: đứng yên theo màn hình
     const asideRef = useRef<HTMLElement>(null);
@@ -80,7 +91,8 @@ export default function CourseDetailPage() {
         return () => window.removeEventListener("resize", measure);
     }, [data]);
 
-    if (isLoading || !data || !progressSummary) {
+    // --- Early returns (sau tất cả hooks) ---
+    if (isMeLoading || isLoading || !data || !chapters) {
         return <div className="p-8 text-center text-fg-muted">...</div>;
     }
 
@@ -93,7 +105,7 @@ export default function CourseDetailPage() {
     const index = flat.findIndex((l) => l.id === current.id);
 
     const goTo = (id: number) => {
-        navigate(`/courses/${progressSummary.courseId}/lessons/${id}`);
+        navigate(`/courses/${courseId}/lessons/${id}`);
         setTocOpen(false);
     };
 
@@ -101,19 +113,28 @@ export default function CourseDetailPage() {
     const extraDone = [...completedIds].filter(
         (id) => !flat.find((l) => l.id === id)?.completed,
     ).length;
-    const completedCount = progressSummary.completedLessons + extraDone;
+    const completedCount = (progressSummary?.completedLessons ?? 0) + extraDone;
+    const totalLessons = progressSummary?.totalLessons ?? flat.length;
 
     const panel = (
         <CurriculumPanel
-            chapters={chapters!}
+            chapters={chapters}
             currentLessonId={current.id}
             completedIds={completedIds}
             completedCount={completedCount}
-            totalLessons={progressSummary.totalLessons}
+            totalLessons={totalLessons}
             defaultOpenChapterId={current.chapter.id}
             onSelectLesson={goTo}
+            isStudent={isStudent}
+            courseId={courseId}
+            courseTitle={course?.title}
         />
     );
+
+    const handleUnderstood = () => {
+        completeLesson(current.id);
+        setCompletedIds((prev) => new Set(prev).add(current.id));
+    };
 
     return (
         <div className="mx-auto w-full max-w-[1280px] px-0 pb-28 sm:px-4 lg:pb-8">
@@ -124,7 +145,7 @@ export default function CourseDetailPage() {
                     className="flex items-center gap-1.5 font-medium text-link"
                 >
                     <FontAwesomeIcon icon={faChevronLeft} className="text-xs" />
-                    {progressSummary.courseTitle}
+                    {progressSummary?.courseTitle || course?.title}
                 </Link>
                 <span className="hidden h-4 w-px bg-border sm:block" />
                 <span className="text-fg-muted">
@@ -139,9 +160,32 @@ export default function CourseDetailPage() {
                 {/* Cột chính */}
                 <section className="overflow-hidden border-border bg-surface lg:rounded-2xl lg:border lg:shadow-sm">
                     <VideoPlayer
+                        key={current.id}
                         videoUrl={videoUrl}
-                        title={videoTitle}
+                        title={videoTitle ?? current.title}
+                        startAt={Math.max(
+                            current.lastPosition,
+                            getSentPosition(current.id),
+                        )}
                         onOpenToc={() => setTocOpen(true)}
+                        onProgress={(p) => {
+                            // Chỉ học viên mới lưu tiến độ xem
+                            if (!isStudent) return;
+                            const id = current.id;
+                            saveProgress(id, p.furthest, p.duration)
+                                .then((res) => {
+                                    if (res?.completed) {
+                                        setCompletedIds((prev) =>
+                                            prev.has(id)
+                                                ? prev
+                                                : new Set(prev).add(id),
+                                        );
+                                    }
+                                })
+                                .catch(() => {
+                                    // lỗi mạng: bỏ qua, 5 giây sau sẽ gửi lại
+                                });
+                        }}
                     />
 
                     <div className="space-y-5 p-4 sm:p-6">
@@ -151,7 +195,13 @@ export default function CourseDetailPage() {
 
                         <MaterialsTab
                             key={current.id}
-                            lesson={current}
+                            courseId={courseId}
+                            chapterId={current.chapterId}
+                            lessonId={current.id}
+                            lessonTitle={current.title}
+                            isStudent={isStudent}
+                            materials={materials}
+                            loading={materialsLoading}
                         />
 
                         {/* Action bar: cố định đáy ở mobile, nằm cuối card ở desktop */}
@@ -162,13 +212,7 @@ export default function CourseDetailPage() {
                                 understood={canUnderstoodClick}
                                 onPrev={() => goTo(flat[index - 1].id)}
                                 onNext={() => goTo(flat[index + 1].id)}
-                                onUnderstood={() => {
-                                    completeLesson(current.id)
-
-                                    return setCompletedIds((prev) => 
-                                        new Set(prev).add(current.id),
-                                    )
-                                }}
+                                onUnderstood={handleUnderstood}
                             />
                         </div>
                     </div>
@@ -209,3 +253,5 @@ export default function CourseDetailPage() {
         </div>
     );
 }
+
+// TODO: add stale time for all

@@ -1,23 +1,18 @@
 export type CourseTab = "learning" | "completed";
-export type CourseSort = "recent" | "name" | "progress";
+export type CourseSort = "name" | "progress"; // Tạm thời ko có "recent"
 export type CourseView = "grid" | "list";
 
-export interface ICourseProgress {
-    courseId: number
-    courseTitle: string
+export interface ICourse {
+    id: number
+    title: string
     instructorName: string
-    totalLessons: number
-    completedLessons: number
+    totalLesson: number
+    completeLesson: number
     progressPercent: number
-    status: string
-    enrolledAt: string
-    lastAccessedAt: any
-    lastLessonId: any
-    lastLessonTitle: any
 }
 
 export interface CourseCardProps {
-    course: ICourseProgress;
+    course: ICourse;
     layout: CourseView;
 }
 

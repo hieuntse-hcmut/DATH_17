@@ -17,6 +17,7 @@ export const useLogin = () => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: login,
+    // TODO
     onSuccess: (username) => {
       localStorage.setItem('username', username)
       qc.setQueryData(['me'], username)
@@ -34,9 +35,11 @@ export const useRegister = () => {
 }
 
 export const useLogout = () => {
+  const navigate = useNavigate()
   const qc = useQueryClient()
   return () => {
     logout()
     qc.clear()
+    void navigate("/login");
   }
 }
