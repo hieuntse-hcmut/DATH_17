@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router'
 import Header from '~/components/layout/Header'
-import Footer from '~/components/layout/Footer'
 import Sidebar from '~/components/layout/Sidebar'
 import NotificationModal from '~/components/layout/NotificationModal' // Điều chỉnh lại đường dẫn nếu bạn đặt file NotificationModal ở thư mục khác
 

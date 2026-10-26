@@ -28,6 +28,7 @@ interface RegisterResponse {
 export const login = async (payload: LoginPayload) => {
   const res = await postApi<LoginResponse>('/auth/login', payload)
   accessTokenStorage.setAccessToken(res.accessToken)
+  accessTokenStorage.setUserId(res.userId)
   return res.username
 }
 

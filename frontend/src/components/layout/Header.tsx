@@ -186,7 +186,7 @@ export default function Header() {
 
                             {/* Nút đăng xuất */}
                             <div className="pt-2 px-2">
-                                <button onClick={logout} className="w-full flex items-center gap-3 px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl font-medium text-sm transition-colors">
+                                <button onClick={logout} className="cursor-pointer w-full flex items-center gap-3 px-3 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl font-medium text-sm transition-colors">
                                     <FontAwesomeIcon icon={faRightFromBracket} className="w-4 h-4" />
                                     <span>{t('header.logout', 'Đăng xuất tài khoản')}</span>
                                 </button>

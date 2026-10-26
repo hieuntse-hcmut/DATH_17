@@ -8,7 +8,7 @@ const Home = lazy(() => import("~/pages/Home"));
 const Auth = lazy(() => import("~/pages/Auth"));
 const MyCourses = lazy(() => import("~/pages/MyCourses"));
 const CourseDetail = lazy(() => import("~/pages/CourseDetail"));
-const Discuss = lazy(() => import("~/pages/Home/components/Discuss"));
+const Discuss = lazy(() => import("~/components/Discuss"));
 
 export const router = createBrowserRouter([
     {

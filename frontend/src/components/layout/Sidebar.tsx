@@ -9,7 +9,6 @@ import {
   faGraduationCap,
   faClipboardList,
   faBell,
-  faComments,
   faCalendarDays,
 } from "@fortawesome/free-solid-svg-icons"
 
@@ -121,14 +120,6 @@ export default function Sidebar({ onOpenNotification, onCloseNotification }: Sid
             </span>
           )}
         </button>
-
-        {/* 5. Thảo luận */}
-        <Link to="/discuss" onClick={handleNavigate} className={getItemClass(activeItem === "thao-luan")}>
-          <div className={getIconWrapperClass(activeItem === "thao-luan")}>
-            <FontAwesomeIcon icon={faComments} className="w-4 h-4 md:w-[16.67px] md:h-[16.67px]" />
-          </div>
-          <span className={LABEL_CLASS}>{t("nav.discussions", "Thảo luận")}</span>
-        </Link>
       </nav>
 
       {/* Thông tin học kỳ */}
