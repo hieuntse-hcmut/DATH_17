@@ -1,4 +1,4 @@
-import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft, faBookOpen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -66,13 +66,13 @@ export default function CourseDetailPage() {
     const { canUnderstoodClick, videoUrl, videoTitle } = useMemo(() => {
         const video = materials?.find(isVideoMaterial);
         // Bài video (theo contentType hoặc có file video) phải xem đủ mới được hoàn thành
-        const isVideoLesson = current?.contentType === "VIDEO" || !!video;
+        const isVideoLesson = !!video;
         return {
             canUnderstoodClick: !isVideoLesson,
             videoUrl: video?.fileUrl,
             videoTitle: video?.title,
         };
-    }, [materials, current?.contentType]);
+    }, [materials]);
 
     // Mục lục desktop: đứng yên theo màn hình
     const asideRef = useRef<HTMLElement>(null);
@@ -159,35 +159,46 @@ export default function CourseDetailPage() {
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
                 {/* Cột chính */}
                 <section className="overflow-hidden border-border bg-surface lg:rounded-2xl lg:border lg:shadow-sm">
-                    <VideoPlayer
-                        key={current.id}
-                        videoUrl={videoUrl}
-                        title={videoTitle ?? current.title}
-                        startAt={Math.max(
-                            current.lastPosition,
-                            getSentPosition(current.id),
-                        )}
-                        onOpenToc={() => setTocOpen(true)}
-                        onProgress={(p) => {
-                            // Chỉ học viên mới lưu tiến độ xem
-                            if (!isStudent) return;
-                            const id = current.id;
-                            saveProgress(id, p.furthest, p.duration)
-                                .then((res) => {
-                                    if (res?.completed) {
-                                        setCompletedIds((prev) =>
-                                            prev.has(id)
-                                                ? prev
-                                                : new Set(prev).add(id),
-                                        );
-                                    }
-                                })
-                                .catch(() => {
-                                    // lỗi mạng: bỏ qua, 5 giây sau sẽ gửi lại
-                                });
-                        }}
-                    />
-
+                    {videoUrl && (
+                        <VideoPlayer
+                            key={current.id}
+                            videoUrl={videoUrl}
+                            title={videoTitle ?? current.title}
+                            startAt={Math.max(
+                                current.lastPosition,
+                                getSentPosition(current.id),
+                            )}
+                            onOpenToc={() => setTocOpen(true)}
+                            onProgress={(p) => {
+                                // Chỉ học viên mới lưu tiến độ xem
+                                if (!isStudent) return;
+                                const id = current.id;
+                                saveProgress(id, p.furthest, p.duration)
+                                    .then((res) => {
+                                        if (res?.completed) {
+                                            setCompletedIds((prev) =>
+                                                prev.has(id)
+                                                    ? prev
+                                                    : new Set(prev).add(id),
+                                            );
+                                        }
+                                    })
+                                    .catch(() => {
+                                        // lỗi mạng: bỏ qua, 5 giây sau sẽ gửi lại
+                                    });
+                            }}
+                        />
+                    )}
+                    <div className="flex justify-end px-4 pt-3 sm:px-6 lg:hidden">
+                        <button
+                            type="button"
+                            onClick={() => setTocOpen(true)}
+                            className="flex items-center gap-1.5 rounded-lg bg-surface-muted px-3 py-1.5 font-label text-xs font-medium text-fg"
+                        >
+                            <FontAwesomeIcon icon={faBookOpen} aria-hidden />
+                            {t('toc')}
+                        </button>
+                    </div>
                     <div className="space-y-5 p-4 sm:p-6">
                         <h1 className="text-xl font-bold leading-snug text-fg sm:text-3xl">
                             {current.title}

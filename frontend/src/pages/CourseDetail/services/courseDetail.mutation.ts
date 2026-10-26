@@ -11,7 +11,7 @@ import {
   putChapter,
   deleteChapter,
 } from './courseDetail.api'
-import type { IChapterPayload } from "./courseDetail.type";
+import type { IChapterPayload, ILessonPayload } from "./courseDetail.type";
 
 const refreshToc = (qc: QueryClient, courseId?: number) =>
     Promise.all([
@@ -69,16 +69,10 @@ export const useDeleteChapter = (courseId?: number, chapterId?: number) => {
 
 // ---------- Lesson ----------
 
-export type LessonBody = {
-    title: string;
-    contentType: "VIDEO" | "DOCUMENT";
-    orderIndex: number;
-};
-
 export const useAddNewLesson = (courseId?: number, chapterId?: number) => {
     const qc = useQueryClient();
     return useMutation({
-        mutationFn: (payload: LessonBody) => postNewLesson(courseId!, chapterId!, payload),
+        mutationFn: (payload: ILessonPayload) => postNewLesson(courseId!, chapterId!, payload),
         onSuccess: () => refreshToc(qc, courseId),
     });
 };
@@ -86,7 +80,7 @@ export const useAddNewLesson = (courseId?: number, chapterId?: number) => {
 export const useUpdateLesson = (courseId?: number, chapterId?: number, lessonId?: number) => {
     const qc = useQueryClient();
     return useMutation({
-        mutationFn: (payload: LessonBody) => putLesson(courseId!, chapterId!, lessonId!, payload),
+        mutationFn: (payload: ILessonPayload) => putLesson(courseId!, chapterId!, lessonId!, payload),
         onSuccess: () => refreshToc(qc, courseId),
     });
 };

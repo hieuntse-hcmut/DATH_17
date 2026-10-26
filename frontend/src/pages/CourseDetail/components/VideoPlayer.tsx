@@ -1,7 +1,4 @@
-import { faBookOpen } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
 
 const DONE_RATIO = 0.9 // xem đủ 90% thì tính là xong
 const SEEK_TOLERANCE = 2 // giây: sai số cho phép khi so với vị trí xa nhất
@@ -71,11 +68,9 @@ export default function VideoPlayer({
   videoUrl,
   title,
   startAt = 0,
-  onOpenToc,
   onProgress,
   onDone,
-}: Props) {
-  const { t } = useTranslation('courseDetail')
+}: Readonly<Props>) {
   const id = getYoutubeId(videoUrl)
 
   const hostRef = useRef<HTMLDivElement>(null)
@@ -190,18 +185,6 @@ export default function VideoPlayer({
             className="absolute inset-0 [&_iframe]:h-full [&_iframe]:w-full"
           />
         )}
-      </div>
-
-      {/* Nút mở mục lục (mobile): nằm dưới video để không đè lên nút của YouTube */}
-      <div className="flex justify-end px-4 pt-3 sm:px-6 lg:hidden">
-        <button
-          type="button"
-          onClick={onOpenToc}
-          className="flex items-center gap-1.5 rounded-lg bg-surface-muted px-3 py-1.5 font-label text-xs font-medium text-fg"
-        >
-          <FontAwesomeIcon icon={faBookOpen} aria-hidden />
-          {t('toc')}
-        </button>
       </div>
     </div>
   )

@@ -12,7 +12,7 @@ import {
 import FormModal from "./FormModal";
 import type { IMaterial } from "../services/courseDetail.type";
 
-const FILE_TYPES = ["PDF", "VIDEO", "DOC", "OTHER"];
+const FILE_TYPES = ["PDF", "VIDEO", "DOCX", "IMAGE", "PPTX"];
 
 interface Props {
     courseId?: number;
@@ -121,7 +121,7 @@ export default function MaterialFormButton({
                 <button
                     type="button"
                     onClick={openModal}
-                    className="cursor-pointer text-sm font-medium text-link"
+                    className="cursor-pointer w-full rounded-xl border border-dashed border-border px-3 py-2 text-sm text-link hover:bg-surface"
                 >
                     {t("material.addButton")}
                 </button>

@@ -12,8 +12,6 @@ import {
 import type { ILesson } from "../services/courseDetail.type";
 import FormModal from "./FormModal";
 
-type ContentType = "VIDEO" | "DOCUMENT";
-
 interface Props {
     courseId?: number;
     chapterId: number;
@@ -39,7 +37,6 @@ export default function LessonFormButton({
     const canEdit = isEdit && !!lesson;
 
     const [title, setTitle] = useState("");
-    const [contentType, setContentType] = useState<ContentType>("VIDEO");
 
     const add = useAddNewLesson(courseId, chapterId);
     const update = useUpdateLesson(courseId, chapterId, lesson?.id);
@@ -48,7 +45,6 @@ export default function LessonFormButton({
 
     const openModal = () => {
         setTitle(canEdit ? lesson.title : "");
-        setContentType(canEdit ? (lesson.contentType as ContentType) : "VIDEO");
         setOpen(true);
     };
     const close = () => setOpen(false);
@@ -64,7 +60,6 @@ export default function LessonFormButton({
             update.mutate(
                 {
                     title: value,
-                    contentType,
                     orderIndex: lesson.orderIndex,
                 },
                 {
@@ -79,7 +74,7 @@ export default function LessonFormButton({
         }
 
         add.mutate(
-            { title: value, contentType, orderIndex: nextOrderIndex },
+            { title: value, orderIndex: nextOrderIndex },
             {
                 onSuccess: () => {
                     toast.success(t("lesson.added"));
@@ -104,10 +99,7 @@ export default function LessonFormButton({
         );
     };
 
-    const unchanged =
-        canEdit &&
-        title.trim() === lesson.title &&
-        contentType === lesson.contentType;
+    const unchanged = canEdit && title.trim() === lesson.title
 
     return (
         <>
@@ -154,21 +146,6 @@ export default function LessonFormButton({
                             placeholder={t("lesson.placeholder")}
                             className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-primary"
                         />
-                    </div>
-
-                    <div className="space-y-1">
-                        <label htmlFor="lesson-type" className="text-sm text-fg-muted">
-                            {t("lesson.type")}
-                        </label>
-                        <select
-                            id="lesson-type"
-                            value={contentType}
-                            onChange={(e) => setContentType(e.target.value as ContentType)}
-                            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-primary"
-                        >
-                            <option value="VIDEO">VIDEO</option>
-                            <option value="DOCUMENT">DOCUMENT</option>
-                        </select>
                     </div>
                 </FormModal>
             )}

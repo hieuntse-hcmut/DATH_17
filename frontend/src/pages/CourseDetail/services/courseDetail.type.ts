@@ -1,3 +1,5 @@
+type IMaterialType = 'PDF' | 'DOCX' | 'PPTX' | 'IMAGE' | 'VIDEO'
+
 export interface IChapter {
   id: number
   courseId: number
@@ -21,7 +23,6 @@ export interface ILesson {
   chapterId: number
   title: string
   orderIndex: number
-  contentType: 'VIDEO' | 'DOCUMENT' | string
 }
 
 export interface IMaterial {
@@ -29,7 +30,7 @@ export interface IMaterial {
   lessonId: number
   title: string
   fileUrl: string
-  fileType: string
+  fileType: IMaterialType
 }
 
 export interface ICourseToc {
@@ -59,7 +60,6 @@ export interface IChapterWithLessons extends IChapter {
 export interface ILessonProgress {
   lessonId: number
   lessonTitle: string
-  contentType: 'VIDEO' | 'DOCUMENT' | string
   chapterId: number
   chapterTitle: string
   completed: boolean
@@ -109,6 +109,5 @@ export interface IChapterPayload {
 export interface ILessonPayload {
   title: string
   orderIndex: number
-  contentType: 'VIDEO' | 'DOCUMENT' | string
 }
 

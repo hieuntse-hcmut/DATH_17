@@ -35,12 +35,19 @@ export default function MaterialsTab({
         { key: "discussion", label: t("tabs.discussion") },
     ];
 
-    // Video đã có trình phát riêng, tab này chỉ hiện tài liệu
-    const docs = (materials ?? []).filter((m) => !isVideoMaterial(m));
-
-    // Chỉ giảng viên/admin mới quản lý được, và cần đủ id của chương + bài
     const canManage =
         !isStudent && chapterId !== undefined && lessonId !== undefined;
+
+    const all = materials ?? [];
+
+    // Học viên: chỉ tài liệu (video đã có player).
+    // Lecturer/admin: tất cả, video xếp đầu để dễ sửa.
+    const items = canManage
+        ? [
+              ...all.filter((m) => isVideoMaterial(m)),
+              ...all.filter((m) => !isVideoMaterial(m)),
+          ]
+        : all.filter((m) => !isVideoMaterial(m));
 
     return (
         <div>
@@ -79,26 +86,28 @@ export default function MaterialsTab({
                     <p className="p-6 text-center text-sm text-fg-subtle">
                         ...
                     </p>
-                ) : docs.length === 0 ? (
+                ) : items.length === 0 ? (
                     <p className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-fg-subtle">
                         {t("docsEmpty")}
                     </p>
                 ) : (
                     <div className="grid gap-3 sm:grid-cols-2">
-                        {docs.map((m) => (
-                            <div key={m.id} className="flex items-start gap-1">
+                        {items.map((m) => (
+                            <div key={m.id} className="relative flex items-start gap-1">
                                 <div className="min-w-0 flex-1">
                                     <AttachmentCard material={m} />
                                 </div>
                                 {canManage && (
-                                    <MaterialFormButton
-                                        isEdit
-                                        courseId={courseId}
-                                        chapterId={chapterId}
-                                        lessonId={lessonId}
-                                        lessonTitle={lessonTitle}
-                                        material={m}
-                                    />
+                                    <div className="absolute -right-2 -top-2 rounded-full bg-border">
+                                        <MaterialFormButton
+                                            isEdit
+                                            courseId={courseId}
+                                            chapterId={chapterId}
+                                            lessonId={lessonId}
+                                            lessonTitle={lessonTitle}
+                                            material={m}
+                                        />
+                                    </div>
                                 )}
                             </div>
                         ))}
@@ -122,7 +131,6 @@ export default function MaterialsTab({
                 hidden={tab !== "discussion"}
                 className="mt-4"
             >
-                {/* TODO: thảo luận */}
                 <Discuss courseId={courseId} />
             </div>
         </div>
