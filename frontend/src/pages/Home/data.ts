@@ -1,4 +1,4 @@
-import type { Course, CurrentLesson } from './services/home.type'
+import type { CurrentLesson } from './services/home.type'
 
 export const mockUser = { name: 'Minh', streak: 6, xp: 1420 }
 
@@ -15,7 +15,7 @@ export const mockCurrentLesson: CurrentLesson = {
   studiedHoursAgo: 2,
 }
 
-export const mockCourses: Course[] = [
+export const mockCourses = [
   { id: '1', title: 'Lập trình Python cơ bản', instructor: 'TS. Nguyễn Thị Lan', status: 'inProgress', completedLessons: 14, totalLessons: 22, isCurrent: true },
   { id: '2', title: 'Cấu trúc dữ liệu & Giải thuật', instructor: 'ThS. Trần Hoàng Nam', status: 'inProgress', completedLessons: 6, totalLessons: 20 },
   { id: '3', title: 'Nhập môn Trí tuệ nhân tạo', instructor: 'PGS. Lê Quốc Tuấn', status: 'notStarted', completedLessons: 2, totalLessons: 25 },

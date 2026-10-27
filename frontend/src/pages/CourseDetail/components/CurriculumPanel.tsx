@@ -7,7 +7,7 @@ import {
     faFileLines,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState, useEffect, useRef, ReactNode } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type {
     IChapterWithProgress,
@@ -100,7 +100,7 @@ function LessonRow({
     completed: boolean;
     showProgress?: boolean;
     onClick: () => void;
-    children?: ReactNode;
+    children?: any;
 }) {
     const { t } = useTranslation("courseDetail");
     const contentType = "contentType" in lesson ? lesson.contentType : undefined;

@@ -43,7 +43,6 @@ export const useCourseTocWithProgress = (
           ...l,
           completed: p?.completed ?? false,
           lastPosition: p?.lastPosition ?? 0,
-          contentType: p?.contentType,
         }
       })
 
