@@ -60,14 +60,16 @@ VALUES (9201, 9101, '[TEST] Getting started', 0),
 AS new_chapter
 ON DUPLICATE KEY UPDATE title = new_chapter.title;
 
-INSERT INTO lessons (id, chapter_id, title, content_type, order_index)
-VALUES (9301, 9201, '[TEST] Spring Boot overview (video)', 'VIDEO', 0),
-       (9302, 9201, '[TEST] Project structure (text)',     'TEXT',  1),
-       (9303, 9202, '[TEST] Your first REST API (pdf)',    'PDF',   0),
-       (9304, 9203, '[TEST] Lesson of the closed course',  'TEXT',  0)
+-- total_length (V5): 9301 video 600 giây, 9303 PDF 10 trang, bài TEXT để NULL
+INSERT INTO lessons (id, chapter_id, title, content_type, order_index, total_length)
+VALUES (9301, 9201, '[TEST] Spring Boot overview (video)', 'VIDEO', 0, 600),
+       (9302, 9201, '[TEST] Project structure (text)',     'TEXT',  1, NULL),
+       (9303, 9202, '[TEST] Your first REST API (pdf)',    'PDF',   0, 10),
+       (9304, 9203, '[TEST] Lesson of the closed course',  'TEXT',  0, NULL)
 AS new_lesson
-ON DUPLICATE KEY UPDATE title = new_lesson.title;
+ON DUPLICATE KEY UPDATE title = new_lesson.title, total_length = new_lesson.total_length;
 
 -- 5. Check
 SELECT id, username, role, status FROM users WHERE id BETWEEN 9001 AND 9006;
 SELECT l.id AS lesson_id, l.title, ch.course_id FROM lessons l JOIN chapters ch ON ch.id = l.chapter_id WHERE l.id BETWEEN 9301 AND 9304;
+

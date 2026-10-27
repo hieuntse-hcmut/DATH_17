@@ -61,7 +61,7 @@ class CourseControllerTest {
         when(service.update(any(Long.class), any(UpdateCourseRequest.class))).thenReturn(course);
 
         mvc.perform(post("/api/courses").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\":\"Intro\",\"createdBy\":7}"))
+                        .content("{\"title\":\"Intro\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/api/courses/1"));
         mvc.perform(put("/api/courses/1").contentType(MediaType.APPLICATION_JSON)
@@ -72,9 +72,10 @@ class CourseControllerTest {
     @Test
     void rejectsInvalidBodyAndReportsMissingCourse() throws Exception {
         mvc.perform(post("/api/courses").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\":\"  \",\"createdBy\":-1}"))
+                        .content("{\"title\":\"  \"}"))
                 .andExpect(status().isBadRequest());
         when(service.findById(99L)).thenThrow(new CourseNotFoundException(99L));
         mvc.perform(get("/api/courses/99")).andExpect(status().isNotFound());
     }
 }
+

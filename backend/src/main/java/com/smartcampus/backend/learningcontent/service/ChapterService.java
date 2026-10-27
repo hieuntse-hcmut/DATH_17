@@ -33,7 +33,10 @@ public class ChapterService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChapterResponse> getChaptersByCourse(Long courseId) {
+    public List<ChapterResponse> getChaptersByCourse(Long courseId, CustomUserDetails currentUser) {
+
+        // Chỉ staff của khoá hoặc student có enrollment ACTIVE trong khoá PUBLISHED
+        courseAccessService.requireViewPermission(courseId, currentUser);
 
         if (!courseRepository.existsById(courseId)) {
             throw new ResponseStatusException(
@@ -125,7 +128,7 @@ public class ChapterService {
             );
         }
         chapter.update(
-                request.title(),
+                request.title().trim(),
                 request.orderIndex()
         );
         return toResponse(chapter);

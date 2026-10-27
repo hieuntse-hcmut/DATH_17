@@ -1,6 +1,7 @@
 package com.smartcampus.backend.course.service;
 
 import com.smartcampus.backend.auth.security.CustomUserDetails;
+import com.smartcampus.backend.common.security.CourseAccess;
 import com.smartcampus.backend.course.dto.CourseResponse;
 import com.smartcampus.backend.course.dto.CreateCourseRequest;
 import com.smartcampus.backend.course.dto.MyCourseResponse;
@@ -23,40 +24,58 @@ import com.smartcampus.backend.progress.repository.projection.MyCourseProgressVi
 
 @Service
 public class CourseService {
+    private static final Sort BY_ID = Sort.by("id");
+
     private final CourseRepository repository;
     private final LearningProgressRepository learningProgressRepository;
     private final UserRepository userRepository;
+    private final CourseAccess access;
 
     public CourseService(
             CourseRepository repository,
             LearningProgressRepository learningProgressRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            CourseAccess access
     ) {
         this.repository = repository;
         this.learningProgressRepository = learningProgressRepository;
         this.userRepository = userRepository;
+        this.access = access;
     }
 
+    /** Students only see the PUBLISHED catalog; lecturers and admins see every course. */
     @Transactional(readOnly = true)
     public List<CourseResponse> findAll() {
-        return repository.findAll(Sort.by("id")).stream().map(CourseResponse::from).toList();
+        List<Course> courses = access.hasRole("STUDENT")
+                ? repository.findByPublicationState(PublicationState.PUBLISHED, BY_ID)
+                : repository.findAll(BY_ID);
+        return courses.stream().map(CourseResponse::from).toList();
     }
 
+    /** A DRAFT or ARCHIVED course does not exist for a student (404, not 403, so nothing leaks). */
     @Transactional(readOnly = true)
     public CourseResponse findById(Long id) {
-        return CourseResponse.from(requireCourse(id));
+        Course course = requireCourse(id);
+        if (access.hasRole("STUDENT") && course.getPublicationState() != PublicationState.PUBLISHED) {
+            throw new CourseNotFoundException(id);
+        }
+        return CourseResponse.from(course);
     }
 
+    /** The creator is always the logged-in user (role checked by @PreAuthorize on the controller). */
     @Transactional
     public CourseResponse create(CreateCourseRequest request) {
+        Long creatorId = access.userId();
         Course course = new Course(request.title().trim(), request.description(),
                 request.publicationState() == null ? PublicationState.DRAFT : request.publicationState(),
-                Boolean.TRUE.equals(request.enrollmentOpen()), request.createdBy());
+                Boolean.TRUE.equals(request.enrollmentOpen()), creatorId);
         return CourseResponse.from(repository.saveAndFlush(course));
     }
 
+    /** 404 if the course does not exist, 403 unless admin or the course's lecturer (created_by / course_lecturers). */
     @Transactional
     public CourseResponse update(Long id, UpdateCourseRequest request) {
+        access.requireStaff(id);
         Course course = requireCourse(id);
         course.update(request.title().trim(), request.description(), request.publicationState(),
                 request.enrollmentOpen());

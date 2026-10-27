@@ -4,6 +4,7 @@ import com.smartcampus.backend.assessment.AssessmentModels.*;
 import com.smartcampus.backend.common.security.CourseAccess;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -115,13 +116,27 @@ public class AssessmentService {
                 (Integer) rs.getObject("duration_minutes"), rs.getInt("max_attempts")), courseId, student);
     }
 
+    /**
+     * Staff see the quiz with its answer key at any time.
+     * A student sees the questions (without answers) only inside the availability window
+     * (BR-ASSESSMENT-001); the list endpoint still shows the summary with its start/end times.
+     */
     public QuizView getQuiz(Long courseId, Long quizId) {
         access.requireParticipant(courseId);
         QuizSummary summary = summary(courseId, quizId);
         boolean student = access.hasRole("STUDENT");
         if (student && !"PUBLISHED".equals(summary.status()))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found");
+        if (student) requireOpen(summary);
         return quiz(quizId, !student);
+    }
+
+    private static void requireOpen(QuizSummary summary) {
+        LocalDateTime now = LocalDateTime.now();
+        if (summary.startTime() != null && now.isBefore(summary.startTime()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Quiz is not open yet");
+        if (summary.endTime() != null && now.isAfter(summary.endTime()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Quiz is closed");
     }
 
     private QuizView quiz(Long quizId, boolean includeAnswers) {

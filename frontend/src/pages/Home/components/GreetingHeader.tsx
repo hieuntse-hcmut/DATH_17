@@ -1,9 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFire, faTrophy } from '@fortawesome/free-solid-svg-icons'
 
 export default function GreetingHeader({ name }: {name: string}) {
-  const { t, i18n } = useTranslation('home')
+  const { t } = useTranslation('home')
   return (
     <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
       <div className="space-y-2">

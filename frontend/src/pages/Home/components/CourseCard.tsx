@@ -1,21 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faArrowRight,
-    faCircleCheck,
-    faPlay,
-    faRotateRight,
+    faArrowRight
 } from "@fortawesome/free-solid-svg-icons";
 
 import type { Enrollment } from "../services/home.type";
-import ProgressBar from "./ProgressBar";
 import { useNavigate } from "react-router";
-
-const BADGE_STYLE = {
-    inProgress: "bg-primary text-on-primary",
-    notStarted: "bg-surface text-fg border border-border",
-    completed: "bg-tertiary-soft text-tertiary",
-} as const;
 
 export default function CourseCard({ course }: { course: Enrollment }) {
     const { t } = useTranslation("home");

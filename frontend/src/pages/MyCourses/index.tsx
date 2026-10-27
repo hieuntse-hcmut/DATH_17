@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight, faCirclePlus} from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 import CourseCard from "./components/CourseCard";
 import CourseToolbar from "./components/CourseToolbar";
@@ -19,12 +19,6 @@ const normalize = (s: string) =>
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/đ/g, "d")
         .toLowerCase();
-
-const toTime = (value: unknown): number => {
-    if (!value) return 0;
-    const time = new Date(value as string).getTime();
-    return Number.isNaN(time) ? 0 : time;
-};
 
 const sortCourses = (list: ICourse[], sort: CourseSort) =>
     [...list].sort((a, b) => {

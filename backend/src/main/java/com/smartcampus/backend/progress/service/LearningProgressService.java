@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * Learning Progress (docs/01-requirements/04-learning-progress.md):
@@ -34,6 +36,13 @@ public class LearningProgressService {
 
     /** BR-PROG-001: a lesson is complete at 90% of its length. */
     static final int COMPLETION_THRESHOLD_PERCENT = 90;
+
+    /**
+     * FR-PROG-001: manual "Mark as done" is only for content without pages/duration.
+     * VIDEO and PDF are completed through PUT /api/lessons/{id}/progress (90% threshold).
+     * Nếu FE chưa làm theo dõi số trang PDF, có thể tạm thêm "PDF" vào đây.
+     */
+    static final Set<String> MANUAL_COMPLETION_TYPES = Set.of("TEXT");
 
     private final LearningProgressRepository progressRepository;
     private final LearningActivityRepository activityRepository;
@@ -50,10 +59,11 @@ public class LearningProgressService {
         this.notificationService = notificationService;
     }
 
-    /** FR-PROG-001: manual "Mark as done" (idempotent). */
+    /** FR-PROG-001: manual "Mark as done" (idempotent), only for TEXT lessons. */
     @Transactional
     public LessonProgressResponse markLessonComplete(Long studentId, Long lessonId) {
         LessonContextView lesson = requireLessonAccess(studentId, lessonId);
+        requireManualCompletionAllowed(lesson);
         boolean wasCompleted = isCompleted(studentId, lessonId);
 
         progressRepository.upsertCompleted(studentId, lessonId);
@@ -64,13 +74,16 @@ public class LearningProgressService {
     }
 
     /**
-     * FR-PROG-002 + BR-PROG-001: save the resume position; with totalLength the lesson
-     * becomes complete automatically once position >= 90% of totalLength.
+     * FR-PROG-002 + BR-PROG-001: save the resume position; the lesson becomes complete
+     * automatically once position >= 90% of its total_length.
+     * The length comes from the lesson (V5), never from the client: request.totalLength() is ignored,
+     * so a client cannot complete a lesson by sending {"position":1,"totalLength":1}.
+     * A lesson without total_length only saves the position.
      */
     @Transactional
     public LessonProgressResponse updatePosition(Long studentId, Long lessonId, UpdatePositionRequest request) {
         LessonContextView lesson = requireLessonAccess(studentId, lessonId);
-        Integer total = request.totalLength();
+        Integer total = lesson.getTotalLength();
         int position = total == null ? request.position() : Math.min(request.position(), total);
         boolean reachesThreshold = reachesThreshold(position, total);
         boolean wasCompleted = isCompleted(studentId, lessonId);
@@ -153,6 +166,16 @@ public class LearningProgressService {
                     "Course " + lesson.getCourseId() + " is not published");
         }
         return lesson;
+    }
+
+    /** VIDEO/PDF must reach the 90% threshold through PUT /progress instead of a manual click. */
+    private static void requireManualCompletionAllowed(LessonContextView lesson) {
+        String type = lesson.getContentType() == null ? "" : lesson.getContentType().toUpperCase(Locale.ROOT);
+        if (!MANUAL_COMPLETION_TYPES.contains(type)) {
+            throw ApiException.badRequest("MANUAL_COMPLETION_NOT_ALLOWED",
+                    "Lesson " + lesson.getLessonId() + " (" + lesson.getContentType()
+                            + ") is completed through PUT /api/lessons/" + lesson.getLessonId() + "/progress");
+        }
     }
 
     private boolean isCompleted(Long studentId, Long lessonId) {

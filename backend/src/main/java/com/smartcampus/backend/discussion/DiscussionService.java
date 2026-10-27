@@ -62,10 +62,11 @@ public class DiscussionService {
         return find(courseId, holder.getKey().longValue());
     }
 
+    /** Only the author edits a comment; moderators (lecturer/admin) can delete it but not rewrite it. */
     @Transactional
     public CommentView edit(Long courseId, Long id, EditInput input) {
         access.requireParticipant(courseId);
-        requireOwnerOrStaff(courseId, id);
+        requireOwner(courseId, id);
         int updated = jdbc.update("""
                 UPDATE course_discussions SET content = ?
                 WHERE id = ? AND course_id = ? AND is_deleted = FALSE
@@ -84,10 +85,19 @@ public class DiscussionService {
                 """, id, courseId);
     }
 
-    private void requireOwnerOrStaff(Long courseId, Long id) {
+    private Long requireAuthor(Long courseId, Long id) {
         Long authorId = jdbc.query("SELECT author_id FROM course_discussions WHERE id = ? AND course_id = ?",
                 rs -> rs.next() ? rs.getLong(1) : null, id, courseId);
         if (authorId == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment not found");
+        return authorId;
+    }
+
+    private void requireOwner(Long courseId, Long id) {
+        if (!requireAuthor(courseId, id).equals(access.userId())) CourseAccess.forbidden();
+    }
+
+    private void requireOwnerOrStaff(Long courseId, Long id) {
+        Long authorId = requireAuthor(courseId, id);
         if (authorId.equals(access.userId()) || access.hasRole("ADMIN")) return;
         if (access.hasRole("LECTURER")) { access.requireStaff(courseId); return; }
         CourseAccess.forbidden();

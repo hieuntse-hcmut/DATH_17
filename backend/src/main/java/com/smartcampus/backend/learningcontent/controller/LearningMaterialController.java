@@ -30,10 +30,11 @@ public class LearningMaterialController {
     public List<LearningMaterialResponse> getMaterials(
             @PathVariable Long courseId,
             @PathVariable Long chapterId,
-            @PathVariable Long lessonId
+            @PathVariable Long lessonId,
+            @AuthenticationPrincipal CustomUserDetails currentUser
     ) {
         return materialService.getMaterials(
-                courseId, chapterId, lessonId
+                courseId, chapterId, lessonId, currentUser
         );
     }
 

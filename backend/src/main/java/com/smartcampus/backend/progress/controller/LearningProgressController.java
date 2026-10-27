@@ -55,8 +55,10 @@ public class LearningProgressController {
     @Operation(summary = "Save the position reached in a lesson",
             description = """
                     Saves the resume position (seconds for video, pages for PDF/slides).
-                    With totalLength, the lesson is completed automatically once position >= 90% of totalLength;
-                    completion never goes back to false. Send the furthest position reached, not the playhead.
+                    The lesson is completed automatically once position >= 90% of the lesson's total_length,
+                    which the lecturer sets on the lesson (V5). A totalLength in the body is ignored.
+                    A lesson without total_length only saves the position and is never auto-completed.
+                    Completion never goes back to false. Send the furthest position reached, not the playhead.
                     A LESSON_PROGRESS learning activity is logged at most once every 15 seconds per lesson.
 
                     Errors: 400 VALIDATION_ERROR, 404 LESSON_NOT_FOUND, 403 NOT_A_STUDENT / NOT_ENROLLED / COURSE_NOT_PUBLISHED.
@@ -115,3 +117,4 @@ public class LearningProgressController {
         return ApiResponse.ok(progressService.getStudentCourseProgress(actorId, courseId, studentId));
     }
 }
+
