@@ -401,7 +401,7 @@ export default function Profile() {
 
                     {/* Nút bấm Icon "Tiếp tục học" theo Note comment */}
                     <Link
-                      to={`/courses/${course.id}`}
+                      to={`/courses/${course.id}/lessons`}
                       className="w-full sm:w-auto px-4 py-2 bg-[#4F46E5] dark:bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors flex-shrink-0 shadow-xs"
                     >
                       <span>{t("profile.continue_learning")}</span>
