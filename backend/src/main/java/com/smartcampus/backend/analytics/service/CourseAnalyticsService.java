@@ -11,6 +11,8 @@ import com.smartcampus.backend.progress.repository.LearningProgressRepository;
 import com.smartcampus.backend.progress.repository.projection.StudentProgressView;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.smartcampus.backend.analytics.dto.CourseRiskSummaryResponse;
+import com.smartcampus.backend.analytics.dto.StudentRiskResponse;
 
 import java.util.List;
 
@@ -85,5 +87,24 @@ public class CourseAnalyticsService {
 
     private static double round1(double value) {
         return Math.round(value * 10.0) / 10.0;
+    }
+
+    @Transactional(readOnly = true)
+    public CourseRiskSummaryResponse getCourseRiskSummary(Long actorId, Long courseId) {
+        // Kiểm tra user hợp lệ và có quyền quản lý khóa học này không
+        UserAccount actor = courseAccessGuard.requireUser(actorId);
+        courseAccessGuard.requireCourseManager(actor, courseId);
+
+        // Gọi repository để lấy dữ liệu, nếu chưa có data thì trả về các giá trị 0
+        return analyticsRepository.findRiskSummary(courseId)
+                .orElse(new CourseRiskSummaryResponse(courseId, 0.0, 0, 0, 0));
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentRiskResponse> getStudentRisks(Long actorId, Long courseId) {
+        UserAccount actor = courseAccessGuard.requireUser(actorId);
+        courseAccessGuard.requireCourseManager(actor, courseId);
+
+        return analyticsRepository.findStudentRisksByCourse(courseId);
     }
 }
