@@ -233,13 +233,15 @@ class Week42IntegrationTest {
                 .andExpect(jsonPath("$.data.lessons.length()").value(3))
                 .andExpect(jsonPath("$.data.lessons[2].completed").value(false));
 
-        call(STUDENT_A, post("/api/lessons/9303/complete"))
+        // 9303 là PDF: hoàn thành qua PUT /progress (đạt 90% số trang), không qua "Mark as done"
+        call(STUDENT_A, put("/api/lessons/9303/progress").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"position\": 10, \"totalLength\": 10}"))
                 .andExpect(jsonPath("$.data.courseProgressPercent").value(100.0));
         call(STUDENT_A, get("/api/progress/me")).andExpect(jsonPath("$.data[0].status").value("COMPLETED"));
         call(STUDENT_A, get("/api/notifications/me")).andExpect(jsonPath("$.data[0].type").value("COURSE_COMPLETED"));
 
         assertEquals(3, count("SELECT COUNT(*) FROM learning_activities WHERE student_id = 9001 AND event_type = 'LESSON_COMPLETED'"));
-        assertEquals(1, count("SELECT COUNT(*) FROM learning_activities WHERE student_id = 9001 AND event_type = 'LESSON_PROGRESS'"));
+        assertEquals(2, count("SELECT COUNT(*) FROM learning_activities WHERE student_id = 9001 AND event_type = 'LESSON_PROGRESS'"));
     }
 
     @Test
@@ -285,9 +287,11 @@ class Week42IntegrationTest {
     void analytics_countsEnrollmentsAndCompletion_forCourseStaffOnly() throws Exception {
         call(STUDENT_A, post("/api/courses/9101/enroll")).andExpect(status().isCreated());
         call(STUDENT_C, post("/api/courses/9101/enroll")).andExpect(status().isCreated());
-        call(STUDENT_A, post("/api/lessons/9301/complete")).andExpect(status().isOk());
+        call(STUDENT_A, put("/api/lessons/9301/progress").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"position\": 600, \"totalLength\": 600}")).andExpect(status().isOk());
         call(STUDENT_A, post("/api/lessons/9302/complete")).andExpect(status().isOk());
-        call(STUDENT_A, post("/api/lessons/9303/complete")).andExpect(status().isOk());
+        call(STUDENT_A, put("/api/lessons/9303/progress").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"position\": 10, \"totalLength\": 10}")).andExpect(status().isOk());
         call(STUDENT_C, post("/api/courses/9101/withdraw")).andExpect(status().isOk());
         call(STUDENT_C, post("/api/courses/9101/enroll")).andExpect(status().isCreated());
 
@@ -337,3 +341,4 @@ class Week42IntegrationTest {
         return value == null ? 0 : value;
     }
 }
+

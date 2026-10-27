@@ -36,8 +36,10 @@ public class LearningMaterialService {
     public List<LearningMaterialResponse> getMaterials(
             Long courseId,
             Long chapterId,
-            Long lessonId
+            Long lessonId,
+            CustomUserDetails currentUser
     ) {
+        courseAccessService.requireViewPermission(courseId, currentUser);
         requireLesson(courseId, chapterId, lessonId);
 
         return materialRepository

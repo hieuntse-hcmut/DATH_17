@@ -54,7 +54,8 @@ public interface LearningProgressRepository extends JpaRepository<LearningProgre
                    l.content_type      AS contentType,
                    c.id                AS courseId,
                    c.title             AS courseTitle,
-                   c.publication_state AS publicationState
+                   c.publication_state AS publicationState,
+                   l.total_length      AS totalLength
             FROM lessons l
             JOIN chapters ch ON ch.id = l.chapter_id
             JOIN courses c   ON c.id = ch.course_id
@@ -177,3 +178,4 @@ public interface LearningProgressRepository extends JpaRepository<LearningProgre
             """, nativeQuery = true)
     List<StudentProgressView> findClassProgress(@Param("courseId") Long courseId);
 }
+

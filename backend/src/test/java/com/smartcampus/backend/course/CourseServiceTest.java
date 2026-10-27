@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.smartcampus.backend.common.security.CourseAccess;
 import com.smartcampus.backend.course.dto.CreateCourseRequest;
 import com.smartcampus.backend.course.dto.UpdateCourseRequest;
 import com.smartcampus.backend.course.entity.Course;
@@ -26,6 +27,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 @ExtendWith(MockitoExtension.class)
 class CourseServiceTest {
     @Mock CourseRepository repository;
+    @Mock CourseAccess access;
     @InjectMocks CourseService service;
 
     @Test
@@ -34,6 +36,14 @@ class CourseServiceTest {
         when(repository.findAll(Sort.by("id"))).thenReturn(List.of(course));
 
         assertThat(service.findAll()).extracting(response -> response.id()).containsExactly(1L);
+    }
+
+    @Test
+    void studentSeesOnlyPublishedCourses() {
+        when(access.hasRole("STUDENT")).thenReturn(true);
+        when(repository.findByPublicationState(PublicationState.PUBLISHED, Sort.by("id"))).thenReturn(List.of());
+
+        assertThat(service.findAll()).isEmpty();
     }
 
     @Test
@@ -47,14 +57,24 @@ class CourseServiceTest {
     }
 
     @Test
-    void createsDraftWithClosedEnrollmentByDefault() {
+    void studentCannotReadDraftCourse() {
+        when(access.hasRole("STUDENT")).thenReturn(true);
+        when(repository.findById(1L)).thenReturn(Optional.of(course(1L))); // DRAFT
+
+        assertThatThrownBy(() -> service.findById(1L))
+                .isInstanceOf(CourseNotFoundException.class);
+    }
+
+    @Test
+    void createsDraftWithClosedEnrollmentByDefault_creatorIsLoggedInUser() {
+        when(access.userId()).thenReturn(7L);
         when(repository.saveAndFlush(any(Course.class))).thenAnswer(invocation -> {
             Course saved = invocation.getArgument(0);
             ReflectionTestUtils.setField(saved, "id", 3L);
             return saved;
         });
 
-        var response = service.create(new CreateCourseRequest(" Intro ", null, null, null, 7L));
+        var response = service.create(new CreateCourseRequest(" Intro ", null, null, null));
 
         assertThat(response.id()).isEqualTo(3L);
         assertThat(response.title()).isEqualTo("Intro");
@@ -64,7 +84,7 @@ class CourseServiceTest {
     }
 
     @Test
-    void updatesCourseWithoutChangingCreator() {
+    void updatesCourseWithoutChangingCreator_afterCheckingCourseStaff() {
         Course course = course(1L);
         when(repository.findById(1L)).thenReturn(Optional.of(course));
         when(repository.saveAndFlush(course)).thenReturn(course);
@@ -72,6 +92,7 @@ class CourseServiceTest {
         var response = service.update(1L,
                 new UpdateCourseRequest(" Advanced ", "Details", PublicationState.PUBLISHED, true));
 
+        verify(access).requireStaff(1L);
         assertThat(response.title()).isEqualTo("Advanced");
         assertThat(response.description()).isEqualTo("Details");
         assertThat(response.publicationState()).isEqualTo(PublicationState.PUBLISHED);

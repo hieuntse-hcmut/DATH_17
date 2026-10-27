@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -25,10 +25,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 @Sql("/sql/week42-test-data.sql")
-@TestPropertySource(properties =
-        "JWT_SECRET=c21hcnQtY2FtcHVzLXRlc3Qtand0LXNlY3JldC1rZXktYXQtbGVhc3QtMzItYnl0ZXMtbG9uZw==")
 class LearningContentIntegrationTest {
 
     private static final long COURSE_ID = 9101L;
@@ -508,3 +507,4 @@ class LearningContentIntegrationTest {
         ).andExpect(status().isUnauthorized());
     }
 }
+

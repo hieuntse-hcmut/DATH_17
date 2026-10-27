@@ -5,5 +5,7 @@ public record LessonResponse(
         Long chapterId,
         String title,
         String contentType,
-        int orderIndex
+        int orderIndex,
+        /** giây (VIDEO) hoặc số trang (PDF); null nếu chưa có */
+        Integer totalLength
 ) {}

@@ -22,14 +22,24 @@ public class Lesson {
     @Column(name = "order_index", nullable = false)
     private int orderIndex;
 
+    /** V5: giây (VIDEO) hoặc số trang (PDF); null với TEXT hoặc khi lecturer chưa nhập. */
+    @Column(name = "total_length")
+    private Integer totalLength;
+
     protected Lesson() {}
 
     public Lesson(Long chapterId, String title,
                   String contentType, int orderIndex) {
+        this(chapterId, title, contentType, orderIndex, null);
+    }
+
+    public Lesson(Long chapterId, String title,
+                  String contentType, int orderIndex, Integer totalLength) {
         this.chapterId = chapterId;
         this.title = title;
         this.contentType = contentType;
         this.orderIndex = orderIndex;
+        this.totalLength = totalLength;
     }
 
     public Long getId() {
@@ -52,10 +62,15 @@ public class Lesson {
         return orderIndex;
     }
 
+    public Integer getTotalLength() {
+        return totalLength;
+    }
+
     public void update(String title, String contentType,
-                       int orderIndex) {
+                       int orderIndex, Integer totalLength) {
         this.title = title;
         this.contentType = contentType;
         this.orderIndex = orderIndex;
+        this.totalLength = totalLength;
     }
 }
