@@ -1,0 +1,99 @@
+{
+  "list": {
+    "title": "Quizzes",
+    "subtitle": "Quizzes for this course",
+    "empty": "This course has no quizzes yet.",
+    "loadError": "Couldn't load the quiz list.",
+    "duration": "{{count}} min",
+    "attempts": "Up to {{count}} attempts",
+    "opensAt": "Opens",
+    "closesAt": "Closes",
+    "start": "Start quiz",
+    "notOpen": "Not open yet",
+    "closed": "Closed",
+    "status": { "DRAFT": "Draft", "PUBLISHED": "Open" },
+    "backToCourse": "Back to course",
+    "history": "Attempt history",
+    "hideHistory": "Hide history",
+    "attemptsUsed": "{{used}}/{{max}} attempts used",
+    "continue": "Continue quiz",
+    "noAttemptsLeft": "No attempts left"
+  },
+  "attempt": {
+    "windowTitle": "Take quiz",
+    "loadError": "Couldn't load the quiz.",
+    "back": "Back to quizzes",
+    "questionOf": "Question {{current}} / {{total}}",
+    "points": "{{count}} pts",
+    "flag": "Mark for review",
+    "flagged": "Remove mark",
+    "selected": "Selected",
+    "prev": "Previous",
+    "next": "Next",
+    "showAll": "All {{total}} questions",
+    "submit": "Submit quiz",
+    "timeLeft": "Time left",
+    "multiHint": "Select one or more answers",
+    "shortPlaceholder": "Type your answer",
+    "submitError": "Couldn't submit. Please try again.",
+    "retry": "Retry",
+    "submitting": "Submitting…"
+  },
+  "palette": {
+    "title": "Questions ({{total}})",
+    "mobileTitle": "Overview of {{total}} questions",
+    "mobileHint": "Tap a number to jump to it",
+    "answered": "Answered",
+    "flagged": "Flagged",
+    "unanswered": "Unanswered",
+    "close": "Close",
+    "goTo": "Go to question {{n}}"
+  },
+  "confirm": {
+    "title": "Submit quiz?",
+    "body": "You answered {{answered}}/{{total}} questions.",
+    "unansweredWarn": "{{count}} questions are still unanswered.",
+    "flaggedWarn": "{{count}} questions are marked for review.",
+    "cancel": "Keep working",
+    "confirm": "Submit"
+  },
+  "done": {
+    "title": "Your answers were recorded",
+    "body": "You answered {{answered}}/{{total}} questions.",
+    "expired": "Time's up. Your answers were submitted automatically.",
+    "back": "Back to quizzes"
+  },
+  "intro": {
+    "start": "Start / continue quiz",
+    "rules": "Notes",
+    "ruleFullscreen": "The quiz runs in fullscreen and you must submit to leave it.",
+    "ruleTimer": "The timer runs on the server: reloading the page does not restart it.",
+    "ruleLeave": "Don't use the browser Back/Forward buttons during the quiz.",
+    "ruleAuto": "Your answers are submitted automatically when time runs out.",
+    "noLimit": "No time limit"
+  },
+  "fullscreen": {
+    "title": "Fullscreen required",
+    "body": "You left fullscreen. Go back to continue; the timer is still running.",
+    "back": "Return to fullscreen"
+  },
+  "result": {
+    "title": "Your result",
+    "score": "{{score}} / {{total}} pts",
+    "correctCount": "{{correct}}/{{graded}} auto-graded questions correct",
+    "pending": "{{count}} written answers are waiting for the lecturer.",
+    "correct": "Correct",
+    "wrong": "Wrong",
+    "waiting": "Pending",
+    "detail": "Per-question details"
+  },
+  "history": {
+    "attempt": "Attempt {{n}}",
+    "score": "{{score}}/{{total}} pts",
+    "status": {
+      "IN_PROGRESS": "In progress",
+      "SUBMITTED": "Pending review",
+      "GRADED": "Graded"
+    }
+  }
+}
