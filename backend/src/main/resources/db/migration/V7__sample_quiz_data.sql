@@ -3,20 +3,21 @@
 -- student01 / student02 đã ACTIVE ở course 1, lecturer01 là giảng viên.
 
 -- ============================================================
--- Ngân hàng câu hỏi (đủ 4 loại)
+-- Ngân hàng câu hỏi (chỉ trắc nghiệm một đáp án)
 -- ============================================================
 INSERT INTO question_bank (id, course_id, content, question_type) VALUES
 (101, 1, 'Từ khóa nào dùng để khai báo hằng số trong Java?', 'SINGLE_CHOICE'),
-(102, 1, 'Chọn TẤT CẢ các kiểu dữ liệu nguyên thủy (primitive) trong Java:', 'MULTIPLE_CHOICE'),
-(103, 1, 'Java là ngôn ngữ biên dịch ra bytecode chạy trên JVM.', 'TRUE_FALSE'),
+(102, 1, 'Kiểu dữ liệu nào sau đây là kiểu nguyên thủy (primitive) trong Java?', 'SINGLE_CHOICE'),
+(103, 1, 'Mã nguồn Java được biên dịch ra dạng nào để chạy trên JVM?', 'SINGLE_CHOICE'),
 (104, 1, 'Đoạn code sau in ra gì?\n```java\nint x = 5;\nx += 3 * 2;\nSystem.out.println(x);\n```', 'SINGLE_CHOICE'),
-(105, 1, 'Giải thích ngắn gọn sự khác nhau giữa == và equals() khi so sánh String.', 'SHORT_ANSWER');
+(105, 1, 'Phương thức nào dùng để so sánh NỘI DUNG của hai String?', 'SINGLE_CHOICE');
 
 INSERT INTO question_options (question_id, content, is_correct, order_index) VALUES
 (101, 'const',  FALSE, 0), (101, 'final',  TRUE,  1), (101, 'static', FALSE, 2), (101, 'volatile', FALSE, 3),
-(102, 'int',    TRUE,  0), (102, 'String', FALSE, 1), (102, 'boolean', TRUE, 2), (102, 'double', TRUE, 3), (102, 'Integer', FALSE, 4),
-(103, 'Đúng',   TRUE,  0), (103, 'Sai',    FALSE, 1),
-(104, '11',     TRUE,  0), (104, '16',     FALSE, 1), (104, '8',      FALSE, 2), (104, '30', FALSE, 3);
+(102, 'int',    TRUE,  0), (102, 'String', FALSE, 1), (102, 'Integer', FALSE, 2), (102, 'ArrayList', FALSE, 3),
+(103, 'Bytecode', TRUE, 0), (103, 'Mã máy native', FALSE, 1), (103, 'Mã assembly', FALSE, 2), (103, 'Không biên dịch', FALSE, 3),
+(104, '11',     TRUE,  0), (104, '16',     FALSE, 1), (104, '8',      FALSE, 2), (104, '30', FALSE, 3),
+(105, 'equals()', TRUE, 0), (105, '==', FALSE, 1), (105, 'compare()', FALSE, 2), (105, 'same()', FALSE, 3);
 
 -- ============================================================
 -- Các bài kiểm tra ở nhiều trạng thái

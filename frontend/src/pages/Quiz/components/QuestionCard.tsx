@@ -30,26 +30,6 @@ export default function QuestionCard({
     (a, b) => a.orderIndex - b.orderIndex,
   );
 
-  const type = item.question.type;
-  const multi = type === "MULTIPLE_CHOICE";
-  const selectedIds = Array.isArray(value)
-    ? value
-    : typeof value === "number"
-      ? [value]
-      : [];
-
-  const pick = (id: number) => {
-    if (multi) {
-      onChange(
-        selectedIds.includes(id)
-          ? selectedIds.filter((x) => x !== id)
-          : [...selectedIds, id],
-      );
-    } else {
-      onChange(id);
-    }
-  };
-
   return (
     <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm sm:p-7">
       <header className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
@@ -81,65 +61,47 @@ export default function QuestionCard({
 
       <QuestionContent content={item.question.content} />
 
-      {type === "SHORT_ANSWER" ? (
-        <textarea
-          value={typeof value === "string" ? value : ""}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={t("attempt.shortPlaceholder")}
-          rows={4}
-          className="mt-6 w-full rounded-xl border border-border bg-surface-muted p-4 text-sm text-fg focus-visible:outline-2 focus-visible:outline-primary"
-        />
-      ) : (
-        <>
-          {multi && (
-            <p className="mt-4 text-xs text-fg-muted">
-              {t("attempt.multiHint")}
-            </p>
-          )}
-          <ul className="mt-4 space-y-3" role={multi ? "group" : "radiogroup"}>
-            {options.map((opt, i) => {
-              const selected = selectedIds.includes(opt.id);
-              return (
-                <li key={opt.id}>
-                  <button
-                    type="button"
-                    role={multi ? "checkbox" : "radio"}
-                    aria-checked={selected}
-                    onClick={() => pick(opt.id)}
-                    className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-primary ${
-                      selected
-                        ? "border-primary bg-primary-soft text-primary"
-                        : "border-transparent bg-surface-muted hover:border-border"
-                    }`}
-                  >
-                    <span
-                      className={`flex size-5 shrink-0 items-center justify-center border-2 ${
-                        multi ? "rounded-md" : "rounded-full"
-                      } ${selected ? "border-primary bg-primary text-on-primary" : "border-fg-subtle"}`}
-                    >
-                      {selected && (
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="text-[10px]"
-                        />
-                      )}
-                    </span>
-                    <span className="flex-1 font-mono text-sm">
-                      <span className="mr-2 font-semibold">{letter(i)}.</span>
-                      {opt.content}
-                    </span>
-                    {selected && (
-                      <span className="rounded bg-primary px-2 py-0.5 font-label text-xs font-medium text-on-primary lg:hidden">
-                        {t("attempt.selected")}
-                      </span>
-                    )}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </>
-      )}
+      <ul className="mt-4 space-y-3" role="radiogroup">
+        {options.map((opt, i) => {
+          const selected = value === opt.id;
+          return (
+            <li key={opt.id}>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                onClick={() => onChange(opt.id)}
+                className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-primary ${
+                  selected
+                    ? "border-primary bg-primary-soft text-primary"
+                    : "border-transparent bg-surface-muted hover:border-border"
+                }`}
+              >
+                <span
+                  className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                    selected
+                      ? "border-primary bg-primary text-on-primary"
+                      : "border-fg-subtle"
+                  }`}
+                >
+                  {selected && (
+                    <FontAwesomeIcon icon={faCheck} className="text-[10px]" />
+                  )}
+                </span>
+                <span className="flex-1 font-mono text-sm">
+                  <span className="mr-2 font-semibold">{letter(i)}.</span>
+                  {opt.content}
+                </span>
+                {selected && (
+                  <span className="rounded bg-primary px-2 py-0.5 font-label text-xs font-medium text-on-primary lg:hidden">
+                    {t("attempt.selected")}
+                  </span>
+                )}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 }

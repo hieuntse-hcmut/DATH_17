@@ -181,19 +181,11 @@ public class AssessmentService {
     }
 
     private void validateQuestion(QuestionInput input) {
-        if (!Set.of("SINGLE_CHOICE", "MULTIPLE_CHOICE", "TRUE_FALSE", "SHORT_ANSWER").contains(input.type()))
-            badRequest("Unsupported question type");
+        if (!"SINGLE_CHOICE".equals(input.type())) badRequest("Unsupported question type");
         List<OptionInput> options = input.options() == null ? List.of() : input.options();
-        if ("SHORT_ANSWER".equals(input.type())) {
-            if (!options.isEmpty()) badRequest("Short answers cannot have options");
-            return;
-        }
         if (options.size() < 2) badRequest("At least two options are required");
         long correct = options.stream().filter(OptionInput::correct).count();
-        if (correct == 0 || (!"MULTIPLE_CHOICE".equals(input.type()) && correct != 1))
-            badRequest("Invalid number of correct options");
-        if ("TRUE_FALSE".equals(input.type()) && options.size() != 2)
-            badRequest("True/false questions require exactly two options");
+        if (correct != 1) badRequest("Exactly one option must be correct");
         for (OptionInput option : options) if (option == null || option.content() == null
                 || option.content().isBlank()) badRequest("Option content is required");
     }

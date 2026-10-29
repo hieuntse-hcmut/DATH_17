@@ -33,8 +33,6 @@
     "showAll": "Tất cả {{total}} câu",
     "submit": "Nộp bài thi",
     "timeLeft": "Thời gian còn lại",
-    "multiHint": "Chọn một hoặc nhiều đáp án",
-    "shortPlaceholder": "Nhập câu trả lời của bạn",
     "submitError": "Nộp bài chưa thành công. Vui lòng thử lại.",
     "retry": "Thử lại",
     "submitting": "Đang nộp bài…"
@@ -80,11 +78,9 @@
   "result": {
     "title": "Kết quả bài làm",
     "score": "{{score}} / {{total}} điểm",
-    "correctCount": "Đúng {{correct}}/{{graded}} câu chấm tự động",
-    "pending": "{{count}} câu tự luận đang chờ giảng viên chấm.",
+    "correctCount": "Đúng {{correct}}/{{total}} câu",
     "correct": "Đúng",
     "wrong": "Sai",
-    "waiting": "Chờ chấm",
     "detail": "Chi tiết từng câu"
   },
   "history": {

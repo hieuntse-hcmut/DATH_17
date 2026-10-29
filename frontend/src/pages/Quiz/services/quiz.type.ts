@@ -1,8 +1,4 @@
-export type QuestionType =
-  | "SINGLE_CHOICE"
-  | "MULTIPLE_CHOICE"
-  | "TRUE_FALSE"
-  | "SHORT_ANSWER";
+export type QuestionType = "SINGLE_CHOICE";
 
 export interface QuizOption {
   id: number;
@@ -16,7 +12,7 @@ export interface QuizQuestion {
   courseId: number;
   content: string;
   type: QuestionType;
-  options: QuizOption[]; // rỗng với SHORT_ANSWER
+  options: QuizOption[];
 }
 
 export interface Quiz {
@@ -41,19 +37,12 @@ export interface QuizDetail {
   questions: QuizQuestionItem[];
 }
 
-/** SINGLE/TRUE_FALSE: number · MULTIPLE: number[] · SHORT_ANSWER: string */
-export type AnswerValue = number | number[] | string;
+/** id của option đã chọn */
+export type AnswerValue = number;
 export type AnswerMap = Record<number, AnswerValue>;
 export type QuestionStatus = "flagged" | "answered" | "unanswered";
 
-export const isAnswered = (v?: AnswerValue) =>
-  v === undefined
-    ? false
-    : typeof v === "string"
-      ? v.trim() !== ""
-      : Array.isArray(v)
-        ? v.length > 0
-        : true;
+export const isAnswered = (v?: AnswerValue) => v !== undefined;
 
 /** Phản hồi của POST .../attempts */
 export interface AttemptStart {
@@ -66,8 +55,8 @@ export interface AttemptStart {
 
 export interface AnswerResult {
   questionId: number;
-  correct: boolean | null; // null = chờ giảng viên chấm
-  score: number | null;
+  correct: boolean;
+  score: number;
 }
 
 export interface AttemptResult {
@@ -75,7 +64,6 @@ export interface AttemptResult {
   status: string;
   score: number;
   totalPoints: number;
-  pendingCount: number;
   answers: AnswerResult[];
 }
 
@@ -83,7 +71,7 @@ export interface AttemptSummary {
   attemptId: number;
   quizId: number;
   attemptNumber: number;
-  status: string; // IN_PROGRESS | SUBMITTED | GRADED
+  status: string; // IN_PROGRESS | GRADED
   score: number | null;
   totalPoints: number;
   startTime: string;

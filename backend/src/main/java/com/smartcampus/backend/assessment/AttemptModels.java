@@ -9,17 +9,17 @@ import java.util.Map;
 public final class AttemptModels {
     private AttemptModels() {}
 
-    /** questionId -> number (một đáp án) | [numbers] (nhiều đáp án) | "text" (tự luận) */
-    public record SubmitRequest(Map<Long, Object> answers) {}
+    /** questionId -> id của option đã chọn */
+    public record SubmitRequest(Map<Long, Long> answers) {}
 
     /** savedAnswers: questionId -> văn bản JSON của đáp án đã lưu (để tiếp tục làm dở). */
     public record AttemptStart(Long attemptId, int attemptNumber, Long remainingSeconds, QuizView quiz,
                                Map<Long, String> savedAnswers) {}
 
-    public record AnswerResult(Long questionId, Boolean correct, BigDecimal score) {}
+    public record AnswerResult(Long questionId, boolean correct, BigDecimal score) {}
 
     public record AttemptResult(Long attemptId, String status, BigDecimal score, BigDecimal totalPoints,
-                                int pendingCount, List<AnswerResult> answers) {}
+                                List<AnswerResult> answers) {}
 
     /** Một dòng trong lịch sử làm bài của sinh viên. */
     public record AttemptSummary(Long attemptId, Long quizId, int attemptNumber, String status,

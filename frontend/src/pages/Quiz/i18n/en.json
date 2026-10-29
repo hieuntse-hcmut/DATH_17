@@ -33,8 +33,6 @@
     "showAll": "All {{total}} questions",
     "submit": "Submit quiz",
     "timeLeft": "Time left",
-    "multiHint": "Select one or more answers",
-    "shortPlaceholder": "Type your answer",
     "submitError": "Couldn't submit. Please try again.",
     "retry": "Retry",
     "submitting": "Submitting…"
@@ -80,11 +78,9 @@
   "result": {
     "title": "Your result",
     "score": "{{score}} / {{total}} pts",
-    "correctCount": "{{correct}}/{{graded}} auto-graded questions correct",
-    "pending": "{{count}} written answers are waiting for the lecturer.",
+    "correctCount": "{{correct}}/{{total}} questions correct",
     "correct": "Correct",
     "wrong": "Wrong",
-    "waiting": "Pending",
     "detail": "Per-question details"
   },
   "history": {

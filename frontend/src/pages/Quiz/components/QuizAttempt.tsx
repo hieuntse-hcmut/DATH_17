@@ -7,7 +7,6 @@ import {
   faArrowRight,
   faCheck,
   faCircleCheck,
-  faMinus,
   faPaperPlane,
   faTableCells,
   faXmark,
@@ -318,8 +317,7 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
 
   /* ----- Màn hình kết quả ----- */
   if (result) {
-    const graded = result.answers.filter((a) => a.correct !== null);
-    const correctCount = graded.filter((a) => a.correct).length;
+    const correctCount = result.answers.filter((a) => a.correct).length;
     return (
       <div className="mx-auto flex max-w-xl flex-col items-center gap-4 p-6 text-center">
         <FontAwesomeIcon
@@ -337,14 +335,9 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
         <p className="text-fg-muted">
           {t("result.correctCount", {
             correct: correctCount,
-            graded: graded.length,
+            total,
           })}
         </p>
-        {result.pendingCount > 0 && (
-          <p className="text-sm text-fg-muted">
-            {t("result.pending", { count: result.pendingCount })}
-          </p>
-        )}
 
         <div className="w-full rounded-2xl border border-border bg-surface p-5 text-left">
           <h2 className="mb-3 font-label text-sm font-semibold text-fg">
@@ -355,24 +348,11 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
               const r = result.answers.find(
                 (a) => a.questionId === it.question.id,
               );
-              const state =
-                r?.correct === true
-                  ? "ok"
-                  : r?.correct === false
-                    ? "bad"
-                    : "wait";
-              const cls =
-                state === "ok"
-                  ? "border-tertiary/30 bg-tertiary-soft text-tertiary"
-                  : state === "bad"
-                    ? "border-danger/30 bg-danger/10 text-danger"
-                    : "border-transparent bg-surface-muted text-fg-muted";
-              const label =
-                state === "ok"
-                  ? t("result.correct")
-                  : state === "bad"
-                    ? t("result.wrong")
-                    : t("result.waiting");
+              const ok = r?.correct === true;
+              const cls = ok
+                ? "border-tertiary/30 bg-tertiary-soft text-tertiary"
+                : "border-danger/30 bg-danger/10 text-danger";
+              const label = ok ? t("result.correct") : t("result.wrong");
               return (
                 <div
                   key={it.question.id}
@@ -382,13 +362,7 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
                 >
                   {i + 1}
                   <FontAwesomeIcon
-                    icon={
-                      state === "ok"
-                        ? faCheck
-                        : state === "bad"
-                          ? faXmark
-                          : faMinus
-                    }
+                    icon={ok ? faCheck : faXmark}
                     className="text-[10px]"
                   />
                 </div>

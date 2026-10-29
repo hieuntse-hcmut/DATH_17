@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -34,7 +33,7 @@ public class AttemptService {
 
     private record Attempt(Long id, int number, LocalDateTime startTime) {}
     private record Limits(Integer durationMinutes, LocalDateTime endTime) {}
-    private record QuestionRow(Long id, String type, BigDecimal points) {}
+    private record QuestionRow(Long id, BigDecimal points) {}
 
     private final JdbcTemplate jdbc;
     private final CourseAccess access;
@@ -99,14 +98,12 @@ public class AttemptService {
                 "SELECT question_id FROM assessment_questions WHERE assessment_id = ?", Long.class, quizId));
         jdbc.update("DELETE FROM attempt_answers WHERE attempt_id = ?", attemptId);
         if (request == null || request.answers() == null) return;
-        for (Map.Entry<Long, Object> e : request.answers().entrySet()) {
-            if (!valid.contains(e.getKey()) || blank(e.getValue())) continue;
-            String json = toJson(e.getValue());
-            if (json == null) continue;
+        for (Map.Entry<Long, Long> e : request.answers().entrySet()) {
+            if (!valid.contains(e.getKey()) || e.getValue() == null) continue;
             jdbc.update("""
                     INSERT INTO attempt_answers (attempt_id, question_id, answer_data)
                     VALUES (?, ?, CAST(? AS JSON))
-                    """, attemptId, e.getKey(), json);
+                    """, attemptId, e.getKey(), String.valueOf(e.getValue()));
         }
     }
 
@@ -120,7 +117,7 @@ public class AttemptService {
 
         if ("IN_PROGRESS".equals(row[1])) { // nộp lần 2 thì chỉ trả lại kết quả cũ
             boolean late = pastGrace(deadline((LocalDateTime) row[0], limits), LocalDateTime.now());
-            Map<Long, Object> answers = late || request == null || request.answers() == null
+            Map<Long, Long> answers = late || request == null || request.answers() == null
                     ? loadDrafts(attemptId) : request.answers();
             try {
                 close(attemptId, quizId, answers);
@@ -171,135 +168,31 @@ public class AttemptService {
 
     // ---------------------------------------------------------------- chấm điểm
 
-    private void close(Long attemptId, Long quizId, Map<Long, Object> answers) {
+    private void close(Long attemptId, Long quizId, Map<Long, Long> answers) {
         List<QuestionRow> questions = jdbc.query("""
-                SELECT q.id, q.question_type, aq.points
+                SELECT q.id, aq.points
                 FROM assessment_questions aq JOIN question_bank q ON q.id = aq.question_id
                 WHERE aq.assessment_id = ? ORDER BY aq.order_index
-                """, (rs, i) -> new QuestionRow(rs.getLong(1), rs.getString(2), rs.getBigDecimal(3)), quizId);
+                """, (rs, i) -> new QuestionRow(rs.getLong(1), rs.getBigDecimal(2)), quizId);
 
         jdbc.update("DELETE FROM attempt_answers WHERE attempt_id = ?", attemptId);
 
         BigDecimal earned = BigDecimal.ZERO;
-        boolean pending = false;
         for (QuestionRow q : questions) {
-            Object answer = answers.get(q.id());
-            Boolean correct;
-            BigDecimal score;
-            if ("SHORT_ANSWER".equals(q.type())) {
-                correct = null;
-                score = null;
-                pending = true;
-            } else {
-                Set<Long> right = new HashSet<>(jdbc.queryForList(
-                        "SELECT id FROM question_options WHERE question_id = ? AND is_correct = TRUE",
-                        Long.class, q.id()));
-                Set<Long> chosen = chosen(answer);
-                correct = !chosen.isEmpty() && chosen.equals(right); // đúng toàn bộ mới có điểm
-                score = correct ? q.points() : BigDecimal.ZERO;
-                earned = earned.add(score);
-            }
+            Long answer = answers.get(q.id()); // id option đã chọn, null = bỏ trống
+            Set<Long> right = new HashSet<>(jdbc.queryForList(
+                    "SELECT id FROM question_options WHERE question_id = ? AND is_correct = TRUE",
+                    Long.class, q.id()));
+            boolean correct = answer != null && right.contains(answer);
+            BigDecimal score = correct ? q.points() : BigDecimal.ZERO;
+            earned = earned.add(score);
             jdbc.update("""
                     INSERT INTO attempt_answers (attempt_id, question_id, answer_data, is_correct, score)
                     VALUES (?, ?, CAST(? AS JSON), ?, ?)
-                    """, attemptId, q.id(), toJson(answer), correct, score);
+                    """, attemptId, q.id(), answer == null ? null : String.valueOf(answer), correct, score);
         }
-        jdbc.update("UPDATE assessment_attempts SET submit_time = ?, score = ?, status = ? WHERE id = ?",
-                LocalDateTime.now(), earned, pending ? "SUBMITTED" : "GRADED", attemptId);
-    }
-
-    /** Đáp án chọn: một số hoặc danh sách số (id của option). */
-    private static Set<Long> chosen(Object answer) {
-        Set<Long> ids = new HashSet<>();
-        if (answer instanceof Number num) {
-            ids.add(num.longValue());
-        } else if (answer instanceof List<?> list) {
-            for (Object item : list) if (item instanceof Number num) ids.add(num.longValue());
-        }
-        return ids;
-    }
-
-    private static boolean blank(Object answer) {
-        return answer == null
-                || (answer instanceof String s && s.isBlank())
-                || (answer instanceof List<?> l && l.isEmpty());
-    }
-
-    // ---------------------------------------------------------------- JSON đơn giản (số, mảng số, chuỗi)
-
-    private static String toJson(Object answer) {
-        if (answer instanceof Number num) return String.valueOf(num.longValue());
-        if (answer instanceof List<?> list) {
-            StringBuilder sb = new StringBuilder("[");
-            boolean first = true;
-            for (Object item : list) {
-                if (!(item instanceof Number num)) continue;
-                if (!first) sb.append(',');
-                sb.append(num.longValue());
-                first = false;
-            }
-            return sb.append(']').toString();
-        }
-        if (answer instanceof String text) {
-            StringBuilder sb = new StringBuilder("\"");
-            for (char c : text.toCharArray()) {
-                switch (c) {
-                    case '"' -> sb.append("\\\"");
-                    case '\\' -> sb.append("\\\\");
-                    case '\n' -> sb.append("\\n");
-                    case '\r' -> sb.append("\\r");
-                    case '\t' -> sb.append("\\t");
-                    default -> {
-                        if (c < 0x20) sb.append(String.format("\\u%04x", (int) c));
-                        else sb.append(c);
-                    }
-                }
-            }
-            return sb.append('"').toString();
-        }
-        return null; // không trả lời
-    }
-
-    private static Object fromJson(String raw) {
-        if (raw == null) return null;
-        String s = raw.trim();
-        try {
-            if (s.startsWith("[")) {
-                List<Object> out = new ArrayList<>();
-                String body = s.substring(1, s.length() - 1).trim();
-                if (!body.isEmpty()) for (String part : body.split(",")) out.add(Long.parseLong(part.trim()));
-                return out;
-            }
-            if (s.startsWith("\"")) return unescape(s.substring(1, s.length() - 1));
-            return Long.parseLong(s);
-        } catch (RuntimeException e) {
-            return null;
-        }
-    }
-
-    private static String unescape(String s) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c != '\\' || i + 1 >= s.length()) {
-                sb.append(c);
-                continue;
-            }
-            char n = s.charAt(++i);
-            switch (n) {
-                case 'n' -> sb.append('\n');
-                case 'r' -> sb.append('\r');
-                case 't' -> sb.append('\t');
-                case 'u' -> {
-                    if (i + 5 <= s.length()) {
-                        sb.append((char) Integer.parseInt(s.substring(i + 1, i + 5), 16));
-                        i += 4;
-                    }
-                }
-                default -> sb.append(n);
-            }
-        }
-        return sb.toString();
+        jdbc.update("UPDATE assessment_attempts SET submit_time = ?, score = ?, status = 'GRADED' WHERE id = ?",
+                LocalDateTime.now(), earned, attemptId);
     }
 
     // ---------------------------------------------------------------- đáp án nháp
@@ -317,11 +210,14 @@ public class AttemptService {
         return out;
     }
 
-    private Map<Long, Object> loadDrafts(Long attemptId) {
-        Map<Long, Object> out = new HashMap<>();
+    private Map<Long, Long> loadDrafts(Long attemptId) {
+        Map<Long, Long> out = new HashMap<>();
         for (Object[] r : draftRows(attemptId)) {
-            Object value = fromJson((String) r[1]);
-            if (value != null) out.put((Long) r[0], value);
+            try {
+                out.put((Long) r[0], Long.parseLong(((String) r[1]).trim()));
+            } catch (NumberFormatException ignored) {
+                // dữ liệu nháp cũ (mảng/chuỗi) không còn hợp lệ: bỏ qua
+            }
         }
         return out;
     }
@@ -337,16 +233,14 @@ public class AttemptService {
                 FROM attempt_answers aa JOIN assessment_questions aq ON aq.question_id = aa.question_id
                 WHERE aa.attempt_id = ? AND aq.assessment_id = ? ORDER BY aq.order_index
                 """, (rs, i) -> {
-            int flag = rs.getInt("is_correct");
-            Boolean correct = rs.wasNull() ? null : flag != 0;
-            return new AnswerResult(rs.getLong("question_id"), correct, rs.getBigDecimal("score"));
+            return new AnswerResult(rs.getLong("question_id"), rs.getBoolean("is_correct"),
+                    rs.getBigDecimal("score"));
         }, attemptId, quizId);
         BigDecimal total = jdbc.queryForObject(
                 "SELECT COALESCE(SUM(points), 0) FROM assessment_questions WHERE assessment_id = ?",
                 BigDecimal.class, quizId);
-        int pending = (int) answers.stream().filter(a -> a.correct() == null).count();
         BigDecimal score = attempt[1] == null ? BigDecimal.ZERO : (BigDecimal) attempt[1];
-        return new AttemptResult(attemptId, (String) attempt[0], score, total, pending, answers);
+        return new AttemptResult(attemptId, (String) attempt[0], score, total, answers);
     }
 
     // ---------------------------------------------------------------- tiện ích
