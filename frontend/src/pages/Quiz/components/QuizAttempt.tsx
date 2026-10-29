@@ -422,7 +422,7 @@ function QuizRunner({ data, courseId, quizId, backTo, editMode = false, isNew = 
   const navigate = useNavigate();
   const prefill = editMode && !isNew;
   const q = data.quiz.quiz;
-  console.log(q)
+  
   const [title, setTitle] = useState(() => (prefill ? q.title : ""));
   const [startTime, setStartTime] = useState(() => (prefill ? toLocalInput(q.startTime) : ""));
   const [endTime, setEndTime] = useState(() => (prefill ? toLocalInput(q.endTime) : ""));
