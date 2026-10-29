@@ -13,6 +13,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useMyAttempts, useQuizzes } from "./services/quiz.query";
 import type { Quiz } from "./services/quiz.type";
+import { useMe } from "~/services/me.query";
 
 function window_(q: Quiz) {
   const now = Date.now();
@@ -30,6 +31,7 @@ export default function QuizList() {
   const { data, isLoading, isError } = useQuizzes(courseId);
   const { data: attempts } = useMyAttempts(courseId);
   const [openHistory, setOpenHistory] = useState<number | null>(null);
+  const {data: me} = useMe();
 
   const fmt = (iso: string) =>
     new Intl.DateTimeFormat(i18n.language, {
@@ -111,23 +113,31 @@ export default function QuizList() {
                     )}
                   </dl>
                 </div>
-
-                {state !== "open" ? (
-                  <span className="shrink-0 rounded-lg bg-surface-muted px-5 py-2.5 text-center text-sm text-fg-subtle">
-                    {state === "closed" ? t("list.closed") : t("list.notOpen")}
-                  </span>
-                ) : outOfAttempts ? (
-                  <span className="shrink-0 rounded-lg bg-surface-muted px-5 py-2.5 text-center text-sm text-fg-subtle">
-                    {t("list.noAttemptsLeft")}
-                  </span>
-                ) : (
+                {me?.role === "LECTURER" ? (
                   <Link
-                    to={`/courses/${courseId}/quizzes/${q.id}`}
+                    to={`/courses/${courseId}/quizzes/${q.id}?edit`}
                     className="flex shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
                   >
                     <FontAwesomeIcon icon={faPlay} />
-                    {inProgress ? t("list.continue") : t("list.start")}
+                    {t("list.edit")}
                   </Link>
+                ) : (state !== "open" ? (
+                      <span className="shrink-0 rounded-lg bg-surface-muted px-5 py-2.5 text-center text-sm text-fg-subtle">
+                        {state === "closed" ? t("list.closed") : t("list.notOpen")}
+                      </span>
+                    ) : outOfAttempts ? (
+                      <span className="shrink-0 rounded-lg bg-surface-muted px-5 py-2.5 text-center text-sm text-fg-subtle">
+                        {t("list.noAttemptsLeft")}
+                      </span>
+                    ) : (
+                      <Link
+                        to={`/courses/${courseId}/quizzes/${q.id}`}
+                        className="flex shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
+                      >
+                        <FontAwesomeIcon icon={faPlay} />
+                        {inProgress ? t("list.continue") : t("list.start")}
+                      </Link>
+                    )
                 )}
               </div>
 
@@ -184,6 +194,13 @@ export default function QuizList() {
           );
         })}
       </ul>
+      {
+        me?.role === "LECTURER" && (
+          <Link to={`/courses/${courseId}/quizzes/new`} className="flex justify-center w-full cursor-pointer rounded-xl border border-dashed border-border px-3 py-2 text-sm text-link hover:bg-surface">
+            {t("edit.addNewQuiz")}
+          </Link>
+        )
+      }
     </div>
   );
 }

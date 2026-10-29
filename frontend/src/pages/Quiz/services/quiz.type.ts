@@ -7,12 +7,23 @@ export interface QuizOption {
   orderIndex: number;
 }
 
+export interface IQuizOptionPayload {
+  content: string;
+  correct: boolean;
+}
+
 export interface QuizQuestion {
   id: number;
   courseId: number;
   content: string;
   type: QuestionType;
   options: QuizOption[];
+}
+
+export interface IQuizQuestionPayload {
+  content: string;
+  type: QuestionType;
+  options: IQuizOptionPayload[];
 }
 
 export interface Quiz {
@@ -32,9 +43,22 @@ export interface QuizQuestionItem {
   points: number;
 }
 
+export interface IQuizQuestionItemPayload {
+  question: IQuizQuestionPayload;
+}
+
 export interface QuizDetail {
   quiz: Quiz;
   questions: QuizQuestionItem[];
+}
+
+export interface IQuizCreatePayload {
+  title: string;
+  startTime: string | null; // ISO
+  endTime: string | null;
+  durationMinutes: number | null;
+  maxAttempts: number;
+  questions: { questionId: number; points: number }[];
 }
 
 /** id của option đã chọn */
@@ -47,10 +71,10 @@ export const isAnswered = (v?: AnswerValue) => v !== undefined;
 /** Phản hồi của POST .../attempts */
 export interface AttemptStart {
   attemptId: number;
-  attemptNumber: number;
-  remainingSeconds: number | null;
+  attemptNumber?: number;
+  remainingSeconds?: number | null;
   quiz: QuizDetail;
-  savedAnswers: Record<string, string>; // questionId -> JSON text của đáp án đã lưu
+  savedAnswers?: Record<string, string>; // questionId -> JSON text của đáp án đã lưu
 }
 
 export interface AnswerResult {

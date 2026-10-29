@@ -91,5 +91,8 @@
       "SUBMITTED": "Pending review",
       "GRADED": "Graded"
     }
+  },
+  "edit": {
+    "addNewQuiz": "Add new quiz"
   }
 }

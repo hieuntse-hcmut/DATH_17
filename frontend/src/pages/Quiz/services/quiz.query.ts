@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { quizApi } from "./quiz.api";
+import { quizApi, getQuizByIndex } from "./quiz.api";
 import type { AnswerMap } from "./quiz.type";
 
 export const quizKeys = {
@@ -31,7 +31,7 @@ export const useStartAttempt = (
   courseId: number,
   quizId: number,
   enabled: boolean,
-) =>
+) => 
   useQuery({
     queryKey: quizKeys.attempt(courseId, quizId),
     queryFn: () => quizApi.start(courseId, quizId),
@@ -58,3 +58,11 @@ export const useSubmitAttempt = (courseId: number, quizId: number) => {
       queryClient.invalidateQueries({ queryKey: quizKeys.attempts(courseId) }),
   });
 };
+
+export const useGetQuizByIndex = (courseId: number, quizId: number, enabled?: boolean) => {
+  return useQuery({
+    queryKey: ["quizzes", quizId],
+    queryFn: () => getQuizByIndex(courseId, quizId),
+    enabled: enabled,
+  })
+}

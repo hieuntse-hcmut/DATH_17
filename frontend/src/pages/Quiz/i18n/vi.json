@@ -91,5 +91,8 @@
       "SUBMITTED": "Chờ chấm",
       "GRADED": "Đã chấm"
     }
+  },
+  "edit": {
+    "addNewQuiz": "Thêm bài kiểm tra mới"
   }
 }

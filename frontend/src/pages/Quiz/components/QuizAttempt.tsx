@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useBlocker, useParams } from "react-router";
+import { Link, useBlocker, useNavigate, useParams, useSearchParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,7 +16,13 @@ import {
   useSaveAnswers,
   useStartAttempt,
   useSubmitAttempt,
+  useGetQuizByIndex
 } from "../services/quiz.query";
+import {
+  useCreateQuestion,
+  useCreateQuiz,
+  usePublishQuestion
+} from "../services/quiz.mutation"
 import { isAnswered } from "../services/quiz.type";
 import type {
   AnswerMap,
@@ -24,11 +30,40 @@ import type {
   AttemptResult,
   AttemptStart,
   QuestionStatus,
+  QuizQuestionItem
 } from "../services/quiz.type";
 import QuestionCard from "./QuestionCard";
 import QuestionPalette from "./QuestionPalette";
 import QuizTimer from "./QuizTimer";
 import SubmitDialog from "./SubmitDialog";
+import { useMe } from "~/services/me.query";
+
+const toLocalInput = (iso: string | null | undefined) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+/* ---------------------------------------------------------- tạo câu hỏi nháp */
+
+const makeDraftItem = (courseId: number, draftId: number): QuizQuestionItem => ({
+  orderIndex: 0,
+  points: 1,
+  question: {
+    id: draftId,
+    courseId,
+    content: "Đây là câu hỏi mẫu",
+    type: "SINGLE_CHOICE",
+    options: [0, 1, 2, 3].map((i) => ({
+      id: -(i + 1),
+      content: `Đây là đáp án ${i}`,
+      correct: false,
+      orderIndex: i,
+    })),
+  },
+});
 
 /* ---------------------------------------------------------- fullscreen */
 
@@ -56,18 +91,68 @@ const exitFullscreen = () => {
 export default function QuizAttempt() {
   const { t } = useTranslation("quiz");
   const params = useParams();
+  const [searchParams] = useSearchParams();
   const courseId = Number(params.courseId);
-  const quizId = Number(params.quizId);
+  const isNew = params.quizId === "new";
+  const quizId = isNew ? 0 : Number(params.quizId);
+  const isEditMode = isNew || searchParams.has("edit");
   const backTo = `/courses/${courseId}/quizzes`;
+
+  const { data: me, isLoading: meLoading } = useMe();
+  const canEdit = isEditMode && me?.role === "LECTURER";
 
   const [started, setStarted] = useState(false);
   const { data: quizzes } = useQuizzes(courseId);
   const info = quizzes?.find((q) => q.id === quizId);
-  const attempt = useStartAttempt(courseId, quizId, started);
+  const attempt = useStartAttempt(courseId, quizId, started && !isEditMode);
+  const {data: quiz, isLoading: isQuizLoading} = useGetQuizByIndex(courseId, quizId, canEdit && !isNew)
 
   useEffect(() => {
     if (attempt.isError) exitFullscreen();
   }, [attempt.isError]);
+
+  // 0) Chế độ thêm/sửa: chỉ giảng viên, màn hình bình thường, KHÔNG fullscreen
+  if (isEditMode) {
+    const editData = useMemo<AttemptStart>(() => {
+      return {
+        attemptId: -1,
+        quiz: quiz ?? {
+          quiz: {
+            id: 0, courseId, title: t("edit.createTitle", "Bài kiểm tra mới"),
+            status: "DRAFT", startTime: null, endTime: null,
+            durationMinutes: null, maxAttempts: 1,
+          },
+          questions: [],
+        },
+      };
+    }, [canEdit, isNew, quiz, courseId, t]);
+
+    if (meLoading || isQuizLoading) {
+      return <p className="p-10 text-center text-fg-muted">…</p>;
+    }
+    if (!canEdit) {
+      return (
+        <div className="p-10 text-center">
+          <p className="text-danger">{t("edit.forbidden", "Chặn")}</p>
+          <Link to={backTo} className="mt-3 inline-block text-link underline">
+            {t("attempt.back")}
+          </Link>
+        </div>
+      );
+    }
+    
+    return (
+      <QuizRunner
+        key={`edit-${quizId}`}
+        data={editData}
+        courseId={courseId}
+        quizId={quizId}
+        backTo={backTo}
+        editMode={isEditMode}
+        isNew={isNew}
+      />
+    );
+  }
 
   // 1) Màn hình giới thiệu: bấm nút là cử chỉ người dùng để bật toàn màn hình
   if (!started) {
@@ -149,6 +234,8 @@ interface RunnerProps {
   courseId: number;
   quizId: number;
   backTo: string;
+  editMode?: boolean;
+  isNew?: boolean;
 }
 
 interface SavedState {
@@ -157,15 +244,32 @@ interface SavedState {
   flags?: number[];
 }
 
-function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
+function QuizRunner({ data, courseId, quizId, backTo, editMode = false, isNew = false }: Readonly<RunnerProps>) {
   const { t } = useTranslation("quiz");
   const storeKey = `quiz-attempt:${data.attemptId}`;
 
-  const items = useMemo(
-    () => [...data.quiz.questions].sort((a, b) => a.orderIndex - b.orderIndex),
-    [data],
-  );
+  const draftSeq = useRef(-1);
+  const nextDraftId = () => --draftSeq.current;
+
+  const buildItems = (data: AttemptStart, editMode: boolean, courseId: number): QuizQuestionItem[] => {
+    const list = [...data.quiz.questions].sort(
+      (a, b) => a.orderIndex - b.orderIndex,
+    );
+    return editMode && list.length === 0 ? [makeDraftItem(courseId, nextDraftId())] : list;
+  };
+
+  const [items, setItems] = useState<QuizQuestionItem[]>(() => buildItems(data, editMode, courseId));
+
+  // Server trả dữ liệu mới (sau khi lưu/xóa + invalidate) thì đồng bộ lại
+  useEffect(() => {
+    setItems(buildItems(data, editMode, courseId));
+  }, [data, editMode, courseId]);
+
   const total = items.length;
+
+  const handleEdit = useCallback((newItem: QuizQuestionItem, idx: number) => {
+    setItems((list) => list.map((it, i) => (i === idx ? newItem : it)));
+  }, []);
 
   // Khôi phục tiến độ: localStorage (tức thì) hoặc đáp án đã lưu trên máy chủ
   const saved = useMemo<SavedState | null>(() => {
@@ -205,7 +309,7 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [result, setResult] = useState<AttemptResult | null>(null);
   const [fsOk, setFsOk] = useState(
-    () => !fsSupported() || !!document.fullscreenElement,
+    () => editMode || !fsSupported() || !!document.fullscreenElement,
   );
 
   const { mutate: submitMutate, isPending } = useSubmitAttempt(
@@ -266,7 +370,7 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
 
   // Lưu tạm đáp án để tải lại trang không mất
   useEffect(() => {
-    if (result) return;
+    if (result || editMode) return;
     try {
       sessionStorage.setItem(
         storeKey,
@@ -275,25 +379,25 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
     } catch {
       /* bỏ qua */
     }
-  }, [storeKey, result, current, answers, flags]);
+  }, [storeKey, result, current, answers, flags, editMode]);
   // Tự động lưu lên máy chủ sau 1 giây kể từ lần chọn cuối
   useEffect(() => {
-    if (result) return;
+    if (result || editMode) return;
     const id = window.setTimeout(() => {
       if (submittingRef.current) return;
       saveMutate({ attemptId: data.attemptId, answers });
     }, 1000);
     return () => window.clearTimeout(id);
-  }, [answers, result, data.attemptId, saveMutate]);
+  }, [answers, result, data.attemptId, saveMutate, editMode]);
   // Chặn Back/Forward và mọi điều hướng trong ứng dụng cho tới khi nộp bài
-  const blocker = useBlocker(!result);
+  const blocker = useBlocker(!result && !editMode);
   useEffect(() => {
     if (blocker.state === "blocked") blocker.reset();
   }, [blocker]);
 
   // Cảnh báo khi đóng tab / tải lại
   useEffect(() => {
-    if (result) return;
+    if (result || editMode) return;
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       e.returnValue = "";
@@ -304,7 +408,7 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
 
   // Theo dõi thoát toàn màn hình
   useEffect(() => {
-    if (result || !fsSupported()) return;
+    if (result || editMode || !fsSupported()) return;
     const onChange = () => setFsOk(!!document.fullscreenElement);
     document.addEventListener("fullscreenchange", onChange);
     return () => document.removeEventListener("fullscreenchange", onChange);
@@ -315,6 +419,76 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
     setSheetOpen(false);
   };
 
+  const navigate = useNavigate();
+  const prefill = editMode && !isNew;
+  const q = data.quiz.quiz;
+  console.log(q)
+  const [title, setTitle] = useState(() => (prefill ? q.title : ""));
+  const [startTime, setStartTime] = useState(() => (prefill ? toLocalInput(q.startTime) : ""));
+  const [endTime, setEndTime] = useState(() => (prefill ? toLocalInput(q.endTime) : ""));
+  const [duration, setDuration] = useState<number | "">(() =>
+    prefill ? (q.durationMinutes ?? "") : "",
+  );
+  const [maxAttempts, setMaxAttempts] = useState(() => (prefill ? q.maxAttempts : 1));
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const {mutate: publishMutate} = usePublishQuestion(courseId, quizId);
+
+  const createQuestion = useCreateQuestion(courseId);
+  const createQuiz = useCreateQuiz(courseId);
+
+  const toIso = (v: string) => (v ? new Date(v).toISOString() : null);
+
+  const handleSave = async () => {
+    setSaveError(null);
+
+    try {
+      // Bước 1: tạo các câu nháp, lấy id thật
+      const resolved: QuizQuestionItem[] = [];
+      for (const it of items) {
+        if (it.question.id > 0) {
+          resolved.push(it);
+          continue;
+        }
+        const created = await createQuestion.mutateAsync({
+          content: it.question.content.trim(),
+          type: it.question.type,
+          options: it.question.options.map((o) => ({
+            content: o.content.trim(),
+            correct: !!o.correct,
+          })),
+        });
+        resolved.push({ ...it, question: { ...it.question, id: created.id } });
+      } 
+      // Giữ id thật: nếu bước 2 lỗi, bấm Lưu lại sẽ không tạo trùng câu hỏi
+      setItems(resolved);
+
+      // Bước 2: tạo quiz
+      await createQuiz.mutateAsync({
+        title: title.trim(),
+        startTime: toIso(startTime),
+        endTime: toIso(endTime),
+        durationMinutes: duration === "" ? null : duration,
+        maxAttempts,
+        questions: resolved.map((it) => ({
+          questionId: it.question.id,
+          points: it.points,
+        })),
+      });
+      navigate(backTo);
+    } catch (e) {
+        alert("Đã xảy ra lỗi. Có thể bạn quên chọn đáp án đúng");
+      setSaveError((e as Error)?.message || t("edit.errSave"));
+    }
+  };
+
+  const handlePublish = () => {
+    publishMutate(undefined, {
+      onSuccess: () => {
+        navigate(backTo);
+        alert("Thêm khóa học thành công")
+      },
+    });
+  };
   /* ----- Màn hình kết quả ----- */
   if (result) {
     const correctCount = result.answers.filter((a) => a.correct).length;
@@ -386,6 +560,21 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
   const qid = item.question.id;
   const isLast = current === total - 1;
 
+  const removeItem = (idx: number) => {
+    if (items.length <= 1) return;
+
+    setItems((list) =>
+      list
+        .filter((_, i) => i !== idx)
+        .map((it, i) => ({ ...it, orderIndex: i })),
+    );
+
+    setCurrent((c) => {
+      if (idx < c) return c - 1;
+      return Math.min(c, items.length - 2);
+    });
+  };
+
   return (
     <div className="min-h-screen bg-page pb-28 lg:pb-8">
       {/* Header */}
@@ -400,45 +589,103 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            {data.remainingSeconds != null && (
-              <QuizTimer
-                totalSeconds={data.remainingSeconds}
-                onExpire={onExpire}
-              />
+            {editMode ? (
+              isNew ? (
+                <button
+                  onClick={handleSave}
+                  className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
+                >
+                  {t("edit.done")}
+                </button>
+              ) : data.quiz.quiz.status === "DRAFT" ? (
+                <button
+                  onClick={handlePublish}
+                  className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
+                >
+                  {t("edit.publish")}
+                </button>
+              ) : null
+            ) : (
+              <>
+                {data.remainingSeconds != null && (
+                  <QuizTimer
+                    totalSeconds={data.remainingSeconds}
+                    onExpire={onExpire}
+                  />
+                )}
+                <button
+                  type="button"
+                  onClick={() => setConfirmOpen(true)}
+                  className="flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover sm:px-4"
+                >
+                  <span className="hidden sm:inline">{t("attempt.submit")}</span>
+                  <span className="sm:hidden">
+                    {t("attempt.submit").split(" ")[0]}
+                  </span>
+                  <FontAwesomeIcon icon={faPaperPlane} />
+                </button>
+              </>
             )}
-            <button
-              type="button"
-              onClick={() => setConfirmOpen(true)}
-              className="flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover sm:px-4"
-            >
-              <span className="hidden sm:inline">{t("attempt.submit")}</span>
-              <span className="sm:hidden">
-                {t("attempt.submit").split(" ")[0]}
-              </span>
-              <FontAwesomeIcon icon={faPaperPlane} />
-            </button>
           </div>
         </div>
       </header>
 
       <main className="mx-auto grid max-w-6xl gap-6 px-4 py-6 lg:grid-cols-[1fr_320px]">
         <div>
-          <QuestionCard
-            item={item}
-            index={current}
-            total={total}
-            flagged={flags.has(qid)}
-            value={answers[qid]}
-            onChange={(v) => setAnswers((a) => ({ ...a, [qid]: v }))}
-            onToggleFlag={() =>
-              setFlags((f) => {
-                const n = new Set(f);
-                if (n.has(qid)) n.delete(qid);
-                else n.add(qid);
-                return n;
-              })
-            }
-          />
+          {editMode && (
+  <section className="mb-6 grid gap-3 rounded-2xl border border-border bg-surface p-5 sm:grid-cols-2">
+    <label className="grid gap-1 text-sm text-fg sm:col-span-2">
+      {t("edit.title")}
+      <input value={title} onChange={(e) => setTitle(e.target.value)}
+        className="rounded-lg border border-border bg-page px-3 py-2" />
+    </label>
+    <label className="grid gap-1 text-sm text-fg">
+      {t("edit.startTime", "Bắt đầu")}
+      <input type="datetime-local" value={startTime}
+        onChange={(e) => setStartTime(e.target.value)}
+        className="rounded-lg border border-border bg-page px-3 py-2" />
+    </label>
+    <label className="grid gap-1 text-sm text-fg">
+      {t("edit.endTime", "Kết thúc")}
+      <input type="datetime-local" value={endTime}
+        onChange={(e) => setEndTime(e.target.value)}
+        className="rounded-lg border border-border bg-page px-3 py-2" />
+    </label>
+    <label className="grid gap-1 text-sm text-fg">
+      {t("edit.duration", "Thời lượng (phút)")}
+      <input type="number" min={1} value={duration}
+        onChange={(e) => setDuration(e.target.value === "" ? "" : Number(e.target.value))}
+        className="rounded-lg border border-border bg-page px-3 py-2" />
+    </label>
+    <label className="grid gap-1 text-sm text-fg">
+      {t("edit.maxAttempts", "Số lượt làm")}
+      <input type="number" min={1} value={maxAttempts}
+        onChange={(e) => setMaxAttempts(Math.max(1, Number(e.target.value)))}
+        className="rounded-lg border border-border bg-page px-3 py-2" />
+    </label>
+  </section>
+)}
+          {item && (
+            <QuestionCard
+              item={item}
+              index={current}
+              total={total}
+              flagged={flags.has(qid)}
+              value={answers[qid]}
+              onChange={(v) => setAnswers((a) => ({ ...a, [qid]: v }))}
+              onToggleFlag={() =>
+                setFlags((f) => {
+                  const n = new Set(f);
+                  if (n.has(qid)) n.delete(qid);
+                  else n.add(qid);
+                  return n;
+                })
+              }
+              onEdit={handleEdit}
+              editMode={editMode}
+              onRemoveQuestion={removeItem}
+            />
+          )}
 
           {/* Điều hướng: dính đáy trên mobile */}
           <nav className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-between gap-2 border-t border-border bg-surface px-4 py-3 lg:static lg:mt-5 lg:border-0 lg:bg-transparent lg:px-0 lg:py-0">
@@ -464,25 +711,36 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
               {t("attempt.showAll", { total })}
             </span>
 
-            {isLast ? (
+            {(isLast ? (editMode ? (
               <button
                 type="button"
-                onClick={() => setConfirmOpen(true)}
-                className="flex items-center gap-2 rounded-lg bg-tertiary px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+                onClick={() => {
+                  setItems((list) => [...list, makeDraftItem(courseId, nextDraftId()),])
+                  setCurrent(items.length)
+                }}
+                className="cursor-pointer flex items-center gap-2 rounded-lg bg-tertiary px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
               >
-                {t("attempt.submit")}
-                <FontAwesomeIcon icon={faPaperPlane} />
+                Thêm câu hỏi
               </button>
             ) : (
               <button
                 type="button"
+                onClick={() => setConfirmOpen(true)}
+                className="cursor-pointer flex items-center gap-2 rounded-lg bg-tertiary px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+              >
+                {t("attempt.submit")}
+                <FontAwesomeIcon icon={faPaperPlane} />
+              </button>
+            )) : (
+              <button
+                type="button"
                 onClick={() => setCurrent((c) => c + 1)}
-                className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
+                className="cursor-pointer flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
               >
                 {t("attempt.next")}
                 <FontAwesomeIcon icon={faArrowRight} />
               </button>
-            )}
+            ))}
           </nav>
         </div>
 
@@ -540,7 +798,7 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
       {submitError && (
         <div
           role="alert"
-          className="fixed inset-x-4 top-16 z-[65] mx-auto flex max-w-md items-center justify-between gap-3 rounded-xl bg-danger px-4 py-3 text-sm text-on-primary shadow-lg"
+          className="fixed inset-x-4 top-16 z-65 mx-auto flex max-w-md items-center justify-between gap-3 rounded-xl bg-danger px-4 py-3 text-sm text-on-primary shadow-lg"
         >
           <span>{submitError}</span>{" "}
           <button
@@ -554,7 +812,7 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
       )}
 
       {isPending && (
-        <div className="fixed inset-0 z-[70] grid place-items-center bg-fg/40">
+        <div className="fixed inset-0 z-70 grid place-items-center bg-fg/40">
           <p className="rounded-xl bg-surface px-5 py-3 text-sm font-semibold text-fg">
             {t("attempt.submitting")}
           </p>
@@ -563,7 +821,7 @@ function QuizRunner({ data, courseId, quizId, backTo }: RunnerProps) {
 
       {/* Thoát toàn màn hình: che kín nội dung (đồng hồ vẫn chạy phía sau) */}
       {!fsOk && (
-        <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-3 bg-page p-6 text-center">
+        <div className="fixed inset-0 z-60 flex flex-col items-center justify-center gap-3 bg-page p-6 text-center">
           <h2 className="text-xl font-bold text-fg">{t("fullscreen.title")}</h2>
           <p className="max-w-sm text-sm text-fg-muted">
             {t("fullscreen.body")}

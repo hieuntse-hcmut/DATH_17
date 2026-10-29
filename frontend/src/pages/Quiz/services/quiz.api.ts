@@ -5,6 +5,7 @@ import type {
   AttemptStart,
   AttemptSummary,
   Quiz,
+  QuizDetail
 } from "./quiz.type";
 
 export const quizApi = {
@@ -41,3 +42,5 @@ export const quizApi = {
       { answers },
     ),
 };
+
+export const getQuizByIndex = (courseId: number, quizId: number) => getApi<QuizDetail>(`/courses/${courseId}/quizzes/${quizId}`)
