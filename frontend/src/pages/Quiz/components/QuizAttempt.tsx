@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useBlocker, useNavigate, useParams, useSearchParams } from "react-router";
+import {
+  Link,
+  useBlocker,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,13 +22,13 @@ import {
   useSaveAnswers,
   useStartAttempt,
   useSubmitAttempt,
-  useGetQuizByIndex
+  useGetQuizByIndex,
 } from "../services/quiz.query";
 import {
   useCreateQuestion,
   useCreateQuiz,
-  usePublishQuestion
-} from "../services/quiz.mutation"
+  usePublishQuestion,
+} from "../services/quiz.mutation";
 import { isAnswered } from "../services/quiz.type";
 import type {
   AnswerMap,
@@ -30,7 +36,7 @@ import type {
   AttemptResult,
   AttemptStart,
   QuestionStatus,
-  QuizQuestionItem
+  QuizQuestionItem,
 } from "../services/quiz.type";
 import QuestionCard from "./QuestionCard";
 import QuestionPalette from "./QuestionPalette";
@@ -48,7 +54,10 @@ const toLocalInput = (iso: string | null | undefined) => {
 
 /* ---------------------------------------------------------- tạo câu hỏi nháp */
 
-const makeDraftItem = (courseId: number, draftId: number): QuizQuestionItem => ({
+const makeDraftItem = (
+  courseId: number,
+  draftId: number,
+): QuizQuestionItem => ({
   orderIndex: 0,
   points: 1,
   question: {
@@ -105,7 +114,11 @@ export default function QuizAttempt() {
   const { data: quizzes } = useQuizzes(courseId);
   const info = quizzes?.find((q) => q.id === quizId);
   const attempt = useStartAttempt(courseId, quizId, started && !isEditMode);
-  const {data: quiz, isLoading: isQuizLoading} = useGetQuizByIndex(courseId, quizId, canEdit && !isNew)
+  const { data: quiz, isLoading: isQuizLoading } = useGetQuizByIndex(
+    courseId,
+    quizId,
+    canEdit && !isNew,
+  );
 
   useEffect(() => {
     if (attempt.isError) exitFullscreen();
@@ -118,9 +131,14 @@ export default function QuizAttempt() {
         attemptId: -1,
         quiz: quiz ?? {
           quiz: {
-            id: 0, courseId, title: t("edit.createTitle", "Bài kiểm tra mới"),
-            status: "DRAFT", startTime: null, endTime: null,
-            durationMinutes: null, maxAttempts: 1,
+            id: 0,
+            courseId,
+            title: t("edit.createTitle", "Bài kiểm tra mới"),
+            status: "DRAFT",
+            startTime: null,
+            endTime: null,
+            durationMinutes: null,
+            maxAttempts: 1,
           },
           questions: [],
         },
@@ -140,7 +158,7 @@ export default function QuizAttempt() {
         </div>
       );
     }
-    
+
     return (
       <QuizRunner
         key={`edit-${quizId}`}
@@ -244,21 +262,36 @@ interface SavedState {
   flags?: number[];
 }
 
-function QuizRunner({ data, courseId, quizId, backTo, editMode = false, isNew = false }: Readonly<RunnerProps>) {
+function QuizRunner({
+  data,
+  courseId,
+  quizId,
+  backTo,
+  editMode = false,
+  isNew = false,
+}: Readonly<RunnerProps>) {
   const { t } = useTranslation("quiz");
   const storeKey = `quiz-attempt:${data.attemptId}`;
 
   const draftSeq = useRef(-1);
   const nextDraftId = () => --draftSeq.current;
 
-  const buildItems = (data: AttemptStart, editMode: boolean, courseId: number): QuizQuestionItem[] => {
+  const buildItems = (
+    data: AttemptStart,
+    editMode: boolean,
+    courseId: number,
+  ): QuizQuestionItem[] => {
     const list = [...data.quiz.questions].sort(
       (a, b) => a.orderIndex - b.orderIndex,
     );
-    return editMode && list.length === 0 ? [makeDraftItem(courseId, nextDraftId())] : list;
+    return editMode && list.length === 0
+      ? [makeDraftItem(courseId, nextDraftId())]
+      : list;
   };
 
-  const [items, setItems] = useState<QuizQuestionItem[]>(() => buildItems(data, editMode, courseId));
+  const [items, setItems] = useState<QuizQuestionItem[]>(() =>
+    buildItems(data, editMode, courseId),
+  );
 
   // Server trả dữ liệu mới (sau khi lưu/xóa + invalidate) thì đồng bộ lại
   useEffect(() => {
@@ -422,16 +455,22 @@ function QuizRunner({ data, courseId, quizId, backTo, editMode = false, isNew = 
   const navigate = useNavigate();
   const prefill = editMode && !isNew;
   const q = data.quiz.quiz;
-  
+
   const [title, setTitle] = useState(() => (prefill ? q.title : ""));
-  const [startTime, setStartTime] = useState(() => (prefill ? toLocalInput(q.startTime) : ""));
-  const [endTime, setEndTime] = useState(() => (prefill ? toLocalInput(q.endTime) : ""));
+  const [startTime, setStartTime] = useState(() =>
+    prefill ? toLocalInput(q.startTime) : "",
+  );
+  const [endTime, setEndTime] = useState(() =>
+    prefill ? toLocalInput(q.endTime) : "",
+  );
   const [duration, setDuration] = useState<number | "">(() =>
     prefill ? (q.durationMinutes ?? "") : "",
   );
-  const [maxAttempts, setMaxAttempts] = useState(() => (prefill ? q.maxAttempts : 1));
+  const [maxAttempts, setMaxAttempts] = useState(() =>
+    prefill ? q.maxAttempts : 1,
+  );
   const [saveError, setSaveError] = useState<string | null>(null);
-  const {mutate: publishMutate} = usePublishQuestion(courseId, quizId);
+  const { mutate: publishMutate } = usePublishQuestion(courseId, quizId);
 
   const createQuestion = useCreateQuestion(courseId);
   const createQuiz = useCreateQuiz(courseId);
@@ -457,8 +496,11 @@ function QuizRunner({ data, courseId, quizId, backTo, editMode = false, isNew = 
             correct: !!o.correct,
           })),
         });
-        resolved.push({ ...it, question: { ...it.question, id: created.id } });
-      } 
+        resolved.push({
+          ...it,
+          question: { ...it.question, id: created.data.id },
+        });
+      }
       // Giữ id thật: nếu bước 2 lỗi, bấm Lưu lại sẽ không tạo trùng câu hỏi
       setItems(resolved);
 
@@ -476,7 +518,7 @@ function QuizRunner({ data, courseId, quizId, backTo, editMode = false, isNew = 
       });
       navigate(backTo);
     } catch (e) {
-        alert("Đã xảy ra lỗi. Có thể bạn quên chọn đáp án đúng");
+      alert(t("edit.errSaveAlert"));
       setSaveError((e as Error)?.message || t("edit.errSave"));
     }
   };
@@ -485,7 +527,7 @@ function QuizRunner({ data, courseId, quizId, backTo, editMode = false, isNew = 
     publishMutate(undefined, {
       onSuccess: () => {
         navigate(backTo);
-        alert("Thêm khóa học thành công")
+        alert(t("edit.publishSuccess"));
       },
     });
   };
@@ -618,7 +660,9 @@ function QuizRunner({ data, courseId, quizId, backTo, editMode = false, isNew = 
                   onClick={() => setConfirmOpen(true)}
                   className="flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover sm:px-4"
                 >
-                  <span className="hidden sm:inline">{t("attempt.submit")}</span>
+                  <span className="hidden sm:inline">
+                    {t("attempt.submit")}
+                  </span>
                   <span className="sm:hidden">
                     {t("attempt.submit").split(" ")[0]}
                   </span>
@@ -633,38 +677,61 @@ function QuizRunner({ data, courseId, quizId, backTo, editMode = false, isNew = 
       <main className="mx-auto grid max-w-6xl gap-6 px-4 py-6 lg:grid-cols-[1fr_320px]">
         <div>
           {editMode && (
-  <section className="mb-6 grid gap-3 rounded-2xl border border-border bg-surface p-5 sm:grid-cols-2">
-    <label className="grid gap-1 text-sm text-fg sm:col-span-2">
-      {t("edit.title")}
-      <input value={title} onChange={(e) => setTitle(e.target.value)}
-        className="rounded-lg border border-border bg-page px-3 py-2" />
-    </label>
-    <label className="grid gap-1 text-sm text-fg">
-      {t("edit.startTime", "Bắt đầu")}
-      <input type="datetime-local" value={startTime}
-        onChange={(e) => setStartTime(e.target.value)}
-        className="rounded-lg border border-border bg-page px-3 py-2" />
-    </label>
-    <label className="grid gap-1 text-sm text-fg">
-      {t("edit.endTime", "Kết thúc")}
-      <input type="datetime-local" value={endTime}
-        onChange={(e) => setEndTime(e.target.value)}
-        className="rounded-lg border border-border bg-page px-3 py-2" />
-    </label>
-    <label className="grid gap-1 text-sm text-fg">
-      {t("edit.duration", "Thời lượng (phút)")}
-      <input type="number" min={1} value={duration}
-        onChange={(e) => setDuration(e.target.value === "" ? "" : Number(e.target.value))}
-        className="rounded-lg border border-border bg-page px-3 py-2" />
-    </label>
-    <label className="grid gap-1 text-sm text-fg">
-      {t("edit.maxAttempts", "Số lượt làm")}
-      <input type="number" min={1} value={maxAttempts}
-        onChange={(e) => setMaxAttempts(Math.max(1, Number(e.target.value)))}
-        className="rounded-lg border border-border bg-page px-3 py-2" />
-    </label>
-  </section>
-)}
+            <section className="mb-6 grid gap-3 rounded-2xl border border-border bg-surface p-5 sm:grid-cols-2">
+              <label className="grid gap-1 text-sm text-fg sm:col-span-2">
+                {t("edit.title")}
+                <input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="rounded-lg border border-border bg-page px-3 py-2"
+                />
+              </label>
+              <label className="grid gap-1 text-sm text-fg">
+                {t("edit.startTime", "Bắt đầu")}
+                <input
+                  type="datetime-local"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className="rounded-lg border border-border bg-page px-3 py-2"
+                />
+              </label>
+              <label className="grid gap-1 text-sm text-fg">
+                {t("edit.endTime", "Kết thúc")}
+                <input
+                  type="datetime-local"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  className="rounded-lg border border-border bg-page px-3 py-2"
+                />
+              </label>
+              <label className="grid gap-1 text-sm text-fg">
+                {t("edit.duration", "Thời lượng (phút)")}
+                <input
+                  type="number"
+                  min={1}
+                  value={duration}
+                  onChange={(e) =>
+                    setDuration(
+                      e.target.value === "" ? "" : Number(e.target.value),
+                    )
+                  }
+                  className="rounded-lg border border-border bg-page px-3 py-2"
+                />
+              </label>
+              <label className="grid gap-1 text-sm text-fg">
+                {t("edit.maxAttempts", "Số lượt làm")}
+                <input
+                  type="number"
+                  min={1}
+                  value={maxAttempts}
+                  onChange={(e) =>
+                    setMaxAttempts(Math.max(1, Number(e.target.value)))
+                  }
+                  className="rounded-lg border border-border bg-page px-3 py-2"
+                />
+              </label>
+            </section>
+          )}
           {item && (
             <QuestionCard
               item={item}
@@ -711,27 +778,32 @@ function QuizRunner({ data, courseId, quizId, backTo, editMode = false, isNew = 
               {t("attempt.showAll", { total })}
             </span>
 
-            {(isLast ? (editMode ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setItems((list) => [...list, makeDraftItem(courseId, nextDraftId()),])
-                  setCurrent(items.length)
-                }}
-                className="cursor-pointer flex items-center gap-2 rounded-lg bg-tertiary px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
-              >
-                Thêm câu hỏi
-              </button>
+            {isLast ? (
+              editMode ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setItems((list) => [
+                      ...list,
+                      makeDraftItem(courseId, nextDraftId()),
+                    ]);
+                    setCurrent(items.length);
+                  }}
+                  className="cursor-pointer flex items-center gap-2 rounded-lg bg-tertiary px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+                >
+                  Thêm câu hỏi
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setConfirmOpen(true)}
+                  className="cursor-pointer flex items-center gap-2 rounded-lg bg-tertiary px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+                >
+                  {t("attempt.submit")}
+                  <FontAwesomeIcon icon={faPaperPlane} />
+                </button>
+              )
             ) : (
-              <button
-                type="button"
-                onClick={() => setConfirmOpen(true)}
-                className="cursor-pointer flex items-center gap-2 rounded-lg bg-tertiary px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
-              >
-                {t("attempt.submit")}
-                <FontAwesomeIcon icon={faPaperPlane} />
-              </button>
-            )) : (
               <button
                 type="button"
                 onClick={() => setCurrent((c) => c + 1)}
@@ -740,7 +812,7 @@ function QuizRunner({ data, courseId, quizId, backTo, editMode = false, isNew = 
                 {t("attempt.next")}
                 <FontAwesomeIcon icon={faArrowRight} />
               </button>
-            ))}
+            )}
           </nav>
         </div>
 

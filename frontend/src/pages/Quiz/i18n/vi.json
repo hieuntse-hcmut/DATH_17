@@ -17,7 +17,8 @@
     "hideHistory": "Ẩn lịch sử",
     "attemptsUsed": "Đã dùng {{used}}/{{max}} lượt",
     "continue": "Tiếp tục làm bài",
-    "noAttemptsLeft": "Hết lượt"
+    "noAttemptsLeft": "Hết lượt",
+    "edit": "Chỉnh sửa"
   },
   "attempt": {
     "windowTitle": "Làm bài kiểm tra",
@@ -93,6 +94,22 @@
     }
   },
   "edit": {
-    "addNewQuiz": "Thêm bài kiểm tra mới"
+    "addNewQuiz": "Thêm bài kiểm tra mới",
+    "createTitle": "Bài kiểm tra mới",
+    "forbidden": "Bạn không có quyền chỉnh sửa bài kiểm tra này.",
+    "title": "Tên bài kiểm tra",
+    "startTime": "Bắt đầu",
+    "endTime": "Kết thúc",
+    "duration": "Thời lượng (phút)",
+    "maxAttempts": "Số lượt làm tối đa",
+    "questionText": "Sửa nội dung câu hỏi",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "addOption": "+ Thêm đáp án",
+    "done": "Hoàn tất",
+    "publish": "Xuất bản",
+    "errSave": "Lưu bài kiểm tra không thành công. Vui lòng thử lại.",
+    "errSaveAlert": "Đã xảy ra lỗi. Có thể bạn quên chọn đáp án đúng.",
+    "publishSuccess": "Xuất bản bài kiểm tra thành công."
   }
 }

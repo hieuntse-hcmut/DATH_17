@@ -17,7 +17,8 @@
     "hideHistory": "Hide history",
     "attemptsUsed": "{{used}}/{{max}} attempts used",
     "continue": "Continue quiz",
-    "noAttemptsLeft": "No attempts left"
+    "noAttemptsLeft": "No attempts left",
+    "edit": "Edit"
   },
   "attempt": {
     "windowTitle": "Take quiz",
@@ -93,6 +94,22 @@
     }
   },
   "edit": {
-    "addNewQuiz": "Add new quiz"
+    "addNewQuiz": "Add new quiz",
+    "createTitle": "New quiz",
+    "forbidden": "You don't have permission to edit this quiz.",
+    "title": "Quiz title",
+    "startTime": "Opens at",
+    "endTime": "Closes at",
+    "duration": "Duration (minutes)",
+    "maxAttempts": "Max attempts",
+    "questionText": "Edit question text",
+    "edit": "Edit",
+    "delete": "Delete",
+    "addOption": "+ Add option",
+    "done": "Done",
+    "publish": "Publish",
+    "errSave": "Couldn't save the quiz. Please try again.",
+    "errSaveAlert": "Something went wrong. You may have forgotten to mark a correct answer.",
+    "publishSuccess": "Quiz published successfully."
   }
 }
