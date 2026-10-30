@@ -4,6 +4,8 @@ import authVi from "~/pages/Auth/i18n/vi.json";
 import authEn from "~/pages/Auth/i18n/en.json";
 import homeVi from "~/pages/Home/i18n/vi.json";
 import homeEn from "~/pages/Home/i18n/en.json";
+import profileEn from "~/pages/Profile/i18n/en.json";
+import profileVi from "~/pages/Profile/i18n/vi.json";
 import myCoursesVi from "../pages/MyCourses/i18n/vi.json";
 import myCoursesEn from "../pages/MyCourses/i18n/en.json";
 import courseDetailVi from "~/pages/CourseDetail/i18n/vi.json";
@@ -26,6 +28,7 @@ const vi = {
   quiz: quizVi,
   userList: userListVi,
   courseAnalytics: courseAnalyticsVi,
+  profile: profileVi,
 };
 
 const en: typeof vi = {
@@ -38,6 +41,7 @@ const en: typeof vi = {
   quiz: quizEn,
   userList: userListEn,
   courseAnalytics: courseAnalyticsEn,
+  profile: profileEn,
 };
 
 export const resources = { vi, en } as const;
