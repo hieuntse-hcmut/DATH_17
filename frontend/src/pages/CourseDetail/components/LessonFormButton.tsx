@@ -61,6 +61,7 @@ export default function LessonFormButton({
                 {
                     title: value,
                     orderIndex: lesson.orderIndex,
+                    contentType: "STRING",
                 },
                 {
                     onSuccess: () => {
@@ -74,7 +75,11 @@ export default function LessonFormButton({
         }
 
         add.mutate(
-            { title: value, orderIndex: nextOrderIndex },
+            {
+                title: value,
+                orderIndex: nextOrderIndex,
+                contentType: "STRING"// TODO
+            },
             {
                 onSuccess: () => {
                     toast.success(t("lesson.added"));

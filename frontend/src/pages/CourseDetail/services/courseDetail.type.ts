@@ -109,5 +109,7 @@ export interface IChapterPayload {
 export interface ILessonPayload {
   title: string
   orderIndex: number
+  totalLength?: number
+  contentType: string
 }
 

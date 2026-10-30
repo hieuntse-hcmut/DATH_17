@@ -60,6 +60,14 @@ export default function QuizList() {
         </div>
       )}
 
+      {
+        me?.role === "LECTURER" && (
+          <Link to={`/courses/${courseId}/quizzes/new`} className="flex shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-hover my-2">
+            {t("edit.addNewQuiz")}
+          </Link>
+        )
+      }
+
       <ul className="mt-6 space-y-4">
         {data?.map((q) => {
           const state = window_(q);
@@ -194,13 +202,6 @@ export default function QuizList() {
           );
         })}
       </ul>
-      {
-        me?.role === "LECTURER" && (
-          <Link to={`/courses/${courseId}/quizzes/new`} className="flex justify-center w-full cursor-pointer rounded-xl border border-dashed border-border px-3 py-2 text-sm text-link hover:bg-surface">
-            {t("edit.addNewQuiz")}
-          </Link>
-        )
-      }
     </div>
   );
 }

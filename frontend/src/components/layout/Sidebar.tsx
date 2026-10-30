@@ -17,7 +17,7 @@ interface SidebarProps {
   onCloseNotification?: () => void
 }
 
-type ActiveItem = "trang-chu" | "khoa-hoc" | "bai-kiem-tra" | "thong-bao" | "thao-luan"
+type ActiveItem = "trang-chu" | "khoa-hoc" | "thong-bao"
 
 const LABEL_CLASS =
   "hidden lg:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]"
@@ -35,8 +35,8 @@ const getIconWrapperClass = (isActive: boolean) =>
   }`
 
 function getActiveFromPath(pathname: string): ActiveItem {
-  if (pathname.startsWith("/discuss")) return "thao-luan"
   if (pathname.startsWith("/my-courses")) return "khoa-hoc"
+  if (pathname.startsWith("/courses")) return "khoa-hoc"
   return "trang-chu"
 }
 
@@ -80,21 +80,6 @@ export default function Sidebar({ onOpenNotification, onCloseNotification }: Sid
           </div>
           <span className={LABEL_CLASS}>{t("nav.my_courses", "Khoá học của tôi")}</span>
         </Link>
-
-        {/* 3. Bài kiểm tra */}
-        <button
-          type="button"
-          onClick={() => {
-            selectItem("bai-kiem-tra")
-            onCloseNotification?.()
-          }}
-          className={getItemClass(activeItem === "bai-kiem-tra")}
-        >
-          <div className={getIconWrapperClass(activeItem === "bai-kiem-tra")}>
-            <FontAwesomeIcon icon={faClipboardList} className="w-4 h-4 lg:w-[15px] lg:h-[16.67px]" />
-          </div>
-          <span className={LABEL_CLASS}>{t("nav.quizzes", "Bài kiểm tra")}</span>
-        </button>
 
         {/* 4. Thông báo */}
         <button
