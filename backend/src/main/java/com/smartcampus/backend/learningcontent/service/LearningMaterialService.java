@@ -1,3 +1,4 @@
+
 package com.smartcampus.backend.learningcontent.service;
 
 import com.smartcampus.backend.auth.security.CustomUserDetails;
@@ -66,8 +67,7 @@ public class LearningMaterialService {
                 lessonId,
                 request.title().trim(),
                 request.fileUrl().trim(),
-                normalizedType(request.fileType()),
-                checkedLength(request.fileType(), request.totalLength())
+                request.fileType().trim()
         );
 
         return toResponse(materialRepository.save(material));
@@ -94,8 +94,7 @@ public class LearningMaterialService {
         material.update(
                 request.title().trim(),
                 request.fileUrl().trim(),
-                normalizedType(request.fileType()),
-                checkedLength(request.fileType(), request.totalLength())
+                request.fileType().trim()
         );
 
         return toResponse(material);
@@ -184,31 +183,7 @@ public class LearningMaterialService {
                 material.getLessonId(),
                 material.getTitle(),
                 material.getFileUrl(),
-                material.getFileType(),
-                material.getTotalLength()
+                material.getFileType()
         );
-    }
-    private static String normalizedType(String type) {
-        String normalized = type.trim().toUpperCase(java.util.Locale.ROOT);
-        if (!java.util.Set.of("VIDEO", "PDF", "TEXT", "LINK", "DOCX", "PPTX", "ZIP", "OTHER")
-                .contains(normalized)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported material type");
-        }
-        return normalized;
-    }
-
-    private static Integer checkedLength(String type, Integer length) {
-        if ("VIDEO".equals(normalizedType(type))) {
-            if (length == null || length <= 0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "VIDEO requires positive totalLength");
-            }
-            return length;
-        }
-        if (length != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Only VIDEO accepts totalLength");
-        }
-        return null;
     }
 }

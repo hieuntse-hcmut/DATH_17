@@ -1,4 +1,3 @@
-
 package com.smartcampus.backend.learningcontent.entity;
 
 import jakarta.persistence.*;
@@ -20,12 +19,21 @@ public class Lesson {
     @Column(name = "order_index", nullable = false)
     private int orderIndex;
 
+    /** V5: giây (VIDEO) hoặc số trang (PDF); null với TEXT hoặc khi lecturer chưa nhập. */
+    @Column(name = "total_length")
+    private Integer totalLength;
+
     protected Lesson() {}
 
     public Lesson(Long chapterId, String title, int orderIndex) {
+        this(chapterId, title, orderIndex, null);
+    }
+
+    public Lesson(Long chapterId, String title, int orderIndex, Integer totalLength) {
         this.chapterId = chapterId;
         this.title = title;
         this.orderIndex = orderIndex;
+        this.totalLength = totalLength;
     }
 
     public Long getId() {
@@ -44,8 +52,13 @@ public class Lesson {
         return orderIndex;
     }
 
-    public void update(String title, int orderIndex) {
+    public Integer getTotalLength() {
+        return totalLength;
+    }
+
+    public void update(String title,int orderIndex, Integer totalLength) {
         this.title = title;
         this.orderIndex = orderIndex;
+        this.totalLength = totalLength;
     }
 }

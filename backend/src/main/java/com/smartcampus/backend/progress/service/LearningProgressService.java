@@ -17,9 +17,6 @@ import com.smartcampus.backend.progress.entity.LearningEventType;
 import com.smartcampus.backend.progress.entity.LearningProgress;
 import com.smartcampus.backend.progress.repository.LearningActivityRepository;
 import com.smartcampus.backend.progress.repository.LearningProgressRepository;
-import com.smartcampus.backend.progress.repository.LearningMaterialProgressRepository;
-import com.smartcampus.backend.learningcontent.repository.LearningMaterialRepository;
-import com.smartcampus.backend.learningcontent.entity.LearningMaterial;
 import com.smartcampus.backend.progress.repository.projection.LessonContextView;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.net.URI;
+import java.util.Set;
 
 /**
  * Learning Progress (docs/01-requirements/04-learning-progress.md):
@@ -37,90 +34,71 @@ import java.net.URI;
 @Service
 public class LearningProgressService {
 
+    /** BR-PROG-001: a lesson is complete at 90% of its length. */
     static final int COMPLETION_THRESHOLD_PERCENT = 90;
 
+    /**
+     * FR-PROG-001: manual "Mark as done" is only for content without pages/duration.
+     * VIDEO and PDF are completed through PUT /api/lessons/{id}/progress (90% threshold).
+     * Nếu FE chưa làm theo dõi số trang PDF, có thể tạm thêm "PDF" vào đây.
+     */
+    static final Set<String> MANUAL_COMPLETION_TYPES = Set.of("TEXT");
+
     private final LearningProgressRepository progressRepository;
-    private final LearningMaterialProgressRepository materialProgressRepository;
-    private final LearningMaterialRepository materialRepository;
     private final LearningActivityRepository activityRepository;
     private final CourseAccessGuard courseAccessGuard;
     private final NotificationService notificationService;
 
     public LearningProgressService(LearningProgressRepository progressRepository,
-                                   LearningMaterialProgressRepository materialProgressRepository,
-                                   LearningMaterialRepository materialRepository,
                                    LearningActivityRepository activityRepository,
                                    CourseAccessGuard courseAccessGuard,
                                    NotificationService notificationService) {
         this.progressRepository = progressRepository;
-        this.materialProgressRepository = materialProgressRepository;
-        this.materialRepository = materialRepository;
         this.activityRepository = activityRepository;
         this.courseAccessGuard = courseAccessGuard;
         this.notificationService = notificationService;
     }
 
-    /** VIDEO: save furthest watched position. Client cannot supply total length. */
+    /** FR-PROG-001: manual "Mark as done" (idempotent), only for TEXT lessons. */
     @Transactional
-    public LessonProgressResponse updateMaterialPosition(Long studentId, Long materialId, UpdatePositionRequest request) {
-        LearningMaterial material = requireMaterial(materialId);
-        LessonContextView lesson = requireLessonAccess(studentId, material.getLessonId());
-        if (!"VIDEO".equals(normalizeType(material.getFileType()))) {
-            throw ApiException.badRequest("INVALID_MATERIAL_TYPE", "Position tracking is only available for VIDEO");
+    public LessonProgressResponse markLessonComplete(Long studentId, Long lessonId) {
+        LessonContextView lesson = requireLessonAccess(studentId, lessonId);
+        requireManualCompletionAllowed(lesson);
+        boolean wasCompleted = isCompleted(studentId, lessonId);
+
+        progressRepository.upsertCompleted(studentId, lessonId);
+        if (!wasCompleted) {
+            onLessonCompleted(studentId, lesson, null, null);
         }
-        if (request.position() < 0) {
-            throw ApiException.badRequest("INVALID_POSITION", "Position cannot be negative");
-        }
-        Integer total = material.getTotalLength();
-        int position = total == null ? request.position() : Math.min(request.position(), total);
-        materialProgressRepository.upsert(studentId, materialId, position, reachesThreshold(position, total));
-        if (activityRepository.countRecentEvents(studentId, lesson.getLessonId(), LearningEventType.LESSON_PROGRESS.name()) == 0) {
-            activityRepository.save(new LearningActivity(studentId, lesson.getLessonId(),
-                    LearningEventType.LESSON_PROGRESS, position, total));
-        }
-        synchronizeLesson(studentId, lesson);
         return lessonResponse(studentId, lesson);
     }
 
-    /** Called by GET /api/materials/{id}/download or /open, not by a public mark-complete API. */
+    /**
+     * FR-PROG-002 + BR-PROG-001: save the resume position; the lesson becomes complete
+     * automatically once position >= 90% of its total_length.
+     * The length comes from the lesson (V5), never from the client: request.totalLength() is ignored,
+     * so a client cannot complete a lesson by sending {"position":1,"totalLength":1}.
+     * A lesson without total_length only saves the position.
+     */
     @Transactional
-    public String accessMaterial(Long studentId, Long materialId, boolean openLink) {
-        LearningMaterial material = requireMaterial(materialId);
-        LessonContextView lesson = requireLessonAccess(studentId, material.getLessonId());
-        boolean isLink = "LINK".equals(normalizeType(material.getFileType()));
-        if (isLink != openLink || "VIDEO".equals(normalizeType(material.getFileType()))) {
-            throw ApiException.badRequest("INVALID_MATERIAL_ACTION", "Action does not match material type");
-        }
-        String url = material.getFileUrl();
-        URI uri;
-        try { uri = URI.create(url); }
-        catch (IllegalArgumentException ex) {
-            throw ApiException.badRequest("INVALID_MATERIAL_URL", "Material URL is invalid");
-        }
-        if (uri.getHost() == null || !("https".equalsIgnoreCase(uri.getScheme()) || "http".equalsIgnoreCase(uri.getScheme()))) {
-            throw ApiException.badRequest("INVALID_MATERIAL_URL", "Only HTTP(S) material URLs are supported");
-        }
-        materialProgressRepository.upsert(studentId, materialId, 0, true);
-        synchronizeLesson(studentId, lesson);
-        return url;
-    }
+    public LessonProgressResponse updatePosition(Long studentId, Long lessonId, UpdatePositionRequest request) {
+        LessonContextView lesson = requireLessonAccess(studentId, lessonId);
+        Integer total = lesson.getTotalLength();
+        int position = total == null ? request.position() : Math.min(request.position(), total);
+        boolean reachesThreshold = reachesThreshold(position, total);
+        boolean wasCompleted = isCompleted(studentId, lessonId);
 
-    private LearningMaterial requireMaterial(Long materialId) {
-        return materialRepository.findById(materialId)
-                .orElseThrow(() -> ApiException.notFound("MATERIAL_NOT_FOUND", "Material " + materialId + " does not exist"));
-    }
+        progressRepository.upsertPosition(studentId, lessonId, position, reachesThreshold);
 
-    private static String normalizeType(String type) {
-        return type == null ? "" : type.trim().toUpperCase(Locale.ROOT);
-    }
-
-    /** Recompute the aggregate lesson state after any material progress update. */
-    private void synchronizeLesson(Long studentId, LessonContextView lesson) {
-        long count = materialProgressRepository.countMaterials(lesson.getLessonId());
-        boolean completed = count > 0 && materialProgressRepository.countIncompleteMaterials(studentId, lesson.getLessonId()) == 0;
-        boolean wasCompleted = isCompleted(studentId, lesson.getLessonId());
-        progressRepository.setLessonCompletion(studentId, lesson.getLessonId(), completed);
-        if (completed && !wasCompleted) onLessonCompleted(studentId, lesson, null, null);
+        // BR-PROG-004: at most one LESSON_PROGRESS event per lesson every 15 seconds
+        if (activityRepository.countRecentEvents(studentId, lessonId, LearningEventType.LESSON_PROGRESS.name()) == 0) {
+            activityRepository.save(new LearningActivity(studentId, lessonId,
+                    LearningEventType.LESSON_PROGRESS, position, total));
+        }
+        if (reachesThreshold && !wasCompleted) {
+            onLessonCompleted(studentId, lesson, position, total);
+        }
+        return lessonResponse(studentId, lesson);
     }
 
     /** FR-PROG-003 + UC-PROG-001: lessons of one course with progress and the resume point. */
@@ -188,6 +166,16 @@ public class LearningProgressService {
                     "Course " + lesson.getCourseId() + " is not published");
         }
         return lesson;
+    }
+
+    /** VIDEO/PDF must reach the 90% threshold through PUT /progress instead of a manual click. */
+    private static void requireManualCompletionAllowed(LessonContextView lesson) {
+        String type = lesson.getContentType() == null ? "" : lesson.getContentType().toUpperCase(Locale.ROOT);
+        if (!MANUAL_COMPLETION_TYPES.contains(type)) {
+            throw ApiException.badRequest("MANUAL_COMPLETION_NOT_ALLOWED",
+                    "Lesson " + lesson.getLessonId() + " (" + lesson.getContentType()
+                            + ") is completed through PUT /api/lessons/" + lesson.getLessonId() + "/progress");
+        }
     }
 
     private boolean isCompleted(Long studentId, Long lessonId) {

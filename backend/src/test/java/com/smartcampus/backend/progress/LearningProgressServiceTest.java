@@ -2,222 +2,256 @@ package com.smartcampus.backend.progress;
 
 import com.smartcampus.backend.common.exception.ApiException;
 import com.smartcampus.backend.common.security.CourseAccessGuard;
-import com.smartcampus.backend.learningcontent.entity.LearningMaterial;
-import com.smartcampus.backend.learningcontent.repository.LearningMaterialRepository;
 import com.smartcampus.backend.notification.entity.NotificationType;
 import com.smartcampus.backend.notification.service.NotificationService;
-import com.smartcampus.backend.progress.dto.*;
-import com.smartcampus.backend.progress.entity.*;
-import com.smartcampus.backend.progress.repository.*;
-import com.smartcampus.backend.progress.repository.projection.*;
+import com.smartcampus.backend.progress.dto.CourseProgressResponse;
+import com.smartcampus.backend.progress.dto.LessonProgressResponse;
+import com.smartcampus.backend.progress.dto.ProgressStatus;
+import com.smartcampus.backend.progress.dto.UpdatePositionRequest;
+import com.smartcampus.backend.progress.entity.LearningActivity;
+import com.smartcampus.backend.progress.entity.LearningEventType;
+import com.smartcampus.backend.progress.entity.LearningProgress;
+import com.smartcampus.backend.progress.repository.LearningActivityRepository;
+import com.smartcampus.backend.progress.repository.LearningProgressRepository;
+import com.smartcampus.backend.progress.repository.projection.LessonContextView;
+import com.smartcampus.backend.progress.repository.projection.LessonProgressView;
 import com.smartcampus.backend.progress.service.LearningProgressService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.lang.reflect.Constructor;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import static com.smartcampus.backend.support.TestData.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+
+import static com.smartcampus.backend.support.TestData.lecturer;
+import static com.smartcampus.backend.support.TestData.student;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LearningProgressServiceTest {
+
     private static final Long STUDENT_ID = 1L;
     private static final Long COURSE_ID = 10L;
     private static final Long LESSON_ID = 30L;
-    private static final Long MATERIAL_ID = 40L;
 
     @Mock private LearningProgressRepository progressRepository;
-    @Mock private LearningMaterialProgressRepository materialProgressRepository;
-    @Mock private LearningMaterialRepository materialRepository;
     @Mock private LearningActivityRepository activityRepository;
     @Mock private CourseAccessGuard courseAccessGuard;
     @Mock private NotificationService notificationService;
     @InjectMocks private LearningProgressService service;
 
+    // ======================================================== mark complete
+
     @Test
-    void video_below90Percent_doesNotCompleteLesson() {
-        givenMaterial("VIDEO", 600);
+    void markComplete_firstTime_logsActivity_noCourseNotificationWhileLessonsRemain() {
         givenLessonAccess("PUBLISHED");
-        when(materialProgressRepository.countMaterials(LESSON_ID)).thenReturn(1L);
-        when(materialProgressRepository.countIncompleteMaterials(STUDENT_ID, LESSON_ID)).thenReturn(1L);
         when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
-                .thenReturn(Optional.empty(), Optional.of(progress(false, 0)));
-        when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(1L);
-        givenCounts(3, 0);
+                .thenReturn(Optional.empty(), Optional.of(progress(true, 0)));
+        givenCounts(3, 1);
 
-        LessonProgressResponse response = service.updateMaterialPosition(STUDENT_ID, MATERIAL_ID,
-                new UpdatePositionRequest(539, 1));
+        LessonProgressResponse response = service.markLessonComplete(STUDENT_ID, LESSON_ID);
 
-        assertFalse(response.completed());
-        verify(materialProgressRepository).upsert(STUDENT_ID, MATERIAL_ID, 539, false);
-        verify(progressRepository).setLessonCompletion(STUDENT_ID, LESSON_ID, false);
+        assertTrue(response.completed());
+        assertEquals(33.3, response.courseProgressPercent());
+        verify(progressRepository).upsertCompleted(STUDENT_ID, LESSON_ID);
+        assertEquals(LearningEventType.LESSON_COMPLETED, savedActivities().getFirst().getEventType());
         verify(notificationService, never()).notify(any(), any(), any(), any(), any());
     }
 
     @Test
-    void video_reaches90Percent_completesLesson() {
-        givenMaterial("VIDEO", 600);
+    void markComplete_lastLesson_sendsCourseCompletedNotification() {
         givenLessonAccess("PUBLISHED");
-        when(materialProgressRepository.countMaterials(LESSON_ID)).thenReturn(1L);
-        when(materialProgressRepository.countIncompleteMaterials(STUDENT_ID, LESSON_ID)).thenReturn(0L);
         when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
                 .thenReturn(Optional.empty(), Optional.of(progress(true, 0)));
-        when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(1L);
-        givenCounts(3, 1);
-
-        LessonProgressResponse response = service.updateMaterialPosition(STUDENT_ID, MATERIAL_ID,
-                new UpdatePositionRequest(540, 1));
-
-        assertTrue(response.completed());
-        verify(materialProgressRepository).upsert(STUDENT_ID, MATERIAL_ID, 540, true);
-        verify(progressRepository).setLessonCompletion(STUDENT_ID, LESSON_ID, true);
-        verify(activityRepository).save(argThat(a -> a.getEventType() == LearningEventType.LESSON_COMPLETED));
-    }
-
-    @Test
-    void video_positionIsClampedToServerLength() {
-        givenMaterial("VIDEO", 600);
-        givenLessonAccess("PUBLISHED");
-        when(materialProgressRepository.countMaterials(LESSON_ID)).thenReturn(1L);
-        when(materialProgressRepository.countIncompleteMaterials(STUDENT_ID, LESSON_ID)).thenReturn(1L);
-        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
-                .thenReturn(Optional.of(progress(false, 0)), Optional.of(progress(false, 0)));
-        when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(1L);
-        givenCounts(3, 0);
-
-        service.updateMaterialPosition(STUDENT_ID, MATERIAL_ID, new UpdatePositionRequest(9999, 1));
-
-        verify(materialProgressRepository).upsert(STUDENT_ID, MATERIAL_ID, 600, true);
-    }
-
-    @Test
-    void video_negativePosition_isRejected() {
-        givenMaterial("VIDEO", 600);
-        givenLessonAccess("PUBLISHED");
-        ApiException ex = assertThrows(ApiException.class,
-                () -> service.updateMaterialPosition(STUDENT_ID, MATERIAL_ID, new UpdatePositionRequest(-1, 1)));
-        assertEquals("INVALID_POSITION", ex.getCode());
-        verify(materialProgressRepository, never()).upsert(any(), any(), anyInt(), anyBoolean());
-    }
-
-    @Test
-    void pdf_download_marksMaterialCompleted() {
-        givenMaterial("PDF", null);
-        givenLessonAccess("PUBLISHED");
-        when(materialProgressRepository.countMaterials(LESSON_ID)).thenReturn(1L);
-        when(materialProgressRepository.countIncompleteMaterials(STUDENT_ID, LESSON_ID)).thenReturn(0L);
-        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID)).thenReturn(Optional.empty());
-        givenCounts(3, 1);
-
-        String url = service.accessMaterial(STUDENT_ID, MATERIAL_ID, false);
-
-        assertEquals("https://example.com/file", url);
-        verify(materialProgressRepository).upsert(STUDENT_ID, MATERIAL_ID, 0, true);
-        verify(progressRepository).setLessonCompletion(STUDENT_ID, LESSON_ID, true);
-    }
-
-    @Test
-    void link_open_marksMaterialCompleted() {
-        givenMaterial("LINK", null);
-        givenLessonAccess("PUBLISHED");
-        when(materialProgressRepository.countMaterials(LESSON_ID)).thenReturn(1L);
-        when(materialProgressRepository.countIncompleteMaterials(STUDENT_ID, LESSON_ID)).thenReturn(0L);
-        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID)).thenReturn(Optional.empty());
-        givenCounts(3, 1);
-
-        service.accessMaterial(STUDENT_ID, MATERIAL_ID, true);
-
-        verify(materialProgressRepository).upsert(STUDENT_ID, MATERIAL_ID, 0, true);
-    }
-
-    @Test
-    void link_download_isRejected() {
-        givenMaterial("LINK", null);
-        givenLessonAccess("PUBLISHED");
-        ApiException ex = assertThrows(ApiException.class,
-                () -> service.accessMaterial(STUDENT_ID, MATERIAL_ID, false));
-        assertEquals("INVALID_MATERIAL_ACTION", ex.getCode());
-    }
-
-    @Test
-    void completedLesson_sendsCourseNotificationOnlyWhenLastLesson() {
-        givenMaterial("PDF", null);
-        givenLessonAccess("PUBLISHED");
-        when(materialProgressRepository.countMaterials(LESSON_ID)).thenReturn(1L);
-        when(materialProgressRepository.countIncompleteMaterials(STUDENT_ID, LESSON_ID)).thenReturn(0L);
-        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID)).thenReturn(Optional.empty());
         givenCounts(3, 3);
 
-        service.accessMaterial(STUDENT_ID, MATERIAL_ID, false);
+        LessonProgressResponse response = service.markLessonComplete(STUDENT_ID, LESSON_ID);
 
+        assertEquals(100.0, response.courseProgressPercent());
         verify(notificationService).notify(eq(STUDENT_ID), eq(NotificationType.COURSE_COMPLETED),
                 anyString(), anyString(), eq("/courses/10"));
     }
 
     @Test
-    void alreadyCompletedLesson_doesNotNotifyAgain() {
-        givenMaterial("PDF", null);
+    void markComplete_alreadyCompleted_isIdempotent() {
         givenLessonAccess("PUBLISHED");
-        when(materialProgressRepository.countMaterials(LESSON_ID)).thenReturn(1L);
-        when(materialProgressRepository.countIncompleteMaterials(STUDENT_ID, LESSON_ID)).thenReturn(0L);
         when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
                 .thenReturn(Optional.of(progress(true, 0)));
+        givenCounts(3, 3);
 
-        service.accessMaterial(STUDENT_ID, MATERIAL_ID, false);
+        service.markLessonComplete(STUDENT_ID, LESSON_ID);
 
         verify(activityRepository, never()).save(any());
         verify(notificationService, never()).notify(any(), any(), any(), any(), any());
     }
 
+    // ======================================================= update position
+
     @Test
-    void lecturer_cannotUpdateMaterialProgress() {
-        givenMaterial("VIDEO", 600);
-        when(courseAccessGuard.requireUser(STUDENT_ID)).thenReturn(lecturer(STUDENT_ID));
-        ApiException ex = assertThrows(ApiException.class,
-                () -> service.updateMaterialPosition(STUDENT_ID, MATERIAL_ID, new UpdatePositionRequest(100, null)));
-        assertEquals("NOT_A_STUDENT", ex.getCode());
+    void updatePosition_below90Percent_savesPositionWithoutCompleting() {
+        givenLessonAccess("PUBLISHED");
+        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
+                .thenReturn(Optional.empty(), Optional.of(progress(false, 300)));
+        when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(0L);
+        givenCounts(3, 0);
+
+        LessonProgressResponse response = service.updatePosition(STUDENT_ID, LESSON_ID, new UpdatePositionRequest(300, 600));
+
+        assertFalse(response.completed());
+        verify(progressRepository).upsertPosition(STUDENT_ID, LESSON_ID, 300, false);
+        List<LearningActivity> saved = savedActivities();
+        assertEquals(1, saved.size());
+        assertEquals(LearningEventType.LESSON_PROGRESS, saved.getFirst().getEventType());
+        assertEquals(300, saved.getFirst().getCurrentPosition());
     }
 
     @Test
-    void unknownMaterial_isRejected() {
-        when(materialRepository.findById(MATERIAL_ID)).thenReturn(Optional.empty());
-        ApiException ex = assertThrows(ApiException.class,
-                () -> service.accessMaterial(STUDENT_ID, MATERIAL_ID, false));
-        assertEquals("MATERIAL_NOT_FOUND", ex.getCode());
+    void updatePosition_reaches90Percent_completesLesson() {
+        givenLessonAccess("PUBLISHED");
+        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
+                .thenReturn(Optional.empty(), Optional.of(progress(true, 540)));
+        when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(0L);
+        givenCounts(3, 1);
+
+        LessonProgressResponse response = service.updatePosition(STUDENT_ID, LESSON_ID, new UpdatePositionRequest(540, 600));
+
+        assertTrue(response.completed());
+        verify(progressRepository).upsertPosition(STUDENT_ID, LESSON_ID, 540, true);
+        List<LearningActivity> saved = savedActivities();
+        assertEquals(List.of(LearningEventType.LESSON_PROGRESS, LearningEventType.LESSON_COMPLETED),
+                saved.stream().map(LearningActivity::getEventType).toList());
     }
 
     @Test
-    void notEnrolled_isRejected() {
-        givenMaterial("PDF", null);
-        when(courseAccessGuard.requireUser(STUDENT_ID)).thenReturn(student(STUDENT_ID));
-        when(progressRepository.findLessonContext(LESSON_ID)).thenReturn(Optional.of(lesson("PUBLISHED")));
-        when(progressRepository.countActiveEnrollment(STUDENT_ID, COURSE_ID)).thenReturn(0L);
-        ApiException ex = assertThrows(ApiException.class,
-                () -> service.accessMaterial(STUDENT_ID, MATERIAL_ID, false));
-        assertEquals("NOT_ENROLLED", ex.getCode());
+    void updatePosition_positionGreaterThanLength_isClamped() {
+        givenLessonAccess("PUBLISHED");
+        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
+                .thenReturn(Optional.of(progress(true, 600)));
+        when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(1L);
+        givenCounts(3, 1);
+
+        service.updatePosition(STUDENT_ID, LESSON_ID, new UpdatePositionRequest(9999, 600));
+
+        verify(progressRepository).upsertPosition(STUDENT_ID, LESSON_ID, 600, true);
     }
 
     @Test
-    void unpublishedCourse_isRejected() {
-        givenMaterial("PDF", null);
-        givenLessonAccess("DRAFT");
-        ApiException ex = assertThrows(ApiException.class,
-                () -> service.accessMaterial(STUDENT_ID, MATERIAL_ID, false));
-        assertEquals("COURSE_NOT_PUBLISHED", ex.getCode());
+    void updatePosition_withinThrottleWindow_doesNotLogProgressEvent() {
+        givenLessonAccess("PUBLISHED");
+        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
+                .thenReturn(Optional.of(progress(false, 100)));
+        when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(1L);
+        givenCounts(3, 0);
+
+        service.updatePosition(STUDENT_ID, LESSON_ID, new UpdatePositionRequest(120, null));
+
+        verify(activityRepository, never()).save(any());
+        verify(progressRepository).upsertPosition(STUDENT_ID, LESSON_ID, 120, false);
+    }
+
+    /** V5: totalLength client gửi lên bị bỏ qua; {"position":1,"totalLength":1} không làm bài hoàn thành. */
+    @Test
+    void updatePosition_ignoresClientTotalLength_usesLessonLength() {
+        givenLessonAccess("PUBLISHED", "VIDEO", 600);
+        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
+                .thenReturn(Optional.empty(), Optional.of(progress(false, 1)));
+        when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(1L);
+        givenCounts(3, 0);
+
+        LessonProgressResponse response = service.updatePosition(STUDENT_ID, LESSON_ID, new UpdatePositionRequest(1, 1));
+
+        assertFalse(response.completed());
+        verify(progressRepository).upsertPosition(STUDENT_ID, LESSON_ID, 1, false);
+        verify(notificationService, never()).notify(any(), any(), any(), any(), any());
+    }
+
+    /** V5: bài chưa có total_length chỉ lưu vị trí, không bao giờ tự hoàn thành. */
+    @Test
+    void updatePosition_lessonWithoutLength_savesPositionButNeverCompletes() {
+        givenLessonAccess("PUBLISHED", "VIDEO", null);
+        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
+                .thenReturn(Optional.empty(), Optional.of(progress(false, 5000)));
+        when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(1L);
+        givenCounts(3, 0);
+
+        service.updatePosition(STUDENT_ID, LESSON_ID, new UpdatePositionRequest(5000, 600));
+
+        verify(progressRepository).upsertPosition(STUDENT_ID, LESSON_ID, 5000, false);
+        verify(activityRepository, never()).save(any());
+    }
+
+    @Test
+    void markComplete_videoLesson_isRejected() {
+        givenLessonAccess("PUBLISHED", "VIDEO", 600);
+
+        ApiException ex = assertThrows(ApiException.class, () -> service.markLessonComplete(STUDENT_ID, LESSON_ID));
+
+        assertEquals("MANUAL_COMPLETION_NOT_ALLOWED", ex.getCode());
+        verify(progressRepository, never()).upsertCompleted(any(), any());
     }
 
     @Test
     void threshold_is90Percent() {
-        assertTrue((boolean) ReflectionTestUtils.invokeMethod(
-                LearningProgressService.class, "reachesThreshold", 540, 600));
-        assertFalse((boolean) ReflectionTestUtils.invokeMethod(
-                LearningProgressService.class, "reachesThreshold", 539, 600));
+        assertTrue(invokeThreshold(540, 600));
+        assertFalse(invokeThreshold(539, 600));
+        assertFalse(invokeThreshold(10, null));
+    }
+
+    // ================================================================ access
+
+    @Test
+    void lessonAccess_lecturer_isRejected() {
+        when(courseAccessGuard.requireUser(STUDENT_ID)).thenReturn(lecturer(STUDENT_ID));
+
+        ApiException ex = assertThrows(ApiException.class, () -> service.markLessonComplete(STUDENT_ID, LESSON_ID));
+
+        assertEquals("NOT_A_STUDENT", ex.getCode());
+    }
+
+    @Test
+    void lessonAccess_unknownLesson_isRejectedWith404() {
+        when(courseAccessGuard.requireUser(STUDENT_ID)).thenReturn(student(STUDENT_ID));
+        when(progressRepository.findLessonContext(LESSON_ID)).thenReturn(Optional.empty());
+
+        ApiException ex = assertThrows(ApiException.class, () -> service.markLessonComplete(STUDENT_ID, LESSON_ID));
+
+        assertEquals("LESSON_NOT_FOUND", ex.getCode());
+    }
+
+    @Test
+    void lessonAccess_notEnrolled_isRejectedWith403() {
+        when(courseAccessGuard.requireUser(STUDENT_ID)).thenReturn(student(STUDENT_ID));
+        when(progressRepository.findLessonContext(LESSON_ID)).thenReturn(Optional.of(lesson("PUBLISHED")));
+        when(progressRepository.countActiveEnrollment(STUDENT_ID, COURSE_ID)).thenReturn(0L);
+
+        ApiException ex = assertThrows(ApiException.class, () -> service.markLessonComplete(STUDENT_ID, LESSON_ID));
+
+        assertEquals("NOT_ENROLLED", ex.getCode());
+        verify(progressRepository, never()).upsertCompleted(any(), any());
+    }
+
+    @Test
+    void lessonAccess_unpublishedCourse_isRejectedWith403() {
+        givenLessonAccess("DRAFT");
+
+        ApiException ex = assertThrows(ApiException.class, () -> service.markLessonComplete(STUDENT_ID, LESSON_ID));
+
+        assertEquals("COURSE_NOT_PUBLISHED", ex.getCode());
     }
 
     // ====================================================== course progress
@@ -277,16 +311,16 @@ class LearningProgressServiceTest {
         assertEquals(66.7, ProgressStatus.percent(2, 3));
     }
 
+    // =============================================================== helpers
 
-    private void givenMaterial(String type, Integer length) {
-        LearningMaterial material = new LearningMaterial(LESSON_ID, "Material",
-                "https://example.com/file", type, length);
-        when(materialRepository.findById(MATERIAL_ID)).thenReturn(Optional.of(material));
+    private void givenLessonAccess(String publicationState) {
+        givenLessonAccess(publicationState, "TEXT", 600);
     }
 
-    private void givenLessonAccess(String state) {
+    private void givenLessonAccess(String publicationState, String contentType, Integer totalLength) {
         when(courseAccessGuard.requireUser(STUDENT_ID)).thenReturn(student(STUDENT_ID));
-        when(progressRepository.findLessonContext(LESSON_ID)).thenReturn(Optional.of(lesson(state)));
+        when(progressRepository.findLessonContext(LESSON_ID))
+                .thenReturn(Optional.of(lesson(publicationState, contentType, totalLength)));
         when(progressRepository.countActiveEnrollment(STUDENT_ID, COURSE_ID)).thenReturn(1L);
     }
 
@@ -295,27 +329,43 @@ class LearningProgressServiceTest {
         when(progressRepository.countCompletedLessons(STUDENT_ID, COURSE_ID)).thenReturn(completed);
     }
 
+    private List<LearningActivity> savedActivities() {
+        ArgumentCaptor<LearningActivity> captor = ArgumentCaptor.forClass(LearningActivity.class);
+        verify(activityRepository, org.mockito.Mockito.atLeastOnce()).save(captor.capture());
+        return captor.getAllValues();
+    }
+
+    private static boolean invokeThreshold(int position, Integer total) {
+        return (boolean) ReflectionTestUtils.invokeMethod(LearningProgressService.class, "reachesThreshold", position, total);
+    }
+
     private static LearningProgress progress(boolean completed, int position) {
-        LearningProgress p;
         try {
-            var ctor = LearningProgress.class.getDeclaredConstructor();
+            Constructor<LearningProgress> ctor = LearningProgress.class.getDeclaredConstructor();
             ctor.setAccessible(true);
-            p = ctor.newInstance();
+            LearningProgress p = ctor.newInstance();
+            ReflectionTestUtils.setField(p, "completed", completed);
+            ReflectionTestUtils.setField(p, "lastPosition", position);
+            return p;
         } catch (ReflectiveOperationException e) {
             throw new IllegalStateException(e);
         }
-        ReflectionTestUtils.setField(p, "completed", completed);
-        ReflectionTestUtils.setField(p, "lastPosition", position);
-        return p;
     }
 
-    private static LessonContextView lesson(String state) {
+    private static LessonContextView lesson(String publicationState) {
+        return lesson(publicationState, "TEXT", 600);
+    }
+
+    /** totalLength = lessons.total_length (V5); 600 cho khớp các test cũ dùng video 600 giây. */
+    private static LessonContextView lesson(String publicationState, String contentType, Integer totalLength) {
         return new LessonContextView() {
             @Override public Long getLessonId() { return LESSON_ID; }
             @Override public String getLessonTitle() { return "Lesson"; }
+            @Override public String getContentType() { return contentType; }
             @Override public Long getCourseId() { return COURSE_ID; }
             @Override public String getCourseTitle() { return "Spring Boot 101"; }
-            @Override public String getPublicationState() { return state; }
+            @Override public String getPublicationState() { return publicationState; }
+            @Override public Integer getTotalLength() { return totalLength; }
         };
     }
 

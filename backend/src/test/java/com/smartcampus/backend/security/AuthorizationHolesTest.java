@@ -157,23 +157,20 @@ class AuthorizationHolesTest {
     @Test
     void student_cannotMarkVideoLessonDone_withoutWatching() throws Exception {
         enroll(STUDENT, 9101);
-        as(STUDENT, get("/api/materials/9401/download"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error_code").value("INVALID_MATERIAL_ACTION"));
-        as(STUDENT, get("/api/materials/9402/download"))
-                .andExpect(status().isFound());
+        as(STUDENT, post("/api/lessons/9301/complete")).andExpect(status().isBadRequest());
+        as(STUDENT, post("/api/lessons/9302/complete")).andExpect(status().isOk());
     }
 
     /** V5: độ dài bài lấy từ lessons.total_length (9301 = 600 giây), không lấy từ body. */
     @Test
     void student_cannotCompleteVideo_byFakingTotalLength() throws Exception {
         enroll(STUDENT, 9101);
-        as(STUDENT, put("/api/materials/9401/progress").contentType(JSON)
+        as(STUDENT, put("/api/lessons/9301/progress").contentType(JSON)
                 .content("{\"position\": 1, \"totalLength\": 1}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.completed").value(false));
         // Xem thật tới 90% của 600 giây thì hoàn thành
-        as(STUDENT, put("/api/materials/9401/progress").contentType(JSON)
+        as(STUDENT, put("/api/lessons/9301/progress").contentType(JSON)
                 .content("{\"position\": 540}"))
                 .andExpect(jsonPath("$.data.completed").value(true));
     }
@@ -232,7 +229,7 @@ class AuthorizationHolesTest {
 
     private MvcResult login(String username, String password) throws Exception {
         return mvc.perform(post("/api/auth/login").contentType(JSON)
-                        .content("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}"))
+                .content("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}"))
                 .andReturn();
     }
 

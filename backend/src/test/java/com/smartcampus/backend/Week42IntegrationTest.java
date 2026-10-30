@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -31,18 +30,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * End-to-end tests of Enrollment (full), Learning Progress, Analytics and Notification
  * through the real Spring Security filter chain and the real database.
  *
- * Needs MySQL running (docker compose up -d). Every test runs in a transaction that is
- * rolled back, so the local database is left unchanged.
+ * Uses disposable MySQL through the test profile. Every test runs in a transaction
+ * that is rolled back.
  * Users: student_a 9001, student_b 9002 (INACTIVE), lecturer_a 9003 (owns every test course),
  * lecturer_b 9004 (owns nothing), admin_a 9005, student_c 9006.
  * Courses: 9101 published+open (lessons 9301-9303), 9102 draft, 9103 published+closed (lesson 9304).
  */
 @SpringBootTest
-@Transactional
 @ActiveProfiles("test")
+@Transactional
 @Sql("/sql/week42-test-data.sql")
-@TestPropertySource(properties =
-        "JWT_SECRET=c21hcnQtY2FtcHVzLXRlc3Qtand0LXNlY3JldC1rZXktYXQtbGVhc3QtMzItYnl0ZXMtbG9uZw==")
 class Week42IntegrationTest {
 
     private static final String STUDENT_A = "student_a";
@@ -215,18 +212,17 @@ class Week42IntegrationTest {
                 .andExpect(jsonPath("$.data[0].status").value("NOT_STARTED"))
                 .andExpect(jsonPath("$.data[0].totalLessons").value(3));
 
-        call(STUDENT_A, get("/api/materials/9402/download"))
-                .andExpect(status().isFound());
-        call(STUDENT_A, get("/api/courses/9101/progress/me"))
-                .andExpect(jsonPath("$.data.completedLessons").value(1))
-                .andExpect(jsonPath("$.data.progressPercent").value(33.3));
+        call(STUDENT_A, post("/api/lessons/9302/complete"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.completed").value(true))
+                .andExpect(jsonPath("$.data.courseProgressPercent").value(33.3));
 
-        call(STUDENT_A, put("/api/materials/9401/progress").contentType(MediaType.APPLICATION_JSON)
-                .content("{\"position\": 300}"))
+        call(STUDENT_A, put("/api/lessons/9301/progress").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"position\": 300, \"totalLength\": 600}"))
                 .andExpect(jsonPath("$.data.completed").value(false))
                 .andExpect(jsonPath("$.data.lastPosition").value(300));
-        call(STUDENT_A, put("/api/materials/9401/progress").contentType(MediaType.APPLICATION_JSON)
-                .content("{\"position\": 545}"))
+        call(STUDENT_A, put("/api/lessons/9301/progress").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"position\": 545, \"totalLength\": 600}"))
                 .andExpect(jsonPath("$.data.completed").value(true))
                 .andExpect(jsonPath("$.data.courseCompletedLessons").value(2));
 
@@ -237,33 +233,33 @@ class Week42IntegrationTest {
                 .andExpect(jsonPath("$.data.lessons.length()").value(3))
                 .andExpect(jsonPath("$.data.lessons[2].completed").value(false));
 
-        call(STUDENT_A, get("/api/materials/9403/download"))
-                .andExpect(status().isFound());
-        call(STUDENT_A, get("/api/courses/9101/progress/me"))
-                .andExpect(jsonPath("$.data.progressPercent").value(100.0));
+        // 9303 là PDF: hoàn thành qua PUT /progress (đạt 90% số trang), không qua "Mark as done"
+        call(STUDENT_A, put("/api/lessons/9303/progress").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"position\": 10, \"totalLength\": 10}"))
+                .andExpect(jsonPath("$.data.courseProgressPercent").value(100.0));
         call(STUDENT_A, get("/api/progress/me")).andExpect(jsonPath("$.data[0].status").value("COMPLETED"));
         call(STUDENT_A, get("/api/notifications/me")).andExpect(jsonPath("$.data[0].type").value("COURSE_COMPLETED"));
 
         assertEquals(3, count("SELECT COUNT(*) FROM learning_activities WHERE student_id = 9001 AND event_type = 'LESSON_COMPLETED'"));
-        assertEquals(1, count("SELECT COUNT(*) FROM learning_activities WHERE student_id = 9001 AND event_type = 'LESSON_PROGRESS'"));
+        assertEquals(2, count("SELECT COUNT(*) FROM learning_activities WHERE student_id = 9001 AND event_type = 'LESSON_PROGRESS'"));
     }
 
     @Test
     void progress_isOnlyForEnrolledStudentsOfPublishedCourses() throws Exception {
-        call(STUDENT_A, put("/api/materials/9401/progress").contentType(MediaType.APPLICATION_JSON).content("{\"position\":600}"))
+        call(STUDENT_A, post("/api/lessons/9301/complete"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error_code").value("NOT_ENROLLED"));
-        call(STUDENT_A, put("/api/materials/999999/progress").contentType(MediaType.APPLICATION_JSON).content("{\"position\":600}"))
+        call(STUDENT_A, post("/api/lessons/999999/complete"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error_code").value("MATERIAL_NOT_FOUND"));
-        call(LECTURER_A, put("/api/materials/9401/progress").contentType(MediaType.APPLICATION_JSON).content("{\"position\":600}"))
+                .andExpect(jsonPath("$.error_code").value("LESSON_NOT_FOUND"));
+        call(LECTURER_A, post("/api/lessons/9301/complete"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error_code").value("NOT_A_STUDENT"));
         call(STUDENT_A, get("/api/courses/9101/progress/me"))
                 .andExpect(status().isForbidden());
 
         call(STUDENT_A, post("/api/courses/9101/enroll")).andExpect(status().isCreated());
-        call(STUDENT_A, put("/api/materials/9401/progress").contentType(MediaType.APPLICATION_JSON)
+        call(STUDENT_A, put("/api/lessons/9301/progress").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"position\": -1}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error_code").value("VALIDATION_ERROR"));
@@ -272,7 +268,7 @@ class Week42IntegrationTest {
     @Test
     void lecturer_seesClassProgress_andOneStudentsDetail() throws Exception {
         call(STUDENT_A, post("/api/courses/9101/enroll")).andExpect(status().isCreated());
-        call(STUDENT_A, get("/api/materials/9402/download")).andExpect(status().isFound());
+        call(STUDENT_A, post("/api/lessons/9302/complete")).andExpect(status().isOk());
 
         call(LECTURER_A, get("/api/courses/9101/progress"))
                 .andExpect(status().isOk())
@@ -291,9 +287,11 @@ class Week42IntegrationTest {
     void analytics_countsEnrollmentsAndCompletion_forCourseStaffOnly() throws Exception {
         call(STUDENT_A, post("/api/courses/9101/enroll")).andExpect(status().isCreated());
         call(STUDENT_C, post("/api/courses/9101/enroll")).andExpect(status().isCreated());
-        call(STUDENT_A, put("/api/materials/9401/progress").contentType(MediaType.APPLICATION_JSON).content("{\"position\":600}")).andExpect(status().isOk());
-        call(STUDENT_A, get("/api/materials/9402/download")).andExpect(status().isFound());
-        call(STUDENT_A, get("/api/materials/9403/download")).andExpect(status().isFound());
+        call(STUDENT_A, put("/api/lessons/9301/progress").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"position\": 600, \"totalLength\": 600}")).andExpect(status().isOk());
+        call(STUDENT_A, post("/api/lessons/9302/complete")).andExpect(status().isOk());
+        call(STUDENT_A, put("/api/lessons/9303/progress").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"position\": 10, \"totalLength\": 10}")).andExpect(status().isOk());
         call(STUDENT_C, post("/api/courses/9101/withdraw")).andExpect(status().isOk());
         call(STUDENT_C, post("/api/courses/9101/enroll")).andExpect(status().isCreated());
 
@@ -321,7 +319,7 @@ class Week42IntegrationTest {
     void everyNewEndpoint_requiresLogin() throws Exception {
         mockMvc.perform(post("/api/courses/9101/withdraw")).andExpect(status().isUnauthorized());
         mockMvc.perform(get("/api/courses/9101/enrollments")).andExpect(status().isUnauthorized());
-        mockMvc.perform(put("/api/materials/9401/progress").contentType(MediaType.APPLICATION_JSON).content("{\"position\":600}")).andExpect(status().isUnauthorized());
+        mockMvc.perform(post("/api/lessons/9301/complete")).andExpect(status().isUnauthorized());
         mockMvc.perform(get("/api/progress/me")).andExpect(status().isUnauthorized());
         mockMvc.perform(get("/api/analytics/courses")).andExpect(status().isUnauthorized());
         mockMvc.perform(get("/api/notifications/me")).andExpect(status().isUnauthorized());
@@ -343,3 +341,4 @@ class Week42IntegrationTest {
         return value == null ? 0 : value;
     }
 }
+

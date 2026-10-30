@@ -1,4 +1,3 @@
-
 package com.smartcampus.backend.learningcontent;
 
 import com.smartcampus.backend.auth.security.CustomUserDetails;
@@ -28,7 +27,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class LearningContentTest{
+class LearningContentTest {
 
     private static void assertHttpStatus(
             HttpStatus status, Runnable action
@@ -252,7 +251,9 @@ class LearningContentTest{
                     service.createLesson(
                             10L,
                             2L,
-                            new CreateLessonRequest(" Java ", 0),
+                            new CreateLessonRequest(
+                                    " Java ", "VIDEO", 0, null
+                            ),
                             user
                     );
 
@@ -261,6 +262,46 @@ class LearningContentTest{
 
             verify(accessService)
                     .requireManagePermission(10L, user);
+        }
+
+        @Test
+        void shouldStoreTotalLengthForVideoLesson() {
+            chapterExists();
+
+            when(lessonRepository.save(any(Lesson.class)))
+                    .thenAnswer(invocation ->
+                            invocation.getArgument(0));
+
+            LessonResponse result =
+                    service.createLesson(
+                            10L,
+                            2L,
+                            new CreateLessonRequest(
+                                    "Intro video", "VIDEO", 0, 600
+                            ),
+                            user
+                    );
+
+            assertEquals(600, result.totalLength());
+        }
+
+        @Test
+        void shouldRejectTotalLengthForTextLesson() {
+            chapterExists();
+
+            assertHttpStatus(
+                    HttpStatus.BAD_REQUEST,
+                    () -> service.createLesson(
+                            10L,
+                            2L,
+                            new CreateLessonRequest(
+                                    "Reading", "TEXT", 0, 10
+                            ),
+                            user
+                    )
+            );
+
+            verify(lessonRepository, never()).save(any());
         }
 
         @Test
@@ -276,7 +317,9 @@ class LearningContentTest{
                     () -> service.createLesson(
                             10L,
                             2L,
-                            new CreateLessonRequest("A", 0),
+                            new CreateLessonRequest(
+                                    "A", "VIDEO", 0, null
+                            ),
                             user
                     )
             );
@@ -310,7 +353,9 @@ class LearningContentTest{
                             10L,
                             2L,
                             3L,
-                            new UpdateLessonRequest("New", 1),
+                            new UpdateLessonRequest(
+                                    "New", "VIDEO", 1, null
+                            ),
                             user
                     );
 
@@ -335,7 +380,9 @@ class LearningContentTest{
                             10L,
                             2L,
                             3L,
-                            new UpdateLessonRequest("B", 1),
+                            new UpdateLessonRequest(
+                                    "B", "PDF", 1, null
+                            ),
                             user
                     )
             );
@@ -362,7 +409,9 @@ class LearningContentTest{
                             10L,
                             2L,
                             3L,
-                            new UpdateLessonRequest("B", 1),
+                            new UpdateLessonRequest(
+                                    "B", "PDF", 1, null
+                            ),
                             user
                     )
             );
@@ -437,8 +486,7 @@ class LearningContentTest{
                             new CreateLearningMaterialRequest(
                                     " Slides ",
                                     "https://example.com/slides.pdf",
-                                    "PDF",
-                                    null
+                                    "PDF"
                             ),
                             user
                     );
@@ -459,8 +507,7 @@ class LearningContentTest{
                             3L,
                             "Old",
                             "https://example.com/old",
-                            "PDF",
-                            null
+                            "PDF"
                     );
 
             when(materialRepository.findById(4L))
@@ -475,8 +522,7 @@ class LearningContentTest{
                             new UpdateLearningMaterialRequest(
                                     "New",
                                     "https://example.com/new",
-                                    "VIDEO",
-                                    600
+                                    "VIDEO"
                             ),
                             user
                     );
@@ -495,8 +541,7 @@ class LearningContentTest{
                                     99L,
                                     "A",
                                     "https://example.com",
-                                    "PDF",
-                                    null
+                                    "PDF"
                             )
                     ));
 
@@ -510,8 +555,7 @@ class LearningContentTest{
                             new UpdateLearningMaterialRequest(
                                     "B",
                                     "https://example.com",
-                                    "PDF",
-                                    null
+                                    "PDF"
                             ),
                             user
                     )
@@ -545,8 +589,7 @@ class LearningContentTest{
                             3L,
                             "A",
                             "https://example.com",
-                            "PDF",
-                            null
+                            "PDF"
                     );
 
             when(materialRepository.findById(4L))
