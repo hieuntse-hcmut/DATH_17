@@ -1,3 +1,4 @@
+
 -- V6__sample_data.sql
 -- Smart Campus LMS - Massive Scale Sample Data (DEV / DEMO)
 -- Target: 3 Students, 12 Courses, 60+ Lessons, Full V1-V4 compliance
@@ -35,7 +36,7 @@ INSERT INTO course_lecturers (course_id, lecturer_id) VALUES
 (1,2), (2,2), (3,4), (4,4), (5,9), (6,9), (7,4), (8,2), (9,4), (10,9), (11,4), (12,2);
 
 -- ============================================================
--- 3. ENROLLMENTS (3 Students across 12 courses - Status: ACTIVE, WITHDRAWN, REMOVED)
+-- 3. ENROLLMENTS (3 Students across 12 courses)
 -- ============================================================
 INSERT INTO enrollments (id, student_id, course_id, status, enrolled_at) VALUES
 -- Student 3 (Trần Thị Sinh)
@@ -43,99 +44,163 @@ INSERT INTO enrollments (id, student_id, course_id, status, enrolled_at) VALUES
 (2, 3, 2, 'ACTIVE',    '2026-09-02 08:00:00'),
 (3, 3, 5, 'ACTIVE',    '2026-09-03 08:00:00'),
 (4, 3, 8, 'WITHDRAWN', '2026-09-04 08:00:00'),
+
 -- Student 5 (Phạm Quốc Bảo)
 (5, 5, 1, 'ACTIVE',    '2026-09-01 09:00:00'),
 (6, 5, 3, 'ACTIVE',    '2026-09-02 09:00:00'),
 (7, 5, 4, 'ACTIVE',    '2026-09-03 09:00:00'),
 (8, 5, 9, 'REMOVED',   '2026-09-04 09:00:00'),
 (9, 5, 10,'ACTIVE',    '2026-09-05 09:00:00'),
+
 -- Student 6 (Võ Thu Hà)
 (10,6, 2, 'ACTIVE',    '2026-09-01 10:00:00'),
 (11,6, 6, 'ACTIVE',    '2026-09-02 10:00:00'),
 (12,6, 8, 'ACTIVE',    '2026-09-03 10:00:00'),
-(13,6, 12,'REMOVED',   '2026-09-04 10:00:00');
+(13,6,12, 'REMOVED',   '2026-09-04 10:00:00');
 
 INSERT INTO enrollment_histories (id, enrollment_id, previous_status, new_status, changed_by, reason) VALUES
 (1, 4, 'ACTIVE', 'WITHDRAWN', 3, 'Tự rút môn học do lịch chồng chéo'),
 (2, 8, 'ACTIVE', 'REMOVED',   4, 'Giảng viên loại do vắng mặt quá 20%'),
-(3, 13,'ACTIVE', 'REMOVED',   2, 'Khóa học đã bị đóng/archived');
+(3,13, 'ACTIVE', 'REMOVED',   2, 'Khóa học đã bị đóng/archived');
 
 -- ============================================================
 -- 4. CHAPTERS & LESSONS
 -- ============================================================
+
 -- C1: Java (4 Chương, 13 Bài)
-INSERT INTO chapters (id, course_id, title, order_index) VALUES 
-(1,1,'Chương 1: Biến & Dữ liệu',0), (2,1,'Chương 2: OOP',1), (3,1,'Chương 3: Collections',2), (4,1,'Chương 4: Multithreading',3);
-INSERT INTO lessons (id, chapter_id, title, content_type, order_index) VALUES
-(1,1,'Cài đặt môi trường', 'VIDEO',0), (2,1,'Kiểu dữ liệu', 'DOCUMENT',1), (3,1,'Vòng lặp & Điều kiện', 'VIDEO',2),
-(4,2,'Class & Object', 'VIDEO',0), (5,2,'Đóng gói & Kế thừa', 'DOCUMENT',1), (6,2,'Đa hình', 'DOCUMENT',2), (7,2,'Interface & Abstract', 'VIDEO',3),
-(8,3,'List & ArrayList', 'DOCUMENT',0), (9,3,'Set & HashSet', 'DOCUMENT',1), (10,3,'Map & HashMap', 'VIDEO',2),
-(11,4,'Khái niệm Thread', 'DOCUMENT',0), (12,4,'Runnable Interface', 'VIDEO',1), (13,4,'Đồng bộ hóa (Synchronization)', 'DOCUMENT',2);
+INSERT INTO chapters (id, course_id, title, order_index) VALUES
+(1,1,'Chương 1: Biến & Dữ liệu',0),
+(2,1,'Chương 2: OOP',1),
+(3,1,'Chương 3: Collections',2),
+(4,1,'Chương 4: Multithreading',3);
+
+INSERT INTO lessons (id, chapter_id, title, order_index) VALUES
+(1,1,'Cài đặt môi trường',0),
+(2,1,'Kiểu dữ liệu',1),
+(3,1,'Vòng lặp & Điều kiện',2),
+(4,2,'Class & Object',0),
+(5,2,'Đóng gói & Kế thừa',1),
+(6,2,'Đa hình',2),
+(7,2,'Interface & Abstract',3),
+(8,3,'List & ArrayList',0),
+(9,3,'Set & HashSet',1),
+(10,3,'Map & HashMap',2),
+(11,4,'Khái niệm Thread',0),
+(12,4,'Runnable Interface',1),
+(13,4,'Đồng bộ hóa (Synchronization)',2);
 
 -- C2: SQL (4 Chương, 12 Bài)
-INSERT INTO chapters (id, course_id, title, order_index) VALUES 
-(5,2,'Chương 1: Mô hình ERD',0), (6,2,'Chương 2: DDL & DML',1), (7,2,'Chương 3: JOIN & Grouping',2), (8,2,'Chương 4: Advanced SQL',3);
-INSERT INTO lessons (id, chapter_id, title, content_type, order_index) VALUES
-(14,5,'Thực thể và Khóa', 'VIDEO',0), (15,5,'Chuẩn hóa 1NF-3NF', 'DOCUMENT',1), (16,5,'Thiết kế logic', 'DOCUMENT',2),
-(17,6,'Lệnh CREATE, ALTER', 'VIDEO',0), (18,6,'Lệnh INSERT, UPDATE', 'VIDEO',1), (19,6,'Lệnh SELECT cơ bản', 'DOCUMENT',2),
-(20,7,'INNER & OUTER JOIN', 'VIDEO',0), (21,7,'GROUP BY & HAVING', 'VIDEO',1), (22,7,'Subqueries', 'DOCUMENT',2),
-(23,8,'Stored Procedures', 'VIDEO',0), (24,8,'Triggers', 'VIDEO',1), (25,8,'Index & Optimization', 'DOCUMENT',2);
+INSERT INTO chapters (id, course_id, title, order_index) VALUES
+(5,2,'Chương 1: Mô hình ERD',0),
+(6,2,'Chương 2: DDL & DML',1),
+(7,2,'Chương 3: JOIN & Grouping',2),
+(8,2,'Chương 4: Advanced SQL',3);
+
+INSERT INTO lessons (id, chapter_id, title, order_index) VALUES
+(14,5,'Thực thể và Khóa',0),
+(15,5,'Chuẩn hóa 1NF-3NF',1),
+(16,5,'Thiết kế logic',2),
+(17,6,'Lệnh CREATE, ALTER',0),
+(18,6,'Lệnh INSERT, UPDATE',1),
+(19,6,'Lệnh SELECT cơ bản',2),
+(20,7,'INNER & OUTER JOIN',0),
+(21,7,'GROUP BY & HAVING',1),
+(22,7,'Subqueries',2),
+(23,8,'Stored Procedures',0),
+(24,8,'Triggers',1),
+(25,8,'Index & Optimization',2);
 
 -- C3: Data Structures (3 Chương, 9 Bài)
-INSERT INTO chapters (id, course_id, title, order_index) VALUES 
-(9,3,'Chương 1: Tuyến tính',0), (10,3,'Chương 2: Phi tuyến tính',1), (11,3,'Chương 3: Thuật toán sắp xếp',2);
-INSERT INTO lessons (id, chapter_id, title, content_type, order_index) VALUES
-(26,9,'Mảng & Danh sách liên kết', 'VIDEO',0), (27,9,'Stack (Ngăn xếp)', 'DOCUMENT',1), (28,9,'Queue (Hàng đợi)', 'VIDEO',2),
-(29,10,'Binary Tree', 'VIDEO',0), (30,10,'Binary Search Tree', 'VIDEO',1), (31,10,'Đồ thị (Graph)', 'DOCUMENT',2),
-(32,11,'Bubble & Insertion Sort', 'VIDEO',0), (33,11,'Merge Sort', 'DOCUMENT',1), (34,11,'Quick Sort', 'VIDEO',2);
+INSERT INTO chapters (id, course_id, title, order_index) VALUES
+(9,3,'Chương 1: Tuyến tính',0),
+(10,3,'Chương 2: Phi tuyến tính',1),
+(11,3,'Chương 3: Thuật toán sắp xếp',2);
+
+INSERT INTO lessons (id, chapter_id, title, order_index) VALUES
+(26,9,'Mảng & Danh sách liên kết',0),
+(27,9,'Stack (Ngăn xếp)',1),
+(28,9,'Queue (Hàng đợi)',2),
+(29,10,'Binary Tree',0),
+(30,10,'Binary Search Tree',1),
+(31,10,'Đồ thị (Graph)',2),
+(32,11,'Bubble & Insertion Sort',0),
+(33,11,'Merge Sort',1),
+(34,11,'Quick Sort',2);
 
 -- C5: Spring Boot (4 Chương, 11 Bài)
-INSERT INTO chapters (id, course_id, title, order_index) VALUES 
-(12,5,'Chương 1: Core Spring',0), (13,5,'Chương 2: RESTful API',1), (14,5,'Chương 3: Spring Data JPA',2), (15,5,'Chương 4: Spring Security',3);
-INSERT INTO lessons (id, chapter_id, title, content_type, order_index) VALUES
-(35,12,'IoC Container', 'VIDEO',0), (36,12,'Dependency Injection', 'DOCUMENT',1),
-(37,13,'@RestController & @RequestMapping', 'VIDEO',0), (38,13,'Xử lý Exception', 'DOCUMENT',1), (39,13,'Data Transfer Object (DTO)', 'VIDEO',2),
-(40,14,'Cấu hình Datasource', 'DOCUMENT',0), (41,14,'Entity Mapping', 'DOCUMENT',1), (42,14,'JPA Repositories', 'VIDEO',2),
-(43,15,'Authentication vs Authorization', 'DOCUMENT',0), (44,15,'JWT Token Implementation', 'VIDEO',1), (45,15,'Role-based Access Control', 'VIDEO',2);
+INSERT INTO chapters (id, course_id, title, order_index) VALUES
+(12,5,'Chương 1: Core Spring',0),
+(13,5,'Chương 2: RESTful API',1),
+(14,5,'Chương 3: Spring Data JPA',2),
+(15,5,'Chương 4: Spring Security',3);
+
+INSERT INTO lessons (id, chapter_id, title, order_index) VALUES
+(35,12,'IoC Container',0),
+(36,12,'Dependency Injection',1),
+(37,13,'@RestController & @RequestMapping',0),
+(38,13,'Xử lý Exception',1),
+(39,13,'Data Transfer Object (DTO)',2),
+(40,14,'Cấu hình Datasource',0),
+(41,14,'Entity Mapping',1),
+(42,14,'JPA Repositories',2),
+(43,15,'Authentication vs Authorization',0),
+(44,15,'JWT Token Implementation',1),
+(45,15,'Role-based Access Control',2);
 
 -- C8: ReactJS (3 Chương, 10 Bài)
-INSERT INTO chapters (id, course_id, title, order_index) VALUES 
-(16,8,'Chương 1: React Basics',0), (17,8,'Chương 2: Hooks',1), (18,8,'Chương 3: State Management',2);
-INSERT INTO lessons (id, chapter_id, title, content_type, order_index) VALUES
-(46,16,'JSX & Virtual DOM', 'VIDEO',0), (47,16,'Components & Props', 'DOCUMENT',1), (48,16,'Event Handling', 'VIDEO',2), (49,16,'Conditional Rendering', 'VIDEO',3),
-(50,17,'useState', 'VIDEO',0), (51,17,'useEffect', 'VIDEO',1), (52,17,'useRef & useMemo', 'DOCUMENT',2),
-(53,18,'Context API', 'VIDEO',0), (54,18,'Giới thiệu Redux', 'DOCUMENT',1), (55,18,'Redux Toolkit', 'VIDEO',2);
+INSERT INTO chapters (id, course_id, title, order_index) VALUES
+(16,8,'Chương 1: React Basics',0),
+(17,8,'Chương 2: Hooks',1),
+(18,8,'Chương 3: State Management',2);
+
+INSERT INTO lessons (id, chapter_id, title, order_index) VALUES
+(46,16,'JSX & Virtual DOM',0),
+(47,16,'Components & Props',1),
+(48,16,'Event Handling',2),
+(49,16,'Conditional Rendering',3),
+(50,17,'useState',0),
+(51,17,'useEffect',1),
+(52,17,'useRef & useMemo',2),
+(53,18,'Context API',0),
+(54,18,'Giới thiệu Redux',1),
+(55,18,'Redux Toolkit',2);
 
 -- C9: AWS (2 Chương, 6 Bài)
-INSERT INTO chapters (id, course_id, title, order_index) VALUES 
-(19,9,'Chương 1: Compute & Storage',0), (20,9,'Chương 2: Networking & DB',1);
-INSERT INTO lessons (id, chapter_id, title, content_type, order_index) VALUES
-(56,19,'EC2 Instances', 'VIDEO',0), (57,19,'S3 Buckets', 'DOCUMENT',1), (58,19,'Lambda Serverless', 'VIDEO',2),
-(59,20,'VPC cơ bản', 'VIDEO',0), (60,20,'RDS (Relational Database)', 'DOCUMENT',1), (61,20,'DynamoDB', 'VIDEO',2);
+INSERT INTO chapters (id, course_id, title, order_index) VALUES
+(19,9,'Chương 1: Compute & Storage',0),
+(20,9,'Chương 2: Networking & DB',1);
+
+INSERT INTO lessons (id, chapter_id, title, order_index) VALUES
+(56,19,'EC2 Instances',0),
+(57,19,'S3 Buckets',1),
+(58,19,'Lambda Serverless',2),
+(59,20,'VPC cơ bản',0),
+(60,20,'RDS (Relational Database)',1),
+(61,20,'DynamoDB',2);
 
 -- ============================================================
 -- 5. LEARNING PROGRESS
 -- ============================================================
 INSERT INTO learning_progress (id, student_id, lesson_id, is_completed, last_position) VALUES
 -- Student 3 (Java & Spring Boot)
-(1, 3, 1, TRUE, 600), 
-(2, 3, 2, FALSE, 0),   
+(1, 3, 1, TRUE, 600),
+(2, 3, 2, FALSE, 0),
 (3, 3, 3, FALSE, 150),
-(4, 3, 35, TRUE, 900), 
-(5, 3, 36, FALSE, 0),  
+(4, 3, 35, TRUE, 900),
+(5, 3, 36, FALSE, 0),
 
 -- Student 5 (Java & DSA)
-(6, 5, 1, TRUE, 600), 
-(7, 5, 2, FALSE, 0),   
-(8, 5, 26, TRUE, 800), 
-(9, 5, 27, FALSE, 0),  
-(10, 5, 28, FALSE, 100),
+(6, 5, 1, TRUE, 600),
+(7, 5, 2, FALSE, 0),
+(8, 5, 26, TRUE, 800),
+(9, 5, 27, FALSE, 0),
+(10,5, 28, FALSE, 100),
 
 -- Student 6 (SQL & React)
-(11, 6, 14, TRUE, 500), 
-(12, 6, 15, FALSE, 0), 
-(13, 6, 16, FALSE, 200), 
-(14, 6, 46, TRUE, 700);
+(11,6, 14, TRUE, 500),
+(12,6, 15, FALSE, 0),
+(13,6, 16, FALSE, 200),
+(14,6, 46, TRUE, 700);
 
 -- ============================================================
 -- 6. QUESTION BANK & OPTIONS (V4 Compliance)
@@ -146,9 +211,16 @@ INSERT INTO question_bank (id, course_id, content, question_type) VALUES
 (3, 8, 'Hook nào được dùng để thực hiện side-effects trong React?', 'SINGLE_CHOICE');
 
 INSERT INTO question_options (question_id, content, is_correct, order_index) VALUES
-(1, 'static', FALSE, 0), (1, 'final', TRUE, 1), (1, 'abstract', FALSE, 2), (1, 'private', FALSE, 3),
-(2, '@Controller', FALSE, 0), (2, '@RestController', TRUE, 1), (2, '@Service', FALSE, 2),
-(3, 'useState', FALSE, 0), (3, 'useEffect', TRUE, 1), (3, 'useContext', FALSE, 2);
+(1, 'static', FALSE, 0),
+(1, 'final', TRUE, 1),
+(1, 'abstract', FALSE, 2),
+(1, 'private', FALSE, 3),
+(2, '@Controller', FALSE, 0),
+(2, '@RestController', TRUE, 1),
+(2, '@Service', FALSE, 2),
+(3, 'useState', FALSE, 0),
+(3, 'useEffect', TRUE, 1),
+(3, 'useContext', FALSE, 2);
 
 -- ============================================================
 -- 7. ASSESSMENTS & ATTEMPTS
@@ -159,7 +231,9 @@ INSERT INTO assessments (id, course_id, title, status, duration_minutes, max_att
 (3, 8, 'ReactJS Hooks Quiz', 'PUBLISHED', 20, 2);
 
 INSERT INTO assessment_questions (assessment_id, question_id, order_index, points) VALUES
-(1, 1, 0, 10.00), (2, 2, 0, 10.00), (3, 3, 0, 10.00);
+(1, 1, 0, 10.00),
+(2, 2, 0, 10.00),
+(3, 3, 0, 10.00);
 
 INSERT INTO assessment_attempts (id, assessment_id, student_id, attempt_number, score, status) VALUES
 (1, 1, 3, 1, 10.00, 'GRADED'),
