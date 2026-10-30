@@ -1,11 +1,20 @@
-import { useState } from 'react'
-import { Outlet } from 'react-router'
+import { useEffect, useState } from 'react'
+import { Outlet, useNavigate } from 'react-router'
 import Header from '~/components/layout/Header'
 import Sidebar from '~/components/layout/Sidebar'
 import NotificationModal from '~/components/layout/NotificationModal' // Điều chỉnh lại đường dẫn nếu bạn đặt file NotificationModal ở thư mục khác
+import { useMe } from '~/services/me.query'
 
 export default function MainLayout() {
     const [isNotifOpen, setIsNotifOpen] = useState(false)
+
+    const {data: me} = useMe();
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (me?.role === "ADMIN") {
+            navigate("/admin")
+        }
+    }, [navigate, me]);
 
     return (
         <div className="flex h-screen bg-[#F8FAFC] dark:bg-gray-950 transition-colors overflow-hidden">

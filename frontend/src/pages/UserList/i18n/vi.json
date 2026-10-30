@@ -1,0 +1,128 @@
+{
+  "breadcrumb": {
+    "home": "Trang chủ",
+    "admin": "Quản trị",
+    "userList": "Quản lý người dùng"
+  },
+  "header": {
+    "title": "Quản lý người dùng",
+    "subtitle": "Danh sách tài khoản và phân quyền người dùng trong hệ thống Smart Campus",
+    "adminMode": "Chế độ Quản trị viên"
+  },
+  "stats": {
+    "totalUsers": "Tổng người dùng",
+    "totalSub": "Tài khoản trong hệ thống",
+    "students": "Sinh viên",
+    "percentTotal": "{{percent}}% tổng số",
+    "lecturers": "Giảng viên",
+    "admins": "Quản trị viên",
+    "adminSub": "Toàn quyền quản trị",
+    "active": "Đang hoạt động",
+    "activeSub": "{{percent}}% khả dụng"
+  },
+  "filters": {
+    "searchPlaceholder": "Tìm theo tên, email hoặc tên đăng nhập...",
+    "clearSearch": "Xóa tìm kiếm",
+    "filterBy": "Lọc theo:",
+    "sortBy": "Sắp xếp:",
+    "reset": "Đặt lại",
+    "refresh": "Làm mới",
+    "refreshTooltip": "Làm mới dữ liệu",
+    "roles": {
+      "all": "Tất cả vai trò",
+      "student": "Sinh viên",
+      "lecturer": "Giảng viên",
+      "admin": "Quản trị viên"
+    },
+    "statuses": {
+      "all": "Tất cả trạng thái",
+      "active": "Đang hoạt động",
+      "inactive": "Đã khóa"
+    },
+    "sortOptions": {
+      "newest": "Mới nhất trước",
+      "oldest": "Cũ nhất trước",
+      "nameAsc": "Họ tên (A-Z)",
+      "nameDesc": "Họ tên (Z-A)",
+      "usernameAsc": "Tên đăng nhập (A-Z)"
+    }
+  },
+  "table": {
+    "columns": {
+      "user": "Người dùng",
+      "email": "Email",
+      "role": "Vai trò",
+      "status": "Trạng thái",
+      "createdAt": "Ngày tạo",
+      "actions": "Thao tác"
+    },
+    "you": "Bạn",
+    "active": "Hoạt động",
+    "inactive": "Đã khóa",
+    "viewDetail": "Xem chi tiết người dùng",
+    "changeRole": "Đổi vai trò",
+    "selfTooltip": "Không thể tự thay đổi vai trò của chính mình",
+    "otherAdminTooltip": "Không thể thay đổi vai trò của Quản trị viên khác",
+    "emptyTitle": "Không tìm thấy người dùng phù hợp",
+    "emptyDesc": "Thử thay đổi từ khóa tìm kiếm hoặc điều chỉnh các bộ lọc vai trò, trạng thái.",
+    "resetFilterBtn": "Đặt lại bộ lọc"
+  },
+  "pagination": {
+    "showing": "Hiển thị",
+    "of": "trên",
+    "users": "người dùng",
+    "perPage": "Mỗi trang:",
+    "firstPage": "Trang đầu",
+    "prevPage": "Trang trước",
+    "nextPage": "Trang tiếp",
+    "lastPage": "Trang cuối"
+  },
+  "changeRoleModal": {
+    "title": "Thay đổi vai trò người dùng",
+    "subtitle": "Cập nhật quyền hạn truy cập cho tài khoản",
+    "selectNewRole": "Chọn vai trò mới:",
+    "current": "Hiện tại",
+    "roles": {
+      "student": {
+        "title": "Sinh viên (STUDENT)",
+        "desc": "Tham gia khóa học, học bài, làm bài tập và trao đổi thảo luận.",
+        "badge": "Sinh viên"
+      },
+      "lecturer": {
+        "title": "Giảng viên (LECTURER)",
+        "desc": "Tạo và biên soạn khóa học, tạo đề kiểm tra, chấm bài và quản lý sinh viên.",
+        "badge": "Giảng viên"
+      },
+      "admin": {
+        "title": "Quản trị viên (ADMIN)",
+        "desc": "Toàn quyền quản trị hệ thống, người dùng và phân quyền trong hệ thống.",
+        "badge": "Quản trị viên"
+      }
+    },
+    "securityWarning": "Lưu ý bảo mật:",
+    "adminNotice": "Sau khi được nâng quyền lên Quản trị viên (ADMIN), tài khoản này sẽ có toàn quyền hệ thống và quy định bảo mật sẽ không cho phép hạ quyền tài khoản Admin khác từ trang quản trị.",
+    "cancel": "Hủy bỏ",
+    "save": "Lưu thay đổi",
+    "saving": "Đang lưu..."
+  },
+  "detailModal": {
+    "title": "Chi tiết người dùng",
+    "accountId": "Mã tài khoản (ID)",
+    "username": "Tên tài khoản",
+    "email": "Email liên hệ",
+    "createdAt": "Ngày tạo",
+    "close": "Đóng",
+    "changeRole": "Đổi vai trò"
+  },
+  "unauthorized": {
+    "title": "Truy cập bị từ chối",
+    "desc": "Trang quản trị người dùng chỉ dành riêng cho Quản trị viên (ADMIN). Tài khoản hiện tại của bạn không có quyền hạn truy cập khu vực này.",
+    "goHome": "Về trang chủ"
+  },
+  "messages": {
+    "updateSuccess": "Đã đổi vai trò người dùng \"{{name}}\" thành công!",
+    "updateError": "Không thể cập nhật vai trò người dùng. Vui lòng thử lại.",
+    "fetchError": "Đã xảy ra lỗi khi tải danh sách người dùng.",
+    "retry": "Thử lại"
+  }
+}
