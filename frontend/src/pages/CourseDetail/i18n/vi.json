@@ -1,75 +1,75 @@
 {
-    "pageTitle": "Chi tiết khóa học",
-    "toc": "Mục lục",
-    "lessonsCount": "{{count}} bài",
-    "chapterProgress": "{{done}}/{{total}}",
-    "completion": "{{percent}}% hoàn thành",
-    "status": {
-        "completed": "Đã hoàn thành",
-        "current": "ĐANG HỌC"
+  "pageTitle": "Chi tiết khóa học",
+  "toc": "Mục lục",
+  "lessonsCount": "{{count}} bài",
+  "chapterProgress": "{{done}}/{{total}}",
+  "completion": "{{percent}}% hoàn thành",
+  "status": {
+    "completed": "Đã hoàn thành",
+    "current": "ĐANG HỌC"
+  },
+  "quizMeta": "{{minutes}} phút • {{questions}} câu trắc nghiệm",
+  "tabs": { "docs": "Tài liệu & Ghi chú", "discussion": "Thảo luận" },
+  "discussionEmpty": "Chưa có thảo luận nào cho bài học này.",
+  "discussion": {
+    "title": "Thảo luận",
+    "sortBy": "Sắp xếp theo:",
+    "sort": {
+      "newest": "Mới nhất",
+      "oldest": "Cũ nhất",
+      "popular": "Nhiều thích nhất"
     },
-    "quizMeta": "{{minutes}} phút • {{questions}} câu trắc nghiệm",
-    "tabs": { "docs": "Tài liệu & Ghi chú", "discussion": "Thảo luận" },
-    "discussionEmpty": "Chưa có thảo luận nào cho bài học này.",
-    "discussion": {
-        "title": "Thảo luận",
-        "sortBy": "Sắp xếp theo:",
-        "sort": {
-            "newest": "Mới nhất",
-            "oldest": "Cũ nhất",
-            "popular": "Nhiều thích nhất"
-        },
-        "tools": {
-            "bold": "In đậm",
-            "italic": "In nghiêng",
-            "underline": "Gạch chân",
-            "code": "Mã",
-            "link": "Chèn liên kết",
-            "attach": "Đính kèm tệp"
-        },
-        "placeholder": "Viết bình luận hoặc đặt câu hỏi...",
-        "post": "Đăng",
-        "replyingTo": "Đang trả lời {{name}}",
-        "cancelReply": "Hủy trả lời",
-        "justNow": "Vừa xong",
-        "options": "Tùy chọn",
-        "like": "{{count}}",
-        "reply": "Trả lời",
-        "replying": "Đang trả lời",
-        "fileTooLarge": "Có tệp vượt quá {{max}} MB nên không được thêm.",
-        "tooManyFiles": "Mỗi bình luận đính kèm tối đa {{max}} tệp.",
-        "removeFile": "Xóa tệp {{name}}",
-        "linkText": "liên kết"
+    "tools": {
+      "bold": "In đậm",
+      "italic": "In nghiêng",
+      "underline": "Gạch chân",
+      "code": "Mã",
+      "link": "Chèn liên kết",
+      "attach": "Đính kèm tệp"
     },
-    "copy": "Sao chép",
-    "copied": "Đã chép",
-    "prev": "Bài trước",
-    "understood": "Đã hiểu bài",
-    "next": "Bài tiếp theo",
-    "locked": "Chương này đang bị khóa",
-    "notFound": "Không tìm thấy bài học",
-    "close": "Đóng",
-    "add": "Thêm",
-    "docsEmpty": "Bài học này chưa có tài liệu hoặc ghi chú.",
-    "download": "Tải xuống {{name}}",
-    "addCourse": {
-        "button": "Thêm chương mới",
-        "addChapterTitle": "Thêm chương mới cho môn:",
-        "chapterName": "Tên chương",
-        "chapterPlaceholder": "Ví dụ: Chương 3: Collections",
-        "success": "Thêm chương mới thành công"
-    },
-    "editChapter": {
-        "button": "Sửa chương",
-        "title": "Sửa chương cho môn:",
-        "save": "Lưu",
-        "delete": "Xóa",
-        "confirm": "Xác nhận xóa",
-        "confirmDelete": "Xóa chương này? Các bài học và tài liệu bên trong cũng có thể bị xóa theo.",
-        "success": "Đã cập nhật chương",
-        "deleted": "Đã xóa chương"
-    },
-    "lesson": {
+    "placeholder": "Viết bình luận hoặc đặt câu hỏi...",
+    "post": "Đăng",
+    "replyingTo": "Đang trả lời {{name}}",
+    "cancelReply": "Hủy trả lời",
+    "justNow": "Vừa xong",
+    "options": "Tùy chọn",
+    "like": "{{count}}",
+    "reply": "Trả lời",
+    "replying": "Đang trả lời",
+    "fileTooLarge": "Có tệp vượt quá {{max}} MB nên không được thêm.",
+    "tooManyFiles": "Mỗi bình luận đính kèm tối đa {{max}} tệp.",
+    "removeFile": "Xóa tệp {{name}}",
+    "linkText": "liên kết"
+  },
+  "copy": "Sao chép",
+  "copied": "Đã chép",
+  "prev": "Bài trước",
+  "understood": "Đã hiểu bài",
+  "next": "Bài tiếp theo",
+  "locked": "Chương này đang bị khóa",
+  "notFound": "Không tìm thấy bài học",
+  "close": "Đóng",
+  "add": "Thêm",
+  "docsEmpty": "Bài học này chưa có tài liệu hoặc ghi chú.",
+  "download": "Tải xuống {{name}}",
+  "addCourse": {
+    "button": "Thêm chương mới",
+    "addChapterTitle": "Thêm chương mới cho môn:",
+    "chapterName": "Tên chương",
+    "chapterPlaceholder": "Ví dụ: Chương 3: Collections",
+    "success": "Thêm chương mới thành công"
+  },
+  "editChapter": {
+    "button": "Sửa chương",
+    "title": "Sửa chương cho môn:",
+    "save": "Lưu",
+    "delete": "Xóa",
+    "confirm": "Xác nhận xóa",
+    "confirmDelete": "Xóa chương này? Các bài học và tài liệu bên trong cũng có thể bị xóa theo.",
+    "success": "Đã cập nhật chương",
+    "deleted": "Đã xóa chương"
+  },
+  "lesson": {
     "addButton": "Thêm bài học",
     "addTitle": "Thêm bài học mới",
     "editTitle": "Sửa bài học",
@@ -96,6 +96,7 @@
     "deleted": "Đã xóa tài liệu",
     "confirmDelete": "Xóa tài liệu này?"
   },
-    "play": "Phát", 
-    "pause": "Tạm dừng"
+  "play": "Phát",
+  "pause": "Tạm dừng",
+  "quizzes": "Bài kiểm tra"
 }

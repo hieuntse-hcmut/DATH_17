@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 public record LessonProgressItem(
         @Schema(example = "9301") Long lessonId,
         @Schema(example = "Spring Boot overview") String lessonTitle,
-        @Schema(example = "VIDEO") String contentType,
         @Schema(example = "9201") Long chapterId,
         @Schema(example = "Getting started") String chapterTitle,
         @Schema(example = "true") boolean completed,
@@ -17,7 +16,7 @@ public record LessonProgressItem(
         @Schema(nullable = true, example = "2026-10-18T03:20:00") LocalDateTime lastAccessedAt
 ) {
     public static LessonProgressItem of(LessonProgressView v) {
-        return new LessonProgressItem(v.getLessonId(), v.getLessonTitle(), v.getContentType(),
+        return new LessonProgressItem(v.getLessonId(), v.getLessonTitle(),
                 v.getChapterId(), v.getChapterTitle(),
                 v.getCompleted() != null && v.getCompleted() == 1L,
                 v.getLastPosition() == null ? 0 : v.getLastPosition(),

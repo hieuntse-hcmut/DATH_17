@@ -51,7 +51,6 @@ public interface LearningProgressRepository extends JpaRepository<LearningProgre
     @Query(value = """
             SELECT l.id                AS lessonId,
                    l.title             AS lessonTitle,
-                   l.content_type      AS contentType,
                    c.id                AS courseId,
                    c.title             AS courseTitle,
                    c.publication_state AS publicationState,
@@ -98,7 +97,6 @@ public interface LearningProgressRepository extends JpaRepository<LearningProgre
     @Query(value = """
             SELECT l.id              AS lessonId,
                    l.title           AS lessonTitle,
-                   l.content_type    AS contentType,
                    ch.id             AS chapterId,
                    ch.title          AS chapterTitle,
                    CAST(COALESCE(lp.is_completed, 0) AS SIGNED) AS completed,

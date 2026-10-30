@@ -1,0 +1,115 @@
+{
+  "list": {
+    "title": "Bài kiểm tra",
+    "subtitle": "Các bài quiz của khóa học",
+    "empty": "Khóa học này chưa có bài kiểm tra nào.",
+    "loadError": "Không tải được danh sách bài kiểm tra.",
+    "duration": "{{count}} phút",
+    "attempts": "Tối đa {{count}} lượt",
+    "opensAt": "Mở",
+    "closesAt": "Đóng",
+    "start": "Làm bài",
+    "notOpen": "Chưa mở",
+    "closed": "Đã đóng",
+    "status": { "DRAFT": "Bản nháp", "PUBLISHED": "Đang mở" },
+    "backToCourse": "Về khóa học",
+    "history": "Lịch sử làm bài",
+    "hideHistory": "Ẩn lịch sử",
+    "attemptsUsed": "Đã dùng {{used}}/{{max}} lượt",
+    "continue": "Tiếp tục làm bài",
+    "noAttemptsLeft": "Hết lượt",
+    "edit": "Chỉnh sửa"
+  },
+  "attempt": {
+    "windowTitle": "Làm bài kiểm tra",
+    "loadError": "Không tải được bài kiểm tra.",
+    "back": "Quay lại danh sách",
+    "questionOf": "Câu {{current}} / {{total}}",
+    "points": "{{count}} điểm",
+    "flag": "Đánh dấu xem lại",
+    "flagged": "Bỏ đánh dấu",
+    "selected": "Đã chọn",
+    "prev": "Câu trước",
+    "next": "Câu tiếp theo",
+    "showAll": "Tất cả {{total}} câu",
+    "submit": "Nộp bài thi",
+    "timeLeft": "Thời gian còn lại",
+    "submitError": "Nộp bài chưa thành công. Vui lòng thử lại.",
+    "retry": "Thử lại",
+    "submitting": "Đang nộp bài…"
+  },
+  "palette": {
+    "title": "Bảng câu hỏi ({{total}} câu)",
+    "mobileTitle": "Tổng quan {{total}} câu hỏi",
+    "mobileHint": "Chạm vào số câu để chuyển nhanh",
+    "answered": "Đã làm",
+    "flagged": "Cần xem",
+    "unanswered": "Chưa làm",
+    "close": "Đóng",
+    "goTo": "Đi tới câu {{n}}"
+  },
+  "confirm": {
+    "title": "Nộp bài thi?",
+    "body": "Bạn đã làm {{answered}}/{{total}} câu.",
+    "unansweredWarn": "Còn {{count}} câu chưa làm.",
+    "flaggedWarn": "Có {{count}} câu đang được đánh dấu xem lại.",
+    "cancel": "Tiếp tục làm bài",
+    "confirm": "Nộp bài"
+  },
+  "done": {
+    "title": "Đã ghi nhận bài làm",
+    "body": "Bạn đã trả lời {{answered}}/{{total}} câu.",
+    "expired": "Hết giờ, bài làm đã được nộp tự động.",
+    "back": "Về danh sách bài kiểm tra"
+  },
+  "intro": {
+    "start": "Bắt đầu / tiếp tục làm bài",
+    "rules": "Lưu ý",
+    "ruleFullscreen": "Bài thi chạy toàn màn hình, phải nộp bài mới thoát ra được.",
+    "ruleTimer": "Đồng hồ tính theo máy chủ: tải lại trang không làm đồng hồ chạy lại từ đầu.",
+    "ruleLeave": "Không dùng nút Back/Forward của trình duyệt trong lúc làm bài.",
+    "ruleAuto": "Hết giờ hệ thống sẽ tự nộp bài.",
+    "noLimit": "Không giới hạn thời gian"
+  },
+  "fullscreen": {
+    "title": "Cần bật toàn màn hình",
+    "body": "Bạn đã thoát chế độ toàn màn hình. Hãy quay lại để tiếp tục làm bài, đồng hồ vẫn đang chạy.",
+    "back": "Quay lại toàn màn hình"
+  },
+  "result": {
+    "title": "Kết quả bài làm",
+    "score": "{{score}} / {{total}} điểm",
+    "correctCount": "Đúng {{correct}}/{{total}} câu",
+    "correct": "Đúng",
+    "wrong": "Sai",
+    "detail": "Chi tiết từng câu"
+  },
+  "history": {
+    "attempt": "Lượt {{n}}",
+    "score": "{{score}}/{{total}} điểm",
+    "status": {
+      "IN_PROGRESS": "Đang làm",
+      "SUBMITTED": "Chờ chấm",
+      "GRADED": "Đã chấm"
+    }
+  },
+  "edit": {
+    "addNewQuiz": "Thêm bài kiểm tra mới",
+    "createTitle": "Bài kiểm tra mới",
+    "forbidden": "Bạn không có quyền chỉnh sửa bài kiểm tra này.",
+    "title": "Tên bài kiểm tra",
+    "startTime": "Bắt đầu",
+    "endTime": "Kết thúc",
+    "duration": "Thời lượng (phút)",
+    "maxAttempts": "Số lượt làm tối đa",
+    "questionText": "Sửa nội dung câu hỏi",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "addOption": "+ Thêm đáp án",
+    "done": "Hoàn tất",
+    "publish": "Xuất bản",
+    "errSave": "Lưu bài kiểm tra không thành công. Vui lòng thử lại.",
+    "errSaveAlert": "Đã xảy ra lỗi. Có thể bạn quên chọn đáp án đúng.",
+    "publishSuccess": "Xuất bản bài kiểm tra thành công."
+  }
+}

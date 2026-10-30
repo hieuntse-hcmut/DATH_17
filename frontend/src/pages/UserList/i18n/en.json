@@ -1,0 +1,129 @@
+{
+  "breadcrumb": {
+    "home": "Home",
+    "admin": "Admin",
+    "userList": "User Management"
+  },
+  "header": {
+    "title": "User Management",
+    "subtitle": "Account directory and role permissions in Smart Campus",
+    "adminMode": "Admin Mode"
+  },
+  "stats": {
+    "totalUsers": "Total Users",
+    "totalSub": "System accounts",
+    "students": "Students",
+    "percentTotal": "{{percent}}% of total",
+    "lecturers": "Lecturers",
+    "admins": "Administrators",
+    "adminSub": "Full system control",
+    "active": "Active",
+    "activeSub": "{{percent}}% available"
+  },
+  "filters": {
+    "searchPlaceholder": "Search by name, email, or username...",
+    "clearSearch": "Clear search",
+    "filterBy": "Filter by:",
+    "sortBy": "Sort by:",
+    "reset": "Reset",
+    "refresh": "Refresh",
+    "refreshTooltip": "Refresh data",
+    "roles": {
+      "all": "All Roles",
+      "student": "Student",
+      "lecturer": "Lecturer",
+      "admin": "Admin"
+    },
+    "statuses": {
+      "all": "All Statuses",
+      "active": "Active",
+      "inactive": "Disabled"
+    },
+    "sortOptions": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "nameAsc": "Full name (A-Z)",
+      "nameDesc": "Full name (Z-A)",
+      "usernameAsc": "Username (A-Z)"
+    }
+  },
+  "table": {
+    "columns": {
+      "user": "User",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "createdAt": "Created At",
+      "actions": "Actions",
+      "userId": "User ID"
+    },
+    "you": "You",
+    "active": "Active",
+    "inactive": "Disabled",
+    "viewDetail": "View user details",
+    "changeRole": "Change Role",
+    "selfTooltip": "Cannot change your own role",
+    "otherAdminTooltip": "Cannot change another admin's role",
+    "emptyTitle": "No matching users found",
+    "emptyDesc": "Try adjusting your search query or role and status filters.",
+    "resetFilterBtn": "Reset filters"
+  },
+  "pagination": {
+    "showing": "Showing",
+    "of": "of",
+    "users": "users",
+    "perPage": "Per page:",
+    "firstPage": "First page",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "lastPage": "Last page"
+  },
+  "changeRoleModal": {
+    "title": "Change User Role",
+    "subtitle": "Update system permission level for this account",
+    "selectNewRole": "Select new role:",
+    "current": "Current",
+    "roles": {
+      "student": {
+        "title": "Student (STUDENT)",
+        "desc": "Enroll in courses, learn lessons, take quizzes, and participate in discussions.",
+        "badge": "Student"
+      },
+      "lecturer": {
+        "title": "Lecturer (LECTURER)",
+        "desc": "Create and manage courses, design quizzes, grade assignments, and monitor students.",
+        "badge": "Lecturer"
+      },
+      "admin": {
+        "title": "Administrator (ADMIN)",
+        "desc": "Full management access to platform features, user accounts, and permissions.",
+        "badge": "Admin"
+      }
+    },
+    "securityWarning": "Security Notice:",
+    "adminNotice": "Once promoted to Administrator (ADMIN), this account gains full platform privileges. By security policy, another admin's role cannot be downgraded from the admin panel.",
+    "cancel": "Cancel",
+    "save": "Save Changes",
+    "saving": "Saving..."
+  },
+  "detailModal": {
+    "title": "User Details",
+    "accountId": "User ID",
+    "username": "Username",
+    "email": "Contact Email",
+    "createdAt": "Registration Date",
+    "close": "Close",
+    "changeRole": "Change Role"
+  },
+  "unauthorized": {
+    "title": "Access Denied",
+    "desc": "The user management area is restricted to Administrators (ADMIN). Your current account does not have permission to access this page.",
+    "goHome": "Go to Homepage"
+  },
+  "messages": {
+    "updateSuccess": "Successfully changed role for \"{{name}}\"!",
+    "updateError": "Could not update user role. Please try again.",
+    "fetchError": "An error occurred while loading users.",
+    "retry": "Retry"
+  }
+}

@@ -57,7 +57,7 @@ export default function Auth({ isLogin } : { isLogin: boolean }) {
         </footer>
       </section>
 
-      <AuthShowcase />
+      <AuthShowcase needClassname={true} />
     </div>
   )
 }

@@ -4,12 +4,14 @@ import { Link, useLocation } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { accessTokenStorage } from "~/config/accessTokenStorage"
 import { useGetUnreadNotificationCount } from "~/services/notification/notification.query"
+import { useMe } from "~/services/me.query"
 import {
   faHouse,
   faGraduationCap,
-  faClipboardList,
   faBell,
   faCalendarDays,
+  faUsers,
+  type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons"
 
 interface SidebarProps {
@@ -17,7 +19,34 @@ interface SidebarProps {
   onCloseNotification?: () => void
 }
 
-type ActiveItem = "trang-chu" | "khoa-hoc" | "bai-kiem-tra" | "thong-bao" | "thao-luan"
+type Role = "STUDENT" | "LECTURER" | "ADMIN"
+type ActiveItem = "trang-chu" | "khoa-hoc" | "nguoi-dung" | "thong-bao"
+
+interface NavItem {
+  key: ActiveItem
+  icon: IconDefinition
+  to?: string // không có "to" => là nút (thông báo)
+  labelKey: string
+  fallback: string
+}
+
+const NAV_BY_ROLE: Record<Role, NavItem[]> = {
+  STUDENT: [
+    { key: "trang-chu", icon: faHouse, to: "/", labelKey: "nav.home", fallback: "Trang chủ" },
+    { key: "khoa-hoc", icon: faGraduationCap, to: "/my-courses", labelKey: "nav.my_courses", fallback: "Khoá học của tôi" },
+    { key: "thong-bao", icon: faBell, labelKey: "nav.notifications", fallback: "Thông báo" },
+  ],
+  LECTURER: [
+    { key: "trang-chu", icon: faHouse, to: "/", labelKey: "nav.home", fallback: "Trang chủ" },
+    { key: "khoa-hoc", icon: faGraduationCap, to: "/my-courses", labelKey: "nav.my_courses", fallback: "Khoá học" },
+    { key: "thong-bao", icon: faBell, labelKey: "nav.notifications", fallback: "Thông báo" },
+  ],
+  ADMIN: [
+    { key: "khoa-hoc", icon: faGraduationCap, to: "/admin/courses", labelKey: "nav.admin_courses", fallback: "Danh sách khóa học" },
+    { key: "nguoi-dung", icon: faUsers, to: "/admin/users", labelKey: "nav.users", fallback: "Danh sách người dùng" },
+    { key: "thong-bao", icon: faBell, labelKey: "nav.notifications", fallback: "Thông báo" },
+  ],
+}
 
 const LABEL_CLASS =
   "hidden lg:inline font-['Be_Vietnam_Pro'] font-normal text-[14px] leading-[22px]"
@@ -35,19 +64,25 @@ const getIconWrapperClass = (isActive: boolean) =>
   }`
 
 function getActiveFromPath(pathname: string): ActiveItem {
-  if (pathname.startsWith("/discuss")) return "thao-luan"
+  if (pathname.startsWith("/admin/courses")) return "khoa-hoc"
+  if (pathname.startsWith("/admin/users")) return "nguoi-dung"
   if (pathname.startsWith("/my-courses")) return "khoa-hoc"
+  if (pathname.startsWith("/courses")) return "khoa-hoc"
   return "trang-chu"
 }
 
 export default function Sidebar({ onOpenNotification, onCloseNotification }: SidebarProps) {
   const { t } = useTranslation()
   const location = useLocation()
+  const { data: me } = useMe()
   const unreadCountQuery = useGetUnreadNotificationCount(Boolean(accessTokenStorage.getAccessToken()))
   const unreadCount = unreadCountQuery.data?.unread ?? 0
   const unreadLabel = unreadCount > 99 ? "99+" : unreadCount
 
-  // Mục được chọn thủ công (thông báo, bài kiểm tra) - chỉ có hiệu lực trong lần điều hướng hiện tại
+  // Menu theo role; me chưa tải xong thì tạm dùng menu STUDENT
+  const items = NAV_BY_ROLE[(me?.role as Role) ?? "STUDENT"] ?? NAV_BY_ROLE.STUDENT
+
+  // Mục được chọn thủ công (thông báo) - chỉ có hiệu lực trong lần điều hướng hiện tại
   const [selectedItem, setSelectedItem] = useState<{ item: ActiveItem; locationKey: string } | null>(null)
   const activeItem: ActiveItem =
     selectedItem?.locationKey === location.key
@@ -65,61 +100,50 @@ export default function Sidebar({ onOpenNotification, onCloseNotification }: Sid
   return (
     <aside className="fixed bottom-0 left-0 right-0 z-40 flex flex-col lg:absolute lg:top-16 lg:h-[calc(100vh-64px)] lg:w-64 bg-[#F2F3FF] dark:bg-gray-900 border-t lg:border-t-0 lg:border-r border-[#E2E7FF] dark:border-gray-700">
       <nav className="flex flex-row lg:flex-col items-center lg:items-stretch justify-around lg:justify-start gap-0 lg:gap-1 lg:p-3 lg:flex-1">
-        {/* 1. Trang chủ */}
-        <Link to="/" onClick={handleNavigate} className={getItemClass(activeItem === "trang-chu")}>
-          <div className={getIconWrapperClass(activeItem === "trang-chu")}>
-            <FontAwesomeIcon icon={faHouse} className="w-4 h-4 lg:w-[13.33px] lg:h-[15px]" />
-          </div>
-          <span className={LABEL_CLASS}>{t("nav.home", "Trang chủ")}</span>
-        </Link>
+        {items.map((it) => {
+          const active = activeItem === it.key
+          const label = t(it.labelKey, it.fallback)
 
-        {/* 2. Khóa học của tôi */}
-        <Link to="/my-courses" onClick={handleNavigate} className={getItemClass(activeItem === "khoa-hoc")}>
-          <div className={getIconWrapperClass(activeItem === "khoa-hoc")}>
-            <FontAwesomeIcon icon={faGraduationCap} className="w-4 h-4 lg:w-[18.33px] lg:h-[15px]" />
-          </div>
-          <span className={LABEL_CLASS}>{t("nav.my_courses", "Khoá học của tôi")}</span>
-        </Link>
+          // Link điều hướng thật
+          if (it.to) {
+            return (
+              <Link key={it.key} to={it.to} onClick={handleNavigate} className={getItemClass(active)}>
+                <div className={getIconWrapperClass(active)}>
+                  <FontAwesomeIcon icon={it.icon} className="w-4 h-4 lg:w-[15px] lg:h-[15px]" />
+                </div>
+                <span className={LABEL_CLASS}>{label}</span>
+              </Link>
+            )
+          }
 
-        {/* 3. Bài kiểm tra */}
-        <button
-          type="button"
-          onClick={() => {
-            selectItem("bai-kiem-tra")
-            onCloseNotification?.()
-          }}
-          className={getItemClass(activeItem === "bai-kiem-tra")}
-        >
-          <div className={getIconWrapperClass(activeItem === "bai-kiem-tra")}>
-            <FontAwesomeIcon icon={faClipboardList} className="w-4 h-4 lg:w-[15px] lg:h-[16.67px]" />
-          </div>
-          <span className={LABEL_CLASS}>{t("nav.quizzes", "Bài kiểm tra")}</span>
-        </button>
-
-        {/* 4. Thông báo */}
-        <button
-          type="button"
-          onClick={() => {
-            selectItem("thong-bao")
-            onOpenNotification?.()
-          }}
-          className={getItemClass(activeItem === "thong-bao")}
-        >
-          <div className={`${getIconWrapperClass(activeItem === "thong-bao")} relative`}>
-            <FontAwesomeIcon icon={faBell} className="w-4 h-4 lg:w-[13.33px] lg:h-[16.67px]" />
-            {unreadCount > 0 && (
-              <span className="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold leading-none text-white lg:hidden">
-                {unreadLabel}
-              </span>
-            )}
-          </div>
-          <span className={`${LABEL_CLASS} flex-1 text-left`}>{t("nav.notifications", "Thông báo")}</span>
-          {unreadCount > 0 && (
-            <span className="hidden lg:flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[10px] font-bold leading-none text-white">
-              {unreadLabel}
-            </span>
-          )}
-        </button>
+          // Nút thông báo (có badge chưa đọc)
+          return (
+            <button
+              key={it.key}
+              type="button"
+              onClick={() => {
+                selectItem("thong-bao")
+                onOpenNotification?.()
+              }}
+              className={getItemClass(active)}
+            >
+              <div className={`${getIconWrapperClass(active)} relative`}>
+                <FontAwesomeIcon icon={it.icon} className="w-4 h-4 lg:w-[13.33px] lg:h-[16.67px]" />
+                {unreadCount > 0 && (
+                  <span className="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold leading-none text-white lg:hidden">
+                    {unreadLabel}
+                  </span>
+                )}
+              </div>
+              <span className={`${LABEL_CLASS} flex-1 text-left`}>{label}</span>
+              {unreadCount > 0 && (
+                <span className="hidden lg:flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[10px] font-bold leading-none text-white">
+                  {unreadLabel}
+                </span>
+              )}
+            </button>
+          )
+        })}
       </nav>
 
       {/* Thông tin học kỳ */}

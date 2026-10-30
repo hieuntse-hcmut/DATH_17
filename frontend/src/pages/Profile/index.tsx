@@ -297,124 +297,126 @@ export default function Profile() {
           </div>
 
           {/* CỘT PHẢI (7 Cột trên Desktop): Hoạt động học thuật & Danh sách khóa học */}
-          <div className="md:col-span-7 flex flex-col gap-6">
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/60 flex flex-col gap-5 h-full">
-              
-              {/* Header Hoạt động học thuật */}
-              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 pb-2 border-b border-slate-100 dark:border-slate-700/50">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <FontAwesomeIcon icon={faBookOpen} className="w-5 h-5 text-[#3525CD] dark:text-indigo-400" />
-                    <h2 className="text-xl font-semibold text-[#131B2E] dark:text-white">
-                      {t("profile.academic_activities", "Hoạt động học thuật")}
-                    </h2>
+          {me?.role !== "ADMIN" && (
+            <div className="md:col-span-7 flex flex-col gap-6">
+              <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/60 flex flex-col gap-5 h-fit">
+                
+                {/* Header Hoạt động học thuật */}
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 pb-2 border-b border-slate-100 dark:border-slate-700/50">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <FontAwesomeIcon icon={faBookOpen} className="w-5 h-5 text-[#3525CD] dark:text-indigo-400" />
+                      <h2 className="text-xl font-semibold text-[#131B2E] dark:text-white">
+                        {t("profile.academic_activities", "Hoạt động học thuật")}
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      {t("profile.academic_sub", "Kỳ học học vụ 2024.2 - Tiến độ và đánh giá chi tiết")}
+                    </p>
                   </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    {t("profile.academic_sub", "Kỳ học học vụ 2024.2 - Tiến độ và đánh giá chi tiết")}
-                  </p>
+
+                  <Link
+                    to="/my-courses"
+                    className="px-3.5 py-2 bg-[#EAEDFF] dark:bg-slate-700 text-[#3525CD] dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-600 font-semibold text-xs rounded-xl transition-colors self-start sm:self-auto"
+                  >
+                    {t("profile.view_all_courses")}
+                  </Link>
                 </div>
 
-                <Link
-                  to="/my-courses"
-                  className="px-3.5 py-2 bg-[#EAEDFF] dark:bg-slate-700 text-[#3525CD] dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-slate-600 font-semibold text-xs rounded-xl transition-colors self-start sm:self-auto"
-                >
-                  {t("profile.view_all_courses")}
-                </Link>
-              </div>
+                {/* Danh sách các khóa học tiêu biểu */}
+                {areCoursesLoading ? (
+                  <div className="flex flex-col gap-4" aria-busy="true">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                      <div
+                        key={index}
+                        className="h-28 animate-pulse rounded-xl bg-[#F2F3FF] dark:bg-slate-700/40"
+                      />
+                    ))}
+                  </div>
+                ) : areCoursesError ? (
+                  <div className="rounded-xl bg-rose-50 p-4 text-sm text-rose-700 dark:bg-rose-950/30 dark:text-rose-300">
+                    <p>{t("profile.courses_error")}</p>
+                    <button
+                      type="button"
+                      onClick={() => void refetchCourses()}
+                      className="mt-2 font-semibold underline underline-offset-2"
+                    >
+                      {t("profile.retry")}
+                    </button>
+                  </div>
+                ) : courses.length === 0 ? (
+                  <p className="rounded-xl bg-[#F2F3FF] p-5 text-center text-sm text-slate-500 dark:bg-slate-700/40 dark:text-slate-400">
+                    {t("profile.no_courses")}
+                  </p>
+                ) : (
+                <div className="flex flex-col gap-4">
+                  {courses.map((course) => (
+                    <article
+                      key={course.id}
+                      className="bg-[#F2F3FF] dark:bg-slate-700/40 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:shadow-sm transition-all"
+                    >
+                      <div className="flex items-start gap-3 w-full sm:w-auto">
+                        <div className="w-12 h-12 bg-[#E2DFFF] dark:bg-indigo-950/60 rounded-xl flex items-center justify-center flex-shrink-0 shadow-xs">
+                          <FontAwesomeIcon icon={faCode} className="w-5 h-5 text-[#3525CD] dark:text-indigo-400" />
+                        </div>
 
-              {/* Danh sách các khóa học tiêu biểu */}
-              {areCoursesLoading ? (
-                <div className="flex flex-col gap-4" aria-busy="true">
-                  {Array.from({ length: 3 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className="h-28 animate-pulse rounded-xl bg-[#F2F3FF] dark:bg-slate-700/40"
-                    />
+                        <div className="flex flex-col gap-1 w-full">
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 bg-[#EAEDFF] dark:bg-slate-600 text-slate-600 dark:text-slate-300 text-[10px] font-semibold rounded">
+                              #{course.id}
+                            </span>
+                            <h3 className="text-sm font-semibold text-[#131B2E] dark:text-white line-clamp-1">
+                              {course.title}
+                            </h3>
+                          </div>
+
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {t("profile.lecturer")}: {course.instructorName}
+                          </p>
+                          {/* Thanh Tiến Độ */}
+                          {me?.role === "STUDENT" && (
+                            <div className="w-full max-w-[280px] mt-1">
+                              <div className="flex justify-between items-center text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">
+                                <span>{t("profile.progress", "Tiến độ")}</span>
+                                <span className="text-[#3525CD] dark:text-indigo-400">
+                                  {Math.round(course.progressPercent)}%
+                                </span>
+                              </div>
+                              <div className="w-full h-1.5 bg-[#EAEDFF] dark:bg-slate-600 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-[#3525CD] dark:bg-indigo-500 rounded-full transition-all duration-500"
+                                  style={{
+                                    width: `${Math.min(100, Math.max(0, course.progressPercent))}%`,
+                                  }}
+                                />
+                              </div>
+                              <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                                {t("profile.lessons_complete", {
+                                  complete: course.completeLesson,
+                                  total: course.totalLesson,
+                                })}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Nút bấm Icon "Tiếp tục học" theo Note comment */}
+                      <Link
+                        to={`/courses/${course.id}/lessons`}
+                        className="w-full sm:w-auto px-4 py-2 bg-[#4F46E5] dark:bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors flex-shrink-0 shadow-xs"
+                      >
+                        <span>{me?.role === "STUDENT" ? t("profile.continue_learning") : "Chỉnh sửa"}</span>
+                        <FontAwesomeIcon icon={faArrowRight} className="w-3 h-3" />
+                      </Link>
+                    </article>
                   ))}
                 </div>
-              ) : areCoursesError ? (
-                <div className="rounded-xl bg-rose-50 p-4 text-sm text-rose-700 dark:bg-rose-950/30 dark:text-rose-300">
-                  <p>{t("profile.courses_error")}</p>
-                  <button
-                    type="button"
-                    onClick={() => void refetchCourses()}
-                    className="mt-2 font-semibold underline underline-offset-2"
-                  >
-                    {t("profile.retry")}
-                  </button>
-                </div>
-              ) : courses.length === 0 ? (
-                <p className="rounded-xl bg-[#F2F3FF] p-5 text-center text-sm text-slate-500 dark:bg-slate-700/40 dark:text-slate-400">
-                  {t("profile.no_courses")}
-                </p>
-              ) : (
-              <div className="flex flex-col gap-4">
-                {courses.map((course) => (
-                  <article
-                    key={course.id}
-                    className="bg-[#F2F3FF] dark:bg-slate-700/40 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:shadow-sm transition-all"
-                  >
-                    <div className="flex items-start gap-3 w-full sm:w-auto">
-                      <div className="w-12 h-12 bg-[#E2DFFF] dark:bg-indigo-950/60 rounded-xl flex items-center justify-center flex-shrink-0 shadow-xs">
-                        <FontAwesomeIcon icon={faCode} className="w-5 h-5 text-[#3525CD] dark:text-indigo-400" />
-                      </div>
+                )}
 
-                      <div className="flex flex-col gap-1 w-full">
-                        <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 bg-[#EAEDFF] dark:bg-slate-600 text-slate-600 dark:text-slate-300 text-[10px] font-semibold rounded">
-                            #{course.id}
-                          </span>
-                          <h3 className="text-sm font-semibold text-[#131B2E] dark:text-white line-clamp-1">
-                            {course.title}
-                          </h3>
-                        </div>
-
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
-                          {t("profile.lecturer")}: {course.instructorName}
-                        </p>
-
-                        {/* Thanh Tiến Độ */}
-                        <div className="w-full max-w-[280px] mt-1">
-                          <div className="flex justify-between items-center text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">
-                            <span>{t("profile.progress", "Tiến độ")}</span>
-                            <span className="text-[#3525CD] dark:text-indigo-400">
-                              {Math.round(course.progressPercent)}%
-                            </span>
-                          </div>
-                          <div className="w-full h-1.5 bg-[#EAEDFF] dark:bg-slate-600 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-[#3525CD] dark:bg-indigo-500 rounded-full transition-all duration-500"
-                              style={{
-                                width: `${Math.min(100, Math.max(0, course.progressPercent))}%`,
-                              }}
-                            />
-                          </div>
-                          <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                            {t("profile.lessons_complete", {
-                              complete: course.completeLesson,
-                              total: course.totalLesson,
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Nút bấm Icon "Tiếp tục học" theo Note comment */}
-                    <Link
-                      to={`/courses/${course.id}/lessons`}
-                      className="w-full sm:w-auto px-4 py-2 bg-[#4F46E5] dark:bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors flex-shrink-0 shadow-xs"
-                    >
-                      <span>{t("profile.continue_learning")}</span>
-                      <FontAwesomeIcon icon={faArrowRight} className="w-3 h-3" />
-                    </Link>
-                  </article>
-                ))}
               </div>
-              )}
-
             </div>
-          </div>
-
+          )}
         </div>
 
       </div>

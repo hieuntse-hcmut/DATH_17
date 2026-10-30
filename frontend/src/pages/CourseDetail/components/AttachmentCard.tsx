@@ -55,20 +55,20 @@ export default function AttachmentCard({ material }: { material: IMaterial }) {
       rel="noreferrer noopener"
       download
       aria-label={t('download', { name: material.title })}
-      className="group flex items-center gap-3 rounded-xl bg-surface-muted p-3 transition hover:bg-primary-soft focus-visible:outline-2 focus-visible:outline-primary"
+      className="group w-full flex items-center gap-3 rounded-xl bg-surface-muted p-3 transition hover:bg-primary-soft focus-visible:outline-2 focus-visible:outline-primary"
     >
       <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-lg ${tone}`}>
         <FontAwesomeIcon icon={icon} className="text-lg" aria-hidden />
       </span>
-      <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm font-semibold text-fg">{material.title}</span>
-        <span className="block truncate font-label text-xs text-fg-muted">
+      <span className="flex-1 min-w-0">
+        <span className="w-full block truncate text-sm font-semibold text-fg">{material.title}</span>
+        <span className="w-full block truncate font-label text-xs text-fg-muted">
           {label || material.fileType}
         </span>
       </span>
       <FontAwesomeIcon
         icon={faDownload}
-        className="shrink-0 text-primary transition group-hover:scale-110"
+        className="shrink-0 h-11 w-11 text-primary transition group-hover:scale-110"
         aria-hidden
       />
     </a>

@@ -11,7 +11,6 @@ import jakarta.validation.constraints.Positive;
  */
 public record UpdateLessonRequest(
         @NotBlank String title,
-        @NotBlank String contentType,
         @Min(0) int orderIndex,
         @Positive Integer totalLength
 ) {}

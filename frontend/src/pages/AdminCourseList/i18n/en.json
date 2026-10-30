@@ -1,0 +1,112 @@
+{
+  "breadcrumb": {
+    "home": "Home",
+    "admin": "Admin",
+    "courses": "Course List"
+  },
+  "header": {
+    "title": "Course Management",
+    "subtitle": "List of all courses in the Smart Campus system",
+    "adminMode": "Administrator Mode"
+  },
+  "stats": {
+    "total": "Total Courses",
+    "totalSub": "All courses in the system",
+    "published": "Published",
+    "publishedSub": "{{percent}}% visible to students",
+    "draft": "Draft",
+    "draftSub": "Under draft",
+    "archived": "Archived",
+    "archivedSub": "Discontinued",
+    "openEnrollment": "Open Enrollment",
+    "openEnrollmentSub": "Students can enroll"
+  },
+  "filters": {
+    "searchPlaceholder": "Search by ID, title, or description...",
+    "clearSearch": "Clear search",
+    "filterBy": "Filter by:",
+    "sortBy": "Sort by:",
+    "reset": "Reset",
+    "refresh": "Refresh",
+    "refreshTooltip": "Reload courses list",
+    "publication": {
+      "all": "All statuses",
+      "draft": "Draft (DRAFT)",
+      "published": "Published (PUBLISHED)",
+      "archived": "Archived (ARCHIVED)"
+    },
+    "enrollment": {
+      "all": "All enrollments",
+      "open": "Enrollment Open",
+      "closed": "Enrollment Closed"
+    },
+    "sortOptions": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "titleAsc": "Title (A-Z)",
+      "titleDesc": "Title (Z-A)",
+      "idAsc": "Course ID (Ascending)",
+      "idDesc": "Course ID (Descending)"
+    }
+  },
+  "table": {
+    "columns": {
+      "id": "Course ID",
+      "course": "Course",
+      "publicationState": "Status",
+      "enrollment": "Enrollment",
+      "createdBy": "Created By",
+      "createdAt": "Created At",
+      "actions": "Actions"
+    },
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "enrollment": {
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "createdBy": "User #{{id}}",
+    "viewDetail": "View details",
+    "action": "Action",
+    "actionTooltip": "Click to trigger action",
+    "emptyTitle": "No courses found",
+    "emptyDesc": "Try adjusting your search query or changing filter settings.",
+    "resetFilterBtn": "Reset filters"
+  },
+  "pagination": {
+    "showing": "Showing",
+    "of": "of",
+    "courses": "courses",
+    "perPage": "Per page:",
+    "firstPage": "First page",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "lastPage": "Last page"
+  },
+  "detailModal": {
+    "title": "Course Details",
+    "id": "Course ID",
+    "courseTitle": "Course Title",
+    "description": "Description",
+    "noDescription": "No description provided for this course.",
+    "publicationState": "Publication Status",
+    "enrollmentStatus": "Enrollment Status",
+    "createdBy": "Created By (User ID)",
+    "createdAt": "Created At",
+    "updatedAt": "Last Updated",
+    "close": "Close",
+    "actionBtn": "Trigger Action"
+  },
+  "unauthorized": {
+    "title": "Access Denied",
+    "desc": "Course management page is only accessible to users with the Administrator (ADMIN) role.",
+    "goHome": "Back to Home"
+  },
+  "error": {
+    "title": "Unable to load course list",
+    "retry": "Retry"
+  }
+}

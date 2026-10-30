@@ -1,0 +1,62 @@
+{
+  "title": "Tổng quan quá trình học tập & Phân tích rủi ro",
+  "subtitle": "Theo dõi tiến độ, tỷ lệ hoàn thành và mức độ rủi ro học tập của sinh viên trong khóa học",
+  "breadcrumbs": {
+    "home": "Trang chủ",
+    "myCourses": "Khoá học của tôi",
+    "course": "Khóa học",
+    "analytics": "Phân tích rủi ro & Tiến độ"
+  },
+  "cards": {
+    "avgRiskScore": "Điểm rủi ro trung bình",
+    "avgRiskDesc": "Thang điểm 0 - 100 toàn khóa",
+    "highRisk": "Nguy cơ cao",
+    "highRiskDesc": "Cần hỗ trợ và can thiệp kịp thời",
+    "mediumRisk": "Nguy cơ trung bình",
+    "mediumRiskDesc": "Cần theo dõi thêm tiến độ học tập",
+    "lowRisk": "Nguy cơ thấp",
+    "lowRiskDesc": "Tiến độ học tập an toàn & ổn định",
+    "activeStudents": "Sinh viên đang học",
+    "completionRate": "Tỷ lệ hoàn thành",
+    "avgProgress": "Tiến độ trung bình",
+    "totalLessons": "Tổng số bài học",
+    "completedStudents": "Đã hoàn thành",
+    "inProgressStudents": "Đang học",
+    "notStartedStudents": "Chưa bắt đầu",
+    "distributionTitle": "Phân bố mức độ rủi ro"
+  },
+  "students": {
+    "title": "Danh sách sinh viên & Điểm rủi ro",
+    "countSummary": "Hiển thị {{shown}}/{{total}} sinh viên",
+    "searchPlaceholder": "Tìm kiếm theo tên, MSSV, email...",
+    "filterAll": "Tất cả mức độ",
+    "filterHigh": "Nguy cơ cao",
+    "filterMedium": "Nguy cơ trung bình",
+    "filterLow": "Nguy cơ thấp",
+    "sortRiskDesc": "Điểm rủi ro: Cao → Thấp",
+    "sortRiskAsc": "Điểm rủi ro: Thấp → Cao",
+    "sortNameAsc": "Tên: A → Z",
+    "sortNameDesc": "Tên: Z → A",
+    "colStudent": "Sinh viên",
+    "colEmail": "Email",
+    "colRiskScore": "Điểm rủi ro",
+    "colRiskLevel": "Mức độ rủi ro",
+    "colAssessedAt": "Đánh giá gần nhất",
+    "colActions": "Hành động",
+    "notifyLowRiskBtn": "Gửi thông báo cho sinh viên có risk score thấp",
+    "notifyHighRiskBtn": "Gửi thông báo cho sinh viên nguy cơ cao",
+    "notifyIndividual": "Gửi thông báo",
+    "empty": "Không có sinh viên nào phù hợp với bộ lọc hiện tại.",
+    "noRiskData": "Chưa có dữ liệu đánh giá rủi ro cho sinh viên trong khóa học này.",
+    "assessedNever": "Chưa ghi nhận"
+  },
+  "status": {
+    "high": "Nguy cơ cao",
+    "medium": "Nguy cơ trung bình",
+    "low": "Nguy cơ thấp"
+  },
+  "permissionDenied": "Bạn không có quyền truy cập trang phân tích này. Chỉ giảng viên phụ trách khóa học hoặc quản trị viên mới được phép truy cập.",
+  "backToCourse": "Quay lại khóa học",
+  "refresh": "Làm mới dữ liệu",
+  "loading": "Đang tải dữ liệu phân tích khóa học..."
+}

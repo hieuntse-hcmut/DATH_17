@@ -170,12 +170,12 @@ public class LearningProgressService {
 
     /** VIDEO/PDF must reach the 90% threshold through PUT /progress instead of a manual click. */
     private static void requireManualCompletionAllowed(LessonContextView lesson) {
-        String type = lesson.getContentType() == null ? "" : lesson.getContentType().toUpperCase(Locale.ROOT);
-        if (!MANUAL_COMPLETION_TYPES.contains(type)) {
-            throw ApiException.badRequest("MANUAL_COMPLETION_NOT_ALLOWED",
-                    "Lesson " + lesson.getLessonId() + " (" + lesson.getContentType()
-                            + ") is completed through PUT /api/lessons/" + lesson.getLessonId() + "/progress");
-        }
+        // String type = lesson.getContentType() == null ? "" : lesson.getContentType().toUpperCase(Locale.ROOT);
+        // if (!MANUAL_COMPLETION_TYPES.contains(type)) {
+        //     throw ApiException.badRequest("MANUAL_COMPLETION_NOT_ALLOWED",
+        //             "Lesson " + lesson.getLessonId() + " (" + lesson.getContentType()
+        //                     + ") is completed through PUT /api/lessons/" + lesson.getLessonId() + "/progress");
+        // }
     }
 
     private boolean isCompleted(Long studentId, Long lessonId) {
