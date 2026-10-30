@@ -14,6 +14,8 @@ import quizVi from "../pages/Quiz/i18n/vi.json";
 import quizEn from "../pages/Quiz/i18n/en.json";
 import userListVi from "~/pages/UserList/i18n/vi.json";
 import userListEn from "~/pages/UserList/i18n/en.json";
+import courseAnalyticsVi from "~/pages/CourseAnalytics/i18n/vi.json";
+import courseAnalyticsEn from "~/pages/CourseAnalytics/i18n/en.json";
 const vi = {
   common: commonVi,
   auth: authVi,
@@ -23,6 +25,7 @@ const vi = {
   discussion: discussionVi,
   quiz: quizVi,
   userList: userListVi,
+  courseAnalytics: courseAnalyticsVi,
 };
 
 const en: typeof vi = {
@@ -34,6 +37,7 @@ const en: typeof vi = {
   discussion: discussionEn,
   quiz: quizEn,
   userList: userListEn,
+  courseAnalytics: courseAnalyticsEn,
 };
 
 export const resources = { vi, en } as const;

@@ -1,0 +1,62 @@
+{
+  "title": "Learning Progress Overview & Risk Analytics",
+  "subtitle": "Track student progress, completion rates, and learning risk levels across this course",
+  "breadcrumbs": {
+    "home": "Home",
+    "myCourses": "My Courses",
+    "course": "Course",
+    "analytics": "Risk Analytics & Progress"
+  },
+  "cards": {
+    "avgRiskScore": "Average Risk Score",
+    "avgRiskDesc": "Scale 0 - 100 for course",
+    "highRisk": "High Risk",
+    "highRiskDesc": "Needs immediate support & intervention",
+    "mediumRisk": "Medium Risk",
+    "mediumRiskDesc": "Needs closer learning monitoring",
+    "lowRisk": "Low Risk",
+    "lowRiskDesc": "Steady and safe learning progress",
+    "activeStudents": "Active Students",
+    "completionRate": "Completion Rate",
+    "avgProgress": "Average Progress",
+    "totalLessons": "Total Lessons",
+    "completedStudents": "Completed",
+    "inProgressStudents": "In Progress",
+    "notStartedStudents": "Not Started",
+    "distributionTitle": "Risk Level Distribution"
+  },
+  "students": {
+    "title": "Student List & Risk Scores",
+    "countSummary": "Showing {{shown}}/{{total}} students",
+    "searchPlaceholder": "Search by name, student ID, email...",
+    "filterAll": "All Risk Levels",
+    "filterHigh": "High Risk",
+    "filterMedium": "Medium Risk",
+    "filterLow": "Low Risk",
+    "sortRiskDesc": "Risk Score: High → Low",
+    "sortRiskAsc": "Risk Score: Low → High",
+    "sortNameAsc": "Name: A → Z",
+    "sortNameDesc": "Name: Z → A",
+    "colStudent": "Student",
+    "colEmail": "Email",
+    "colRiskScore": "Risk Score",
+    "colRiskLevel": "Risk Level",
+    "colAssessedAt": "Last Assessed",
+    "colActions": "Actions",
+    "notifyLowRiskBtn": "Notify low risk score students",
+    "notifyHighRiskBtn": "Notify high risk students",
+    "notifyIndividual": "Send notice",
+    "empty": "No students match your search or filter criteria.",
+    "noRiskData": "No risk assessment data available for students in this course.",
+    "assessedNever": "Not yet recorded"
+  },
+  "status": {
+    "high": "High Risk",
+    "medium": "Medium Risk",
+    "low": "Low Risk"
+  },
+  "permissionDenied": "You do not have permission to view this analytics page. Only assigned lecturers and administrators can access it.",
+  "backToCourse": "Back to course",
+  "refresh": "Refresh data",
+  "loading": "Loading course analytics data..."
+}

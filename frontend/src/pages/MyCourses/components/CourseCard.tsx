@@ -2,11 +2,13 @@ import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faArrowRight,
+    faChartSimple,
     faCircleInfo,
     faGraduationCap,
 } from "@fortawesome/free-solid-svg-icons";
 import type { CourseCardProps } from "../services/myCourses.type";
 import { useNavigate } from "react-router";
+import { useMe } from "~/services/me.query";
 
 const GRADIENTS = [
     "from-indigo-500 to-violet-600",
@@ -25,7 +27,9 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
     const navigate = useNavigate();
     const goToCourse = () => navigate(`/courses/${course.id}/lessons`);
     const isGrid = layout === "grid";
-    const percent = course.progressPercent
+    const percent = course.progressPercent;
+    const { data: me } = useMe();
+    const isLecturerOrAdmin = me?.role === "LECTURER" || me?.role === "ADMIN";
 
     // const locale = i18n.language?.startsWith("vi") ? "vi-VN" : "en-US";
 
@@ -187,7 +191,7 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                 )} */}
 
                 {/* CTA */}
-                <div className="mt-auto">
+                <div className="mt-auto flex flex-col sm:flex-row gap-2">
                     {isLocked ? (
                         <button
                             type="button"
@@ -204,18 +208,33 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                         <button
                             type="button"
                             onClick={goToCourse}
-                            className={` cursor-pointer flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                            className={` cursor-pointer flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
                                 isCompleted
                                     ? "border border-border bg-surface text-fg hover:bg-surface-muted"
                                     : "bg-primary text-on-primary hover:bg-primary-hover"
                             }`}
                         >
-                            {t(isCompleted ? "card.review" : "card.continue")}
+                            {isLecturerOrAdmin ?  "Chỉnh sửa" : t(isCompleted ? "card.review" : "card.continue")}
                             <FontAwesomeIcon
                                 icon={faArrowRight}
                                 className="text-[16px]"
                                 aria-hidden
                             />
+                        </button>
+                    )}
+                    {isLecturerOrAdmin && (
+                        <button
+                            type="button"
+                            onClick={() => navigate(`/courses/${course.id}/analytics`)}
+                            className="cursor-pointer flex items-center justify-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-2.5 text-xs font-semibold text-fg hover:bg-surface-muted hover:text-primary transition-colors"
+                            title="Xem thống kê & phân tích rủi ro"
+                        >
+                            <FontAwesomeIcon
+                                icon={faChartSimple}
+                                className="text-primary text-[14px]"
+                                aria-hidden
+                            />
+                            <span>Thống kê</span>
                         </button>
                     )}
                 </div>

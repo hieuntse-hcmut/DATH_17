@@ -12,6 +12,7 @@ const CourseDetail = lazy(() => import("~/pages/CourseDetail"));
 const QuizList = lazy(() => import("~/pages/Quiz"));
 const QuizAttempt = lazy(() => import("~/pages/Quiz/components/QuizAttempt"));
 const UserList = lazy(() => import("~/pages/UserList"));
+const CourseAnalytics = lazy(() => import("~/pages/CourseAnalytics"));
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -24,6 +25,8 @@ export const router = createBrowserRouter([
         element: <CourseDetail />,
       },
       { path: "/courses/:courseId/quizzes", element: <QuizList /> },
+      { path: "/courses/:courseId/analytics", element: <CourseAnalytics /> },
+      { path: "/courses/:courseId/risk", element: <CourseAnalytics /> },
       //   {
       //     path: '/example',
       //     element: <div>Example Page</div>,
