@@ -23,7 +23,7 @@ const FEATURE_STYLES = [
 
 const SLIDE_INTERVAL_MS = 5000
 
-export default function AuthShowcase() {
+export default function AuthShowcase({needClassname} : {needClassname: boolean}) {
   const { t } = useTranslation('auth')
   const slides = t('showcase.slider', { returnObjects: true })
   const features = t('showcase.features', { returnObjects: true })
@@ -39,12 +39,12 @@ export default function AuthShowcase() {
   }, [slides.length])
 
   return (
-    <aside className="hidden flex-col gap-6 bg-linear-to-br from-page to-primary-soft pb-[2vw] pt-[4vw] lg:flex px-[6.25vw]">
+    <aside className={needClassname ? "hidden flex-col gap-6 bg-linear-to-br from-page to-primary-soft pb-[2vw] pt-[4vw] lg:flex px-[6.25vw]" : ""}>
       <h2 className="text-3xl font-bold">{t('showcase.title')}</h2>
 
       {/* Slider */}
       <div className="rounded-3xl bg-surface shadow-lg shadow-primary/10">
-        <div className="relative aspect-[16/5] overflow-hidden rounded-2xl">
+        <div className="relative aspect-[16/9] lg:aspect-[16/5] overflow-hidden rounded-2xl mt-2">
           {slides.map((slide, i) => (
             <div
               key={slide.title}
@@ -108,22 +108,24 @@ export default function AuthShowcase() {
       </ul>
 
       {/* Hỗ trợ: đẩy xuống đáy bằng mt-auto */}
-      <div className="mt-auto flex items-center gap-4 rounded-2xl bg-surface p-4 shadow-sm">
-        <span className="grid size-12 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
-          <FontAwesomeIcon icon={faHeadset} />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold">{t('showcase.support.title')}</p>
-          <p className="text-sm text-fg-muted">{t('showcase.support.description')}</p>
+      {needClassname && (
+        <div className="mt-auto flex items-center gap-4 rounded-2xl bg-surface p-4 shadow-sm">
+          <span className="grid size-12 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
+            <FontAwesomeIcon icon={faHeadset} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold">{t('showcase.support.title')}</p>
+            <p className="text-sm text-fg-muted">{t('showcase.support.description')}</p>
+          </div>
+          <a
+            href={`tel:${phone.replace(/\D/g, '')}`}
+            className="inline-flex items-center gap-2 rounded-xl bg-primary-soft px-4 py-2.5 text-sm font-semibold text-link transition hover:bg-primary hover:text-on-primary"
+          >
+            <FontAwesomeIcon icon={faPhone} className="text-xs" />
+            {phone}
+          </a>
         </div>
-        <a
-          href={`tel:${phone.replace(/\D/g, '')}`}
-          className="inline-flex items-center gap-2 rounded-xl bg-primary-soft px-4 py-2.5 text-sm font-semibold text-link transition hover:bg-primary hover:text-on-primary"
-        >
-          <FontAwesomeIcon icon={faPhone} className="text-xs" />
-          {phone}
-        </a>
-      </div>
+      )}
     </aside>
   )
 }
