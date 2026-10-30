@@ -194,7 +194,6 @@ public class LessonService {
                 lesson.getId(),
                 lesson.getChapterId(),
                 lesson.getTitle(),
-                lesson.getContentType(),
                 lesson.getOrderIndex(),
                 lesson.getTotalLength()
         );
