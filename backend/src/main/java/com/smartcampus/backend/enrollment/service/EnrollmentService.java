@@ -60,25 +60,31 @@ public class EnrollmentService {
      */
     @Transactional
     public EnrollmentResponse enroll(Long studentId, Long courseId) {
-        requireActiveStudent(studentId);
-        CourseEnrollmentInfo course = requireEnrollableCourse(courseId);
+        // Chặn hoàn toàn tính năng tự đăng ký từ phía sinh viên
+        throw EnrollmentException.forbidden(
+                "SELF_ENROLL_DISABLED",
+                "Students are not allowed to self-enroll in courses. Please contact your instructor or system administrator."
+        );
 
-        Optional<Enrollment> existing = enrollmentRepository.findByStudentIdAndCourseId(studentId, courseId);
-        if (existing.isPresent()) {
-            return reactivateWithdrawn(existing.get(), studentId, course);
-        }
+    /* Có thể xóa hoặc comment lại toàn bộ logic cũ ở dưới:
+    requireActiveStudent(studentId);
+    CourseEnrollmentInfo course = requireEnrollableCourse(courseId);
 
-        Enrollment enrollment;
-        try {
-            // saveAndFlush sends the INSERT now, so a duplicate created by a
-            // concurrent request fails here (unique key) instead of at commit.
-            enrollment = enrollmentRepository.saveAndFlush(new Enrollment(studentId, courseId));
-        } catch (DataIntegrityViolationException ex) {
-            throw alreadyEnrolled(courseId);
-        }
-        enrollmentHistoryRepository.save(
-                EnrollmentHistory.initial(enrollment.getId(), studentId, SELF_ENROLL_REASON));
-        return EnrollmentResponse.of(enrollment, course);
+    Optional<Enrollment> existing = enrollmentRepository.findByStudentIdAndCourseId(studentId, courseId);
+    if (existing.isPresent()) {
+        return reactivateWithdrawn(existing.get(), studentId, course);
+    }
+
+    Enrollment enrollment;
+    try {
+        enrollment = enrollmentRepository.saveAndFlush(new Enrollment(studentId, courseId));
+    } catch (DataIntegrityViolationException ex) {
+        throw alreadyEnrolled(courseId);
+    }
+    enrollmentHistoryRepository.save(
+            EnrollmentHistory.initial(enrollment.getId(), studentId, SELF_ENROLL_REASON));
+    return EnrollmentResponse.of(enrollment, course);
+    */
     }
 
     /** UC-ENROLL-005: the Student ends his own ACTIVE enrollment (ACTIVE -> WITHDRAWN). */
