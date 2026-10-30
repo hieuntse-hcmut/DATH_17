@@ -54,10 +54,6 @@ public class Lesson {
         return title;
     }
 
-    public String getContentType() {
-        return contentType;
-    }
-
     public int getOrderIndex() {
         return orderIndex;
     }

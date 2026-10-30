@@ -360,7 +360,6 @@ class LearningContentTest {
                     );
 
             assertEquals("New", result.title());
-            assertEquals("VIDEO", result.contentType());
 
             verify(accessService)
                     .requireManagePermission(10L, user);
