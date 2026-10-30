@@ -4,11 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
-  faRotateRight,
   faShieldHalved,
-  faBookOpen,
-  faClipboardQuestion,
-  faGraduationCap,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useMe } from "~/services/me.query";
@@ -31,34 +27,34 @@ export default function CourseAnalyticsPage() {
   const {
     data: riskSummary,
     isLoading: isLoadingRiskSummary,
-    isRefetching: isRefetchingRiskSummary,
-    refetch: refetchRiskSummary,
+    // isRefetching: isRefetchingRiskSummary,
+    // refetch: refetchRiskSummary,
   } = useCourseRiskSummary(courseId, Boolean(courseId));
 
   const {
     data: studentRisks,
     isLoading: isLoadingStudents,
-    isRefetching: isRefetchingStudents,
-    refetch: refetchStudents,
+    // isRefetching: isRefetchingStudents,
+    // refetch: refetchStudents,
   } = useStudentRisks(courseId, Boolean(courseId));
 
   const {
     data: courseSummary,
     isLoading: isLoadingCourseSummary,
-    isRefetching: isRefetchingCourseSummary,
-    refetch: refetchCourseSummary,
+    // isRefetching: isRefetchingCourseSummary,
+    // refetch: refetchCourseSummary,
   } = useCourseSummary(courseId, Boolean(courseId));
 
-  const handleRefresh = () => {
-    refetchRiskSummary();
-    refetchStudents();
-    refetchCourseSummary();
-  };
+  // const handleRefresh = () => {
+  //   refetchRiskSummary();
+  //   refetchStudents();
+  //   refetchCourseSummary();
+  // };
 
-  const isRefreshing =
-    isRefetchingRiskSummary ||
-    isRefetchingStudents ||
-    isRefetchingCourseSummary;
+  // const isRefreshing =
+  //   isRefetchingRiskSummary ||
+  //   isRefetchingStudents ||
+  //   isRefetchingCourseSummary;
 
   const isInitialLoading =
     isLoadingMe ||

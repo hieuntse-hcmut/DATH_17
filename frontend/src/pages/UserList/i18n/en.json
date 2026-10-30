@@ -54,7 +54,8 @@
       "role": "Role",
       "status": "Status",
       "createdAt": "Created At",
-      "actions": "Actions"
+      "actions": "Actions",
+      "userId": "User ID"
     },
     "you": "You",
     "active": "Active",
@@ -65,8 +66,7 @@
     "otherAdminTooltip": "Cannot change another admin's role",
     "emptyTitle": "No matching users found",
     "emptyDesc": "Try adjusting your search query or role and status filters.",
-    "resetFilterBtn": "Reset filters",
-    "userId": "User ID"
+    "resetFilterBtn": "Reset filters"
   },
   "pagination": {
     "showing": "Showing",

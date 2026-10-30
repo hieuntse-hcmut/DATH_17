@@ -1,6 +1,5 @@
 import {
   faBookOpen,
-  faChartSimple,
   faChevronDown,
   faChevronUp,
   faCircleCheck,

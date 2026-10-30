@@ -9,7 +9,6 @@ import {
   faCircleExclamation,
   faUser,
   faArrowDownWideShort,
-  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import type {
   RiskFilter,
@@ -40,14 +39,14 @@ export function StudentRiskTable({
   const [sort, setSort] = useState<RiskSort>("risk_desc");
 
   // Handler for notifying low risk students (as required: alert TODO)
-  const handleNotifyLowRisk = () => {
-    alert("TODO");
-  };
+  // const handleNotifyLowRisk = () => {
+  //   alert("TODO");
+  // };
 
   // Handler for notifying high risk students
-  const handleNotifyHighRisk = () => {
-    alert("TODO");
-  };
+  // const handleNotifyHighRisk = () => {
+  //   alert("TODO");
+  // };
 
   // Handler for individual student notification
   const handleNotifyStudent = () => {
@@ -68,14 +67,14 @@ export function StudentRiskTable({
   };
 
   // Count low and high risk students
-  const lowRiskCount = useMemo(
-    () => students.filter((s) => s.riskLevel === "LOW").length,
-    [students]
-  );
-  const highRiskCount = useMemo(
-    () => students.filter((s) => s.riskLevel === "HIGH").length,
-    [students]
-  );
+  // const lowRiskCount = useMemo(
+  //   () => students.filter((s) => s.riskLevel === "LOW").length,
+  //   [students]
+  // );
+  // const highRiskCount = useMemo(
+  //   () => students.filter((s) => s.riskLevel === "HIGH").length,
+  //   [students]
+  // );
 
   // Filtered and sorted students
   const filteredStudents = useMemo(() => {

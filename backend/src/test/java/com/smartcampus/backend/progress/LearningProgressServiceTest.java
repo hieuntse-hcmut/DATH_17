@@ -361,7 +361,6 @@ class LearningProgressServiceTest {
         return new LessonContextView() {
             @Override public Long getLessonId() { return LESSON_ID; }
             @Override public String getLessonTitle() { return "Lesson"; }
-            @Override public String getContentType() { return contentType; }
             @Override public Long getCourseId() { return COURSE_ID; }
             @Override public String getCourseTitle() { return "Spring Boot 101"; }
             @Override public String getPublicationState() { return publicationState; }
@@ -373,7 +372,6 @@ class LearningProgressServiceTest {
         return new LessonProgressView() {
             @Override public Long getLessonId() { return lessonId; }
             @Override public String getLessonTitle() { return "Lesson " + lessonId; }
-            @Override public String getContentType() { return "VIDEO"; }
             @Override public Long getChapterId() { return 1L; }
             @Override public String getChapterTitle() { return "Chapter"; }
             @Override public Long getCompleted() { return completed; }

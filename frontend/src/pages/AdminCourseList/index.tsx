@@ -4,14 +4,9 @@ import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
-  faGraduationCap,
   faHouse,
   faTriangleExclamation,
   faRotateRight,
-  faCircleCheck,
-  faClock,
-  faBoxArchive,
-  faLockOpen,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useMe } from "~/services/me.query";
@@ -42,7 +37,6 @@ export default function AdminCourseList() {
   const {
     data: allCourses = [],
     isLoading,
-    isRefetching,
     refetch,
     isError,
     error,

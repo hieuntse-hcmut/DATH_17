@@ -6,7 +6,6 @@ import {
   faBookOpen,
   faCalendarDays,
   faGraduationCap,
-  faBolt,
   faCircleCheck,
   faClock,
   faBoxArchive,

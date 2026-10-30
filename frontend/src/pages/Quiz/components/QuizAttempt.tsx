@@ -471,7 +471,7 @@ function QuizRunner({
   );
   const [saveError, setSaveError] = useState<string | null>(null);
   const { mutate: publishMutate } = usePublishQuestion(courseId, quizId);
-
+  console.log(saveError)
   const createQuestion = useCreateQuestion(courseId);
   const createQuiz = useCreateQuiz(courseId);
 

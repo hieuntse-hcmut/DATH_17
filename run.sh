@@ -24,7 +24,7 @@ for i in $(seq 1 40); do
 done
 
 echo "[3/4] Khởi động backend + frontend (lần đầu mất vài phút)..."
-$COMPOSE up -d backend frontend
+$COMPOSE up backend frontend
 
 echo "[4/4] Chờ backend lên..."
 for i in $(seq 1 100); do

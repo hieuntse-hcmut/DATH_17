@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
   faXmark,
-  faRotateRight,
   faFilter,
 } from "@fortawesome/free-solid-svg-icons";
 import type {
