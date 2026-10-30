@@ -48,14 +48,35 @@ public interface LearningProgressRepository extends JpaRepository<LearningProgre
                        @Param("position") int position,
                        @Param("completed") boolean completed);
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = """
+            INSERT INTO learning_progress (student_id, lesson_id, is_completed, last_position)
+            VALUES (:studentId, :lessonId, :completed,
+                COALESCE((SELECT MAX(mp.last_position)
+                          FROM learning_material_progress mp
+                          JOIN learning_materials m ON m.id = mp.material_id
+                          WHERE mp.student_id = :studentId AND m.lesson_id = :lessonId
+                            AND UPPER(m.file_type) = 'VIDEO'), 0))
+            ON DUPLICATE KEY UPDATE
+                is_completed = :completed,
+                last_position = COALESCE((SELECT MAX(mp.last_position)
+                          FROM learning_material_progress mp
+                          JOIN learning_materials m ON m.id = mp.material_id
+                          WHERE mp.student_id = :studentId AND m.lesson_id = :lessonId
+                            AND UPPER(m.file_type) = 'VIDEO'), 0),
+                updated_at = CURRENT_TIMESTAMP
+            """, nativeQuery = true)
+    int setLessonCompletion(@Param("studentId") Long studentId,
+                            @Param("lessonId") Long lessonId,
+                            @Param("completed") boolean completed);
+
     @Query(value = """
             SELECT l.id                AS lessonId,
                    l.title             AS lessonTitle,
-                   l.content_type      AS contentType,
+                   NULL                AS contentType,
                    c.id                AS courseId,
                    c.title             AS courseTitle,
-                   c.publication_state AS publicationState,
-                   l.total_length      AS totalLength
+                   c.publication_state AS publicationState
             FROM lessons l
             JOIN chapters ch ON ch.id = l.chapter_id
             JOIN courses c   ON c.id = ch.course_id
@@ -98,7 +119,7 @@ public interface LearningProgressRepository extends JpaRepository<LearningProgre
     @Query(value = """
             SELECT l.id              AS lessonId,
                    l.title           AS lessonTitle,
-                   l.content_type    AS contentType,
+                   NULL              AS contentType,
                    ch.id             AS chapterId,
                    ch.title          AS chapterTitle,
                    CAST(COALESCE(lp.is_completed, 0) AS SIGNED) AS completed,
@@ -178,4 +199,3 @@ public interface LearningProgressRepository extends JpaRepository<LearningProgre
             """, nativeQuery = true)
     List<StudentProgressView> findClassProgress(@Param("courseId") Long courseId);
 }
-

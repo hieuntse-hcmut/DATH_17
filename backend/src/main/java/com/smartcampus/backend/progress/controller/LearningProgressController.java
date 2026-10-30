@@ -37,38 +37,27 @@ public class LearningProgressController {
         this.currentUserResolver = currentUserResolver;
     }
 
-    @Operation(summary = "Mark a lesson as done",
-            description = """
-                    Manual "Mark as done" for content without pages/duration (plain text). Idempotent.
-                    The student must have an ACTIVE enrollment in the lesson's course and the course must be PUBLISHED.
-                    When the last lesson of the course is completed the student gets a COURSE_COMPLETED notification.
-
-                    Errors: 404 LESSON_NOT_FOUND, 403 NOT_A_STUDENT / NOT_ENROLLED / COURSE_NOT_PUBLISHED.
-                    """)
-    @PostMapping("/api/lessons/{lessonId}/complete")
-    public ApiResponse<LessonProgressResponse> markComplete(
-            @Parameter(example = "9301", required = true) @PathVariable("lessonId") Long lessonId) {
-        Long studentId = currentUserResolver.getCurrentUserId();
-        return ApiResponse.ok(progressService.markLessonComplete(studentId, lessonId));
+    @Operation(summary = "Update VIDEO material progress")
+    @PutMapping("/api/materials/{materialId}/progress")
+    public ApiResponse<LessonProgressResponse> updateMaterialPosition(
+            @PathVariable Long materialId, @Valid @RequestBody UpdatePositionRequest request) {
+        return ApiResponse.ok(progressService.updateMaterialPosition(currentUserResolver.getCurrentUserId(), materialId, request));
     }
 
-    @Operation(summary = "Save the position reached in a lesson",
-            description = """
-                    Saves the resume position (seconds for video, pages for PDF/slides).
-                    The lesson is completed automatically once position >= 90% of the lesson's total_length,
-                    which the lecturer sets on the lesson (V5). A totalLength in the body is ignored.
-                    A lesson without total_length only saves the position and is never auto-completed.
-                    Completion never goes back to false. Send the furthest position reached, not the playhead.
-                    A LESSON_PROGRESS learning activity is logged at most once every 15 seconds per lesson.
+    @Operation(summary = "Download a non-video material and record completion")
+    @GetMapping("/api/materials/{materialId}/download")
+    public org.springframework.http.ResponseEntity<Void> downloadMaterial(@PathVariable Long materialId) {
+        String url = progressService.accessMaterial(currentUserResolver.getCurrentUserId(), materialId, false);
+        return org.springframework.http.ResponseEntity.status(302)
+                .location(java.net.URI.create(url)).build();
+    }
 
-                    Errors: 400 VALIDATION_ERROR, 404 LESSON_NOT_FOUND, 403 NOT_A_STUDENT / NOT_ENROLLED / COURSE_NOT_PUBLISHED.
-                    """)
-    @PutMapping("/api/lessons/{lessonId}/progress")
-    public ApiResponse<LessonProgressResponse> updatePosition(
-            @Parameter(example = "9301", required = true) @PathVariable("lessonId") Long lessonId,
-            @Valid @RequestBody UpdatePositionRequest request) {
-        Long studentId = currentUserResolver.getCurrentUserId();
-        return ApiResponse.ok(progressService.updatePosition(studentId, lessonId, request));
+    @Operation(summary = "Open a LINK material and record completion")
+    @GetMapping("/api/materials/{materialId}/open")
+    public org.springframework.http.ResponseEntity<Void> openMaterial(@PathVariable Long materialId) {
+        String url = progressService.accessMaterial(currentUserResolver.getCurrentUserId(), materialId, true);
+        return org.springframework.http.ResponseEntity.status(302)
+                .location(java.net.URI.create(url)).build();
     }
 
     @Operation(summary = "My progress in one course",

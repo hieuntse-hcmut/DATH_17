@@ -4,11 +4,8 @@ package com.smartcampus.backend.progress.repository.projection;
 public interface LessonContextView {
     Long getLessonId();
     String getLessonTitle();
-    String getContentType();
     Long getCourseId();
     String getCourseTitle();
     String getPublicationState();
-    /** lessons.total_length (V5): seconds (VIDEO) or pages (PDF); null when unknown */
-    Integer getTotalLength();
 }
 

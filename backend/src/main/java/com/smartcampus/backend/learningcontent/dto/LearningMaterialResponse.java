@@ -5,5 +5,6 @@ public record LearningMaterialResponse(
         Long lessonId,
         String title,
         String fileUrl,
-        String fileType
+        String fileType,
+        Integer totalLength
 ) {}
