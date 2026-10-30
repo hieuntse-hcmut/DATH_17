@@ -9,6 +9,7 @@ const Auth = lazy(() => import("~/pages/Auth"));
 const MyCourses = lazy(() => import("~/pages/MyCourses"));
 const CourseDetail = lazy(() => import("~/pages/CourseDetail"));
 const Discuss = lazy(() => import("~/components/Discuss"));
+const Profile = lazy(() => import("~/pages/Profile"));
 
 export const router = createBrowserRouter([
     {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
             { 
               path: '/discuss',
               element: <Discuss />,
+            },
+            {
+              path: '/profile',
+              element: <Profile />,
             },
             //   {
             //     path: '/example',
