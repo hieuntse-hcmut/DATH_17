@@ -107,7 +107,7 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                         <span
                             className={`font-bold ${isLocked ? "text-amber-500" : "text-primary"}`}
                         >
-                            {percent?.toFixed(2)}%
+                            {percent?.toFixed(1)}%
                             {isGrid && (
                                 <span className="ml-1 font-normal text-fg-subtle">
                                     ({course.completeLesson}/{course.totalLesson})

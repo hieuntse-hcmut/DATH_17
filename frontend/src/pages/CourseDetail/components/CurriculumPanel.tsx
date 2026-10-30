@@ -217,7 +217,7 @@ export default function CurriculumPanel({
   );
 
   const percent = totalLessons
-    ? Math.round((completedCount / totalLessons) * 100)
+    ? ((completedCount / totalLessons) * 100).toFixed(1)
     : 0;
 
   useEffect(() => {
