@@ -42,7 +42,6 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { key: "thong-bao", icon: faBell, labelKey: "nav.notifications", fallback: "Thông báo" },
   ],
   ADMIN: [
-    { key: "trang-chu", icon: faHouse, to: "/", labelKey: "nav.home", fallback: "Trang chủ" },
     { key: "nguoi-dung", icon: faUsers, to: "/admin/users", labelKey: "nav.users", fallback: "Danh sách người dùng" },
     { key: "thong-bao", icon: faBell, labelKey: "nav.notifications", fallback: "Thông báo" },
   ],
