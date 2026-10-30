@@ -23,18 +23,23 @@ public class LearningMaterial {
     @Column(name = "file_type", nullable = false, length = 50)
     private String fileType;
 
+    @Column(name = "total_length")
+    private Integer totalLength;
+
+    public Integer getTotalLength() { return totalLength; }
+
     protected LearningMaterial() {}
 
-    public LearningMaterial(
-            Long lessonId,
-            String title,
-            String fileUrl,
-            String fileType
-    ) {
+    public LearningMaterial(Long lessonId,
+                            String title,
+                            String fileUrl,
+                            String fileType,
+                            Integer totalLength) {
         this.lessonId = lessonId;
         this.title = title;
         this.fileUrl = fileUrl;
         this.fileType = fileType;
+        this.totalLength = totalLength;
     }
 
     public Long getId() {
@@ -57,13 +62,13 @@ public class LearningMaterial {
         return fileType;
     }
 
-    public void update(
-            String title,
-            String fileUrl,
-            String fileType
-    ) {
+    public void update(String title,
+                       String fileUrl,
+                       String fileType,
+                       Integer totalLength) {
         this.title = title;
         this.fileUrl = fileUrl;
         this.fileType = fileType;
+        this.totalLength = totalLength;
     }
 }
