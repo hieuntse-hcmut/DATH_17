@@ -12,6 +12,7 @@ const CourseDetail = lazy(() => import("~/pages/CourseDetail"));
 const QuizList = lazy(() => import("~/pages/Quiz"));
 const QuizAttempt = lazy(() => import("~/pages/Quiz/components/QuizAttempt"));
 const UserList = lazy(() => import("~/pages/UserList"));
+const AdminCourseList = lazy(() => import("~/pages/AdminCourseList"));
 const CourseAnalytics = lazy(() => import("~/pages/CourseAnalytics"));
 const Profile = lazy(() => import("~/pages/Profile"));
 
@@ -42,10 +43,18 @@ export const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       {
+        index: true,
+        element: <AdminCourseList />,
+      },
+      {
+        path: "courses",
+        element: <AdminCourseList />,
+      },
+      {
         path: "users",
         element: <UserList />,
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/login",

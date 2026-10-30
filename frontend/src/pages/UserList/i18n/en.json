@@ -65,7 +65,8 @@
     "otherAdminTooltip": "Cannot change another admin's role",
     "emptyTitle": "No matching users found",
     "emptyDesc": "Try adjusting your search query or role and status filters.",
-    "resetFilterBtn": "Reset filters"
+    "resetFilterBtn": "Reset filters",
+    "userId": "User ID"
   },
   "pagination": {
     "showing": "Showing",

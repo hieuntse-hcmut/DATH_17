@@ -54,7 +54,8 @@
       "role": "Vai trò",
       "status": "Trạng thái",
       "createdAt": "Ngày tạo",
-      "actions": "Thao tác"
+      "actions": "Thao tác",
+      "userId": "Mã người dùng"
     },
     "you": "Bạn",
     "active": "Hoạt động",

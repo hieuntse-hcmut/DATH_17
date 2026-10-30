@@ -125,6 +125,7 @@ export const UserTable: React.FC<UserTableProps> = ({
           <thead>
             <tr className="border-b border-border bg-surface-muted/50 text-[11px] font-semibold uppercase tracking-wider text-fg-subtle">
               <th className="py-3 px-4">{t("table.columns.user")}</th>
+              <th className="py-3 px-4">{t("table.columns.userId")}</th>
               <th className="py-3 px-4 hidden md:table-cell">{t("table.columns.email")}</th>
               <th className="py-3 px-4">{t("table.columns.role")}</th>
               <th className="py-3 px-4 hidden lg:table-cell">{t("table.columns.createdAt")}</th>
@@ -172,6 +173,11 @@ export const UserTable: React.FC<UserTableProps> = ({
                       </div>
                     </div>
                   </td>
+                  
+                  {/* userId TODO: click to copy*/}
+                  <td className="py-3 px-4 hidden lg:table-cell text-xs text-fg-subtle">
+                    {user.id}
+                  </td> 
 
                   {/* Email */}
                   <td className="py-3 px-4 hidden md:table-cell text-xs text-fg-muted font-medium">

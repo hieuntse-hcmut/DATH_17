@@ -42,6 +42,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { key: "thong-bao", icon: faBell, labelKey: "nav.notifications", fallback: "Thông báo" },
   ],
   ADMIN: [
+    { key: "khoa-hoc", icon: faGraduationCap, to: "/admin/courses", labelKey: "nav.admin_courses", fallback: "Danh sách khóa học" },
     { key: "nguoi-dung", icon: faUsers, to: "/admin/users", labelKey: "nav.users", fallback: "Danh sách người dùng" },
     { key: "thong-bao", icon: faBell, labelKey: "nav.notifications", fallback: "Thông báo" },
   ],
@@ -63,9 +64,9 @@ const getIconWrapperClass = (isActive: boolean) =>
   }`
 
 function getActiveFromPath(pathname: string): ActiveItem {
+  if (pathname.startsWith("/admin/courses")) return "khoa-hoc"
+  if (pathname.startsWith("/admin/users")) return "nguoi-dung"
   if (pathname.startsWith("/my-courses")) return "khoa-hoc"
-  if (pathname.startsWith("/admin/users")) return "nguoi-dung"
-  if (pathname.startsWith("/admin/users")) return "nguoi-dung"
   if (pathname.startsWith("/courses")) return "khoa-hoc"
   return "trang-chu"
 }

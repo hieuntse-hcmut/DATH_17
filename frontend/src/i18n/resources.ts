@@ -16,6 +16,8 @@ import quizVi from "../pages/Quiz/i18n/vi.json";
 import quizEn from "../pages/Quiz/i18n/en.json";
 import userListVi from "~/pages/UserList/i18n/vi.json";
 import userListEn from "~/pages/UserList/i18n/en.json";
+import adminCourseListVi from "~/pages/AdminCourseList/i18n/vi.json";
+import adminCourseListEn from "~/pages/AdminCourseList/i18n/en.json";
 import courseAnalyticsVi from "~/pages/CourseAnalytics/i18n/vi.json";
 import courseAnalyticsEn from "~/pages/CourseAnalytics/i18n/en.json";
 const vi = {
@@ -27,6 +29,7 @@ const vi = {
   discussion: discussionVi,
   quiz: quizVi,
   userList: userListVi,
+  adminCourseList: adminCourseListVi,
   courseAnalytics: courseAnalyticsVi,
   profile: profileVi,
 };
@@ -40,6 +43,7 @@ const en: typeof vi = {
   discussion: discussionEn,
   quiz: quizEn,
   userList: userListEn,
+  adminCourseList: adminCourseListEn,
   courseAnalytics: courseAnalyticsEn,
   profile: profileEn,
 };

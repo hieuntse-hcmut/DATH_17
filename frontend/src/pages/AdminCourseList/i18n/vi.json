@@ -1,0 +1,112 @@
+{
+  "breadcrumb": {
+    "home": "Trang chủ",
+    "admin": "Quản trị",
+    "courses": "Danh sách khóa học"
+  },
+  "header": {
+    "title": "Quản lý khóa học",
+    "subtitle": "Danh sách toàn bộ các khóa học trong hệ thống Smart Campus",
+    "adminMode": "Chế độ Quản trị viên"
+  },
+  "stats": {
+    "total": "Tổng khóa học",
+    "totalSub": "Toàn bộ khóa học trong hệ thống",
+    "published": "Đã công khai",
+    "publishedSub": "{{percent}}% khả dụng cho sinh viên",
+    "draft": "Bản nháp",
+    "draftSub": "Đang soạn thảo",
+    "archived": "Đã lưu trữ",
+    "archivedSub": "Đã ngưng hoạt động",
+    "openEnrollment": "Mở đăng ký",
+    "openEnrollmentSub": "Cho phép sinh viên đăng ký"
+  },
+  "filters": {
+    "searchPlaceholder": "Tìm theo mã, tên hoặc mô tả khóa học...",
+    "clearSearch": "Xóa tìm kiếm",
+    "filterBy": "Lọc theo:",
+    "sortBy": "Sắp xếp:",
+    "reset": "Đặt lại",
+    "refresh": "Làm mới",
+    "refreshTooltip": "Tải lại danh sách khóa học",
+    "publication": {
+      "all": "Tất cả trạng thái",
+      "draft": "Bản nháp (DRAFT)",
+      "published": "Công khai (PUBLISHED)",
+      "archived": "Lưu trữ (ARCHIVED)"
+    },
+    "enrollment": {
+      "all": "Tất cả đăng ký",
+      "open": "Đang mở đăng ký",
+      "closed": "Đã đóng đăng ký"
+    },
+    "sortOptions": {
+      "newest": "Mới nhất trước",
+      "oldest": "Cũ nhất trước",
+      "titleAsc": "Tên khóa học (A-Z)",
+      "titleDesc": "Tên khóa học (Z-A)",
+      "idAsc": "Mã khóa học (Tăng dần)",
+      "idDesc": "Mã khóa học (Giảm dần)"
+    }
+  },
+  "table": {
+    "columns": {
+      "id": "Mã ID",
+      "course": "Khóa học",
+      "publicationState": "Trạng thái",
+      "enrollment": "Đăng ký",
+      "createdBy": "Người tạo",
+      "createdAt": "Ngày tạo",
+      "actions": "Thao tác"
+    },
+    "status": {
+      "draft": "Bản nháp",
+      "published": "Công khai",
+      "archived": "Lưu trữ"
+    },
+    "enrollment": {
+      "open": "Đang mở",
+      "closed": "Đã đóng"
+    },
+    "createdBy": "User #{{id}}",
+    "viewDetail": "Xem chi tiết",
+    "action": "Action",
+    "actionTooltip": "Nhấn để kích hoạt action",
+    "emptyTitle": "Không tìm thấy khóa học phù hợp",
+    "emptyDesc": "Thử thay đổi từ khóa tìm kiếm hoặc điều chỉnh bộ lọc trạng thái.",
+    "resetFilterBtn": "Đặt lại bộ lọc"
+  },
+  "pagination": {
+    "showing": "Hiển thị",
+    "of": "trên",
+    "courses": "khóa học",
+    "perPage": "Mỗi trang:",
+    "firstPage": "Trang đầu",
+    "prevPage": "Trang trước",
+    "nextPage": "Trang tiếp",
+    "lastPage": "Trang cuối"
+  },
+  "detailModal": {
+    "title": "Chi tiết khóa học",
+    "id": "Mã khóa học",
+    "courseTitle": "Tên khóa học",
+    "description": "Mô tả",
+    "noDescription": "Chưa có mô tả cho khóa học này.",
+    "publicationState": "Trạng thái xuất bản",
+    "enrollmentStatus": "Trạng thái đăng ký",
+    "createdBy": "Mã người tạo (Created By)",
+    "createdAt": "Thời gian tạo",
+    "updatedAt": "Cập nhật lần cuối",
+    "close": "Đóng",
+    "actionBtn": "Thực hiện Action"
+  },
+  "unauthorized": {
+    "title": "Bạn không có quyền truy cập",
+    "desc": "Trang quản trị khóa học chỉ dành cho người dùng có quyền Quản trị viên (ADMIN).",
+    "goHome": "Quay lại trang chủ"
+  },
+  "error": {
+    "title": "Không thể tải danh sách khóa học",
+    "retry": "Thử lại"
+  }
+}
