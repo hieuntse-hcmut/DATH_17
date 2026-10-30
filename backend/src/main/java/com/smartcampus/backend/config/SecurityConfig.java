@@ -38,15 +38,21 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
 
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        )
                 )
 
-                // Chưa đăng nhập / token sai -> 401 (FE dựa vào 401 để đăng xuất)
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                        .authenticationEntryPoint(
+                                new HttpStatusEntryPoint(
+                                        HttpStatus.UNAUTHORIZED
+                                )
+                        )
                 )
 
                 .authorizeHttpRequests(auth -> auth
+
                         // Public endpoints
                         .requestMatchers(
                                 "/api/health",
@@ -62,9 +68,14 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
 
-                        // Các API còn lại yêu cầu JWT
+                        // Chỉ ADMIN được truy cập
+                        .requestMatchers("/api/admin/**")
+                        .hasRole("ADMIN")
+
+                        // Các API khác yêu cầu JWT
                         .anyRequest().authenticated()
                 )
+
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
