@@ -74,7 +74,6 @@ public class LessonService {
         Lesson lesson = new Lesson(
                 chapterId,
                 request.title().trim(),
-                request.contentType().trim(),
                 request.orderIndex(),
                 validTotalLength(request.contentType(), request.totalLength())
         );
@@ -111,7 +110,6 @@ public class LessonService {
 
         lesson.update(
                 request.title().trim(),
-                request.contentType().trim(),
                 request.orderIndex(),
                 validTotalLength(request.contentType(), request.totalLength())
         );

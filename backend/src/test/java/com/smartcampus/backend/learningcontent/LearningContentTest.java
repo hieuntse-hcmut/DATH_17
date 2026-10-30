@@ -343,7 +343,7 @@ class LearningContentTest {
             chapterExists();
 
             Lesson lesson =
-                    new Lesson(2L, "Old", "PDF", 0);
+                    new Lesson(2L, "Old", 0);
 
             when(lessonRepository.findById(3L))
                     .thenReturn(Optional.of(lesson));
@@ -371,7 +371,7 @@ class LearningContentTest {
 
             when(lessonRepository.findById(3L))
                     .thenReturn(Optional.of(
-                            new Lesson(9L, "A", "PDF", 0)
+                            new Lesson(9L, "A", 0)
                     ));
 
             assertHttpStatus(
@@ -394,7 +394,7 @@ class LearningContentTest {
 
             when(lessonRepository.findById(3L))
                     .thenReturn(Optional.of(
-                            new Lesson(2L, "A", "PDF", 0)
+                            new Lesson(2L, "A", 0)
                     ));
 
             when(lessonRepository
@@ -422,7 +422,7 @@ class LearningContentTest {
             chapterExists();
 
             Lesson lesson =
-                    new Lesson(2L, "A", "PDF", 0);
+                    new Lesson(2L, "A", 0);
 
             when(lessonRepository.findById(3L))
                     .thenReturn(Optional.of(lesson));
@@ -456,7 +456,7 @@ class LearningContentTest {
 
             when(lessonRepository.findById(3L))
                     .thenReturn(Optional.of(
-                            new Lesson(2L, "Lesson", "VIDEO", 0)
+                            new Lesson(2L, "Lesson", 0)
                     ));
         }
 
@@ -571,7 +571,7 @@ class LearningContentTest {
 
             when(lessonRepository.findById(3L))
                     .thenReturn(Optional.of(
-                            new Lesson(99L, "B", "PDF", 0)
+                            new Lesson(99L, "B", 0)
                     ));
 
             assertHttpStatus(

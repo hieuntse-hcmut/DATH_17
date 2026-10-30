@@ -16,9 +16,6 @@ public class Lesson {
     @Column(nullable = false, length = 255)
     private String title;
 
-    @Column(name = "content_type", nullable = false, length = 50)
-    private String contentType;
-
     @Column(name = "order_index", nullable = false)
     private int orderIndex;
 
@@ -28,16 +25,13 @@ public class Lesson {
 
     protected Lesson() {}
 
-    public Lesson(Long chapterId, String title,
-                  String contentType, int orderIndex) {
-        this(chapterId, title, contentType, orderIndex, null);
+    public Lesson(Long chapterId, String title, int orderIndex) {
+        this(chapterId, title, orderIndex, null);
     }
 
-    public Lesson(Long chapterId, String title,
-                  String contentType, int orderIndex, Integer totalLength) {
+    public Lesson(Long chapterId, String title, int orderIndex, Integer totalLength) {
         this.chapterId = chapterId;
         this.title = title;
-        this.contentType = contentType;
         this.orderIndex = orderIndex;
         this.totalLength = totalLength;
     }
@@ -62,10 +56,8 @@ public class Lesson {
         return totalLength;
     }
 
-    public void update(String title, String contentType,
-                       int orderIndex, Integer totalLength) {
+    public void update(String title,int orderIndex, Integer totalLength) {
         this.title = title;
-        this.contentType = contentType;
         this.orderIndex = orderIndex;
         this.totalLength = totalLength;
     }
