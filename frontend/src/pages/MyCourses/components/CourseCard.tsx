@@ -7,7 +7,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import type { CourseCardProps } from "../services/myCourses.type";
 import { useNavigate } from "react-router";
-import { useMe } from "~/services/me.query";
 
 const GRADIENTS = [
     "from-indigo-500 to-violet-600",
@@ -27,7 +26,6 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
     const goToCourse = () => navigate(`/courses/${course.id}/lessons`);
     const isGrid = layout === "grid";
     const percent = course.progressPercent
-    const {data: me} = useMe();
 
     // const locale = i18n.language?.startsWith("vi") ? "vi-VN" : "en-US";
 
@@ -87,53 +85,51 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                 </div>
 
                 {/* Progress */}
-                {me?.role === "STUDENT" && (
-                    <div className="rounded-lg bg-surface-muted px-3 py-2">
-                        <div className="flex items-center justify-between text-xs">
-                            <span className="font-medium text-fg-muted">
-                                {t("card.progress")}
-                                {!isGrid && (
-                                    <span className="ml-1 text-fg-subtle">
-                                        (
-                                        {t("card.lessonsCount", {
-                                            done: course.completeLesson,
-                                            total: course.totalLesson,
-                                        })}
-                                        )
-                                    </span>
-                                )}
-                            </span>
-                            <span
-                                className={`font-bold ${isLocked ? "text-amber-500" : "text-primary"}`}
-                            >
-                                {percent?.toFixed(2)}%
-                                {isGrid && (
-                                    <span className="ml-1 font-normal text-fg-subtle">
-                                        ({course.completeLesson}/{course.totalLesson})
-                                    </span>
-                                )}
-                            </span>
-                        </div>
-                        <div
-                            role="progress"
-                            aria-valuenow={percent}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                            className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-border"
+                <div className="rounded-lg bg-surface-muted px-3 py-2">
+                    <div className="flex items-center justify-between text-xs">
+                        <span className="font-medium text-fg-muted">
+                            {t("card.progress")}
+                            {!isGrid && (
+                                <span className="ml-1 text-fg-subtle">
+                                    (
+                                    {t("card.lessonsCount", {
+                                        done: course.completeLesson,
+                                        total: course.totalLesson,
+                                    })}
+                                    )
+                                </span>
+                            )}
+                        </span>
+                        <span
+                            className={`font-bold ${isLocked ? "text-amber-500" : "text-primary"}`}
                         >
-                            <div
-                                className={`h-full rounded-full ${
-                                    isCompleted
-                                        ? "bg-tertiary"
-                                        : isLocked
-                                        ? "bg-amber-500"
-                                        : "bg-primary"
-                                }`}
-                                style={{ width: `${percent}%` }}
-                            />
-                        </div>
+                            {percent?.toFixed(2)}%
+                            {isGrid && (
+                                <span className="ml-1 font-normal text-fg-subtle">
+                                    ({course.completeLesson}/{course.totalLesson})
+                                </span>
+                            )}
+                        </span>
                     </div>
-                )}
+                    <div
+                        role="progress"
+                        aria-valuenow={percent}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-border"
+                    >
+                        <div
+                            className={`h-full rounded-full ${
+                                isCompleted
+                                    ? "bg-tertiary"
+                                    : isLocked
+                                      ? "bg-amber-500"
+                                      : "bg-primary"
+                            }`}
+                            style={{ width: `${percent}%` }}
+                        />
+                    </div>
+                </div>
 
                 {/* Next lesson / unlock plan */}
                 {/* {course.status === "in_progress" && course.nextLesson && (
@@ -214,7 +210,7 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                                     : "bg-primary text-on-primary hover:bg-primary-hover"
                             }`}
                         >
-                            {me?.role === "STUDENT" ? (t(isCompleted ? "card.review" : "card.continue")) : "Chỉnh sửa"}
+                            {t(isCompleted ? "card.review" : "card.continue")}
                             <FontAwesomeIcon
                                 icon={faArrowRight}
                                 className="text-[16px]"

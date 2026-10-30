@@ -498,7 +498,7 @@ function QuizRunner({
         });
         resolved.push({
           ...it,
-          question: { ...it.question, id: created.id },
+          question: { ...it.question, id: created.data.id },
         });
       }
       // Giữ id thật: nếu bước 2 lỗi, bấm Lưu lại sẽ không tạo trùng câu hỏi
@@ -635,25 +635,18 @@ function QuizRunner({
               isNew ? (
                 <button
                   onClick={handleSave}
-                  className="flex items-center gap-2 rounded-lg cursor-pointer bg-primary px-3 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover sm:px-4"
+                  className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
                 >
                   {t("edit.done")}
                 </button>
               ) : data.quiz.quiz.status === "DRAFT" ? (
                 <button
                   onClick={handlePublish}
-                  className="flex items-center gap-2 rounded-lg cursor-pointer bg-primary px-3 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover sm:px-4"
+                  className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
                 >
                   {t("edit.publish")}
                 </button>
-              ) : (
-                <button
-                  onClick={() => navigate(backTo)}
-                  className="flex items-center gap-2 rounded-lg cursor-pointer bg-primary px-3 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover sm:px-4"
-                >
-                  Quay lại
-                </button>
-              )
+              ) : null
             ) : (
               <>
                 {data.remainingSeconds != null && (
