@@ -180,7 +180,7 @@ class LearningProgressServiceTest {
         verify(notificationService, never()).notify(any(), any(), any(), any(), any());
     }
 
-    /** V5: bài chưa có total_length chỉ lưu vị trí, không bao giờ tự hoàn thành. */
+    /** V5: bài chưa có total_length và client không gửi length thì chỉ lưu vị trí, không bao giờ tự hoàn thành. */
     @Test
     void updatePosition_lessonWithoutLength_savesPositionButNeverCompletes() {
         givenLessonAccess("PUBLISHED", "VIDEO", null);
@@ -189,12 +189,28 @@ class LearningProgressServiceTest {
         when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(1L);
         givenCounts(3, 0);
 
-        service.updatePosition(STUDENT_ID, LESSON_ID, new UpdatePositionRequest(5000, 600));
+        service.updatePosition(STUDENT_ID, LESSON_ID, new UpdatePositionRequest(5000, null));
 
         verify(progressRepository).upsertPosition(STUDENT_ID, LESSON_ID, 5000, false);
         verify(activityRepository, never()).save(any());
     }
 
+    /** Tự động cập nhật total_length khi bài học chưa có (ví dụ video YouTube) và tự hoàn thành khi đạt >= 90%. */
+    @Test
+    void updatePosition_lessonWithoutLength_autoPopulatesLengthFromClientAndCompletes() {
+        givenLessonAccess("PUBLISHED", "VIDEO", null);
+        when(progressRepository.findByStudentIdAndLessonId(STUDENT_ID, LESSON_ID))
+                .thenReturn(Optional.empty(), Optional.of(progress(true, 540)));
+        when(activityRepository.countRecentEvents(STUDENT_ID, LESSON_ID, "LESSON_PROGRESS")).thenReturn(1L);
+        givenCounts(3, 1);
+
+        LessonProgressResponse response = service.updatePosition(STUDENT_ID, LESSON_ID, new UpdatePositionRequest(540, 600));
+
+        verify(progressRepository).updateTotalLengthIfEmpty(LESSON_ID, 600);
+        verify(progressRepository).upsertPosition(STUDENT_ID, LESSON_ID, 540, true);
+        assertTrue(response.completed());
+    }
+    
     @Test
     void markComplete_videoLesson_isRejected() {
         givenLessonAccess("PUBLISHED", "VIDEO", 600);
