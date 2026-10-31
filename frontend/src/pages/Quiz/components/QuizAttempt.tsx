@@ -205,7 +205,7 @@ export default function QuizAttempt() {
             await enterFullscreen(); // gọi ngay trong sự kiện click
             setStarted(true);
           }}
-          className="rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-on-primary hover:bg-primary-hover"
+          className="cursor-pointer rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-on-primary hover:bg-primary-hover"
         >
           {t("intro.start")}
         </button>
@@ -471,7 +471,7 @@ function QuizRunner({
   );
   const [saveError, setSaveError] = useState<string | null>(null);
   const { mutate: publishMutate } = usePublishQuestion(courseId, quizId);
-  console.log(saveError)
+  console.log(saveError);
   const createQuestion = useCreateQuestion(courseId);
   const createQuiz = useCreateQuiz(courseId);
 
@@ -635,14 +635,14 @@ function QuizRunner({
               isNew ? (
                 <button
                   onClick={handleSave}
-                  className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
+                  className="cursor-pointer rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
                 >
                   {t("edit.done")}
                 </button>
               ) : data.quiz.quiz.status === "DRAFT" ? (
                 <button
                   onClick={handlePublish}
-                  className="rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
+                  className="cursor-pointer rounded-lg bg-primary px-4 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
                 >
                   {t("edit.publish")}
                 </button>
@@ -658,7 +658,7 @@ function QuizRunner({
                 <button
                   type="button"
                   onClick={() => setConfirmOpen(true)}
-                  className="flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover sm:px-4"
+                  className="cursor-pointer flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-on-primary hover:bg-primary-hover sm:px-4"
                 >
                   <span className="hidden sm:inline">
                     {t("attempt.submit")}
@@ -760,7 +760,7 @@ function QuizRunner({
               type="button"
               disabled={current === 0}
               onClick={() => setCurrent((c) => c - 1)}
-              className="flex items-center gap-2 rounded-lg bg-surface-muted px-4 py-2.5 text-sm font-medium text-fg disabled:opacity-40 lg:border lg:border-border"
+              className="cursor-pointer disabled:cursor-not-allowed flex items-center gap-2 rounded-lg bg-surface-muted px-4 py-2.5 text-sm font-medium text-fg disabled:opacity-40 lg:border lg:border-border"
             >
               <FontAwesomeIcon icon={faArrowLeft} />
               {t("attempt.prev")}
@@ -770,7 +770,7 @@ function QuizRunner({
               type="button"
               onClick={() => setSheetOpen(true)}
               aria-label={t("palette.mobileTitle", { total })}
-              className="flex size-10 items-center justify-center rounded-lg bg-surface-muted text-fg-muted lg:hidden"
+              className="cursor-pointer flex size-10 items-center justify-center rounded-lg bg-surface-muted text-fg-muted lg:hidden"
             >
               <FontAwesomeIcon icon={faTableCells} />
             </button>
@@ -876,7 +876,7 @@ function QuizRunner({
           <button
             type="button"
             onClick={() => finish(expired ? "expired" : "manual")}
-            className="rounded-lg bg-white/20 px-3 py-1 font-semibold hover:bg-white/30"
+            className="cursor-pointer rounded-lg bg-white/20 px-3 py-1 font-semibold hover:bg-white/30"
           >
             {t("attempt.retry")}
           </button>
@@ -901,7 +901,7 @@ function QuizRunner({
           <button
             type="button"
             onClick={() => void enterFullscreen()}
-            className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
+            className="cursor-pointer rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-hover"
           >
             {t("fullscreen.back")}
           </button>

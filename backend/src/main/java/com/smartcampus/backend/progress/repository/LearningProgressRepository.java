@@ -48,6 +48,15 @@ public interface LearningProgressRepository extends JpaRepository<LearningProgre
                        @Param("position") int position,
                        @Param("completed") boolean completed);
 
+    /** Tự động cập nhật total_length cho bài học (VD: clip YouTube) nếu DB chưa có hoặc <= 0 */
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = """
+            UPDATE lessons
+            SET total_length = :totalLength
+            WHERE id = :lessonId AND (total_length IS NULL OR total_length <= 0)
+            """, nativeQuery = true)
+    int updateTotalLengthIfEmpty(@Param("lessonId") Long lessonId, @Param("totalLength") int totalLength);
+
     @Query(value = """
             SELECT l.id                AS lessonId,
                    l.title             AS lessonTitle,

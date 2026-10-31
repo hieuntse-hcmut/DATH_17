@@ -44,7 +44,7 @@ export default function QuestionPalette({
             type="button"
             onClick={onClose}
             aria-label={t('palette.close')}
-            className="flex size-8 items-center justify-center rounded-full bg-surface-muted text-fg-muted"
+            className="cursor-pointer flex size-8 items-center justify-center rounded-full bg-surface-muted text-fg-muted"
           >
             <FontAwesomeIcon icon={faXmark} />
           </button>
@@ -76,7 +76,7 @@ export default function QuestionPalette({
               onClick={() => onJump(i)}
               aria-label={t('palette.goTo', { n: i + 1 })}
               aria-current={current ? 'step' : undefined}
-              className={`relative flex aspect-square items-center justify-center rounded-lg border font-label text-sm font-semibold transition-colors hover:brightness-95 focus-visible:outline-2 focus-visible:outline-primary ${
+              className={`cursor-pointer relative flex aspect-square items-center justify-center rounded-lg border font-label text-sm font-semibold transition-colors hover:brightness-95 focus-visible:outline-2 focus-visible:outline-primary ${
                 current ? 'border-primary bg-primary text-on-primary shadow-sm' : cellClass[s]
               }`}
             >

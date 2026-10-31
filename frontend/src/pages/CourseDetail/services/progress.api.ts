@@ -21,7 +21,7 @@ export const saveProgress = async (
       : Math.ceil(furthest);
 
   const prev = lastSent.get(lessonId);
-  if (position <= (prev ?? 0)) return undefined; // chưa có tiến triển
+  if (prev !== undefined && position <= prev) return undefined; // chưa có tiến triển
   lastSent.set(lessonId, position);
 
   try {

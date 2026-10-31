@@ -155,6 +155,9 @@ export default function VideoPlayer({
           start: Math.floor(startAtRef.current),
         },
         events: {
+          onReady: () => {
+            emit()
+          },
           onStateChange: (e: YTPlayerEvent) => {
             // 1: đang phát, 2: tạm dừng, 3: đang đệm. Kiểm tra ngay sau khi tua
             if (e.data === 1 || e.data === 2 || e.data === 3) tick()

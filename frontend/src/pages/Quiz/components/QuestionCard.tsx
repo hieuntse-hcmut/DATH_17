@@ -244,7 +244,7 @@ export default function QuestionCard({
             type="button"
             onClick={onToggleFlag}
             aria-pressed={flagged}
-            className={`flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm transition-colors ${
+            className={`cursor-pointer flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm transition-colors ${
               flagged
                 ? "border-danger/40 bg-danger/10 text-danger"
                 : "border-border text-fg-muted hover:bg-surface-muted"

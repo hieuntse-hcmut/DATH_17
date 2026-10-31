@@ -84,6 +84,10 @@ public class LearningProgressService {
     public LessonProgressResponse updatePosition(Long studentId, Long lessonId, UpdatePositionRequest request) {
         LessonContextView lesson = requireLessonAccess(studentId, lessonId);
         Integer total = lesson.getTotalLength();
+        if ((total == null || total <= 0) && request.totalLength() != null && request.totalLength() > 0) {
+            progressRepository.updateTotalLengthIfEmpty(lessonId, request.totalLength());
+            total = request.totalLength();
+        }
         int position = total == null ? request.position() : Math.min(request.position(), total);
         boolean reachesThreshold = reachesThreshold(position, total);
         boolean wasCompleted = isCompleted(studentId, lessonId);

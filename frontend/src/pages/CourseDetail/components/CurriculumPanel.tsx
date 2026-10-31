@@ -151,9 +151,16 @@ function LessonRow({
               icon={isDocument ? faFileLines : faCirclePlay}
               className="text-primary"
             />
-            <span className="rounded bg-primary px-1.5 py-0.5 font-label text-[10px] font-bold text-on-primary">
-              {t("status.current")}
-            </span>
+            {completed ? (
+              <span className="flex items-center gap-1 rounded bg-tertiary/15 px-1.5 py-0.5 font-label text-[10px] font-bold text-tertiary">
+                <FontAwesomeIcon icon={faCircleCheck} />
+                {t("status.completed")}
+              </span>
+            ) : (
+              <span className="rounded bg-primary px-1.5 py-0.5 font-label text-[10px] font-bold text-on-primary">
+                {t("status.current")}
+              </span>
+            )}
             {isVideo && lastPosition > 0 && (
               <span className="font-label text-xs text-fg-muted">
                 {formatTime(lastPosition)}

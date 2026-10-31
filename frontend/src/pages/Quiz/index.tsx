@@ -151,7 +151,7 @@ export default function QuizList() {
                       type="button"
                       aria-expanded={historyOpen}
                       onClick={() => setOpenHistory(historyOpen ? null : q.id)}
-                      className="flex items-center gap-2 rounded-lg bg-surface-muted px-3 py-1.5 text-sm font-medium text-fg hover:brightness-95"
+                      className="cursor-pointer flex items-center gap-2 rounded-lg bg-surface-muted px-3 py-1.5 text-sm font-medium text-fg hover:brightness-95"
                     >
                       <FontAwesomeIcon icon={faClockRotateLeft} />
                       {historyOpen ? t("list.hideHistory") : t("list.history")}
