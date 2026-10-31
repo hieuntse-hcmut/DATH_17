@@ -87,53 +87,54 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                         </div>
                     </div>
                 </div>
-
                 {/* Progress */}
-                <div className="rounded-lg bg-surface-muted px-3 py-2">
-                    <div className="flex items-center justify-between text-xs">
-                        <span className="font-medium text-fg-muted">
-                            {t("card.progress")}
-                            {!isGrid && (
-                                <span className="ml-1 text-fg-subtle">
-                                    (
-                                    {t("card.lessonsCount", {
-                                        done: course.completeLesson,
-                                        total: course.totalLesson,
-                                    })}
-                                    )
-                                </span>
-                            )}
-                        </span>
-                        <span
-                            className={`font-bold ${isLocked ? "text-amber-500" : "text-primary"}`}
-                        >
-                            {percent?.toFixed(1)}%
-                            {isGrid && (
-                                <span className="ml-1 font-normal text-fg-subtle">
-                                    ({course.completeLesson}/{course.totalLesson})
-                                </span>
-                            )}
-                        </span>
-                    </div>
-                    <div
-                        role="progress"
-                        aria-valuenow={percent}
-                        aria-valuemin={0}
-                        aria-valuemax={100}
-                        className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-border"
-                    >
+                {!isLecturerOrAdmin && (
+                    <div className="rounded-lg bg-surface-muted px-3 py-2">
+                        <div className="flex items-center justify-between text-xs">
+                            <span className="font-medium text-fg-muted">
+                                {t("card.progress")}
+                                {!isGrid && (
+                                    <span className="ml-1 text-fg-subtle">
+                                        (
+                                        {t("card.lessonsCount", {
+                                            done: course.completeLesson,
+                                            total: course.totalLesson,
+                                        })}
+                                        )
+                                    </span>
+                                )}
+                            </span>
+                            <span
+                                className={`font-bold ${isLocked ? "text-amber-500" : "text-primary"}`}
+                            >
+                                {percent?.toFixed(1)}%
+                                {isGrid && (
+                                    <span className="ml-1 font-normal text-fg-subtle">
+                                        ({course.completeLesson}/{course.totalLesson})
+                                    </span>
+                                )}
+                            </span>
+                        </div>
                         <div
-                            className={`h-full rounded-full ${
-                                isCompleted
-                                    ? "bg-tertiary"
-                                    : isLocked
-                                      ? "bg-amber-500"
-                                      : "bg-primary"
-                            }`}
-                            style={{ width: `${percent}%` }}
-                        />
+                            role="progress"
+                            aria-valuenow={percent}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-border"
+                        >
+                            <div
+                                className={`h-full rounded-full ${
+                                    isCompleted
+                                        ? "bg-tertiary"
+                                        : isLocked
+                                        ? "bg-amber-500"
+                                        : "bg-primary"
+                                }`}
+                                style={{ width: `${percent}%` }}
+                            />
+                        </div>
                     </div>
-                </div>
+                )}                
 
                 {/* Next lesson / unlock plan */}
                 {/* {course.status === "in_progress" && course.nextLesson && (
