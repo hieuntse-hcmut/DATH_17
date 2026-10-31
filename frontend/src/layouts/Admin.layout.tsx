@@ -7,11 +7,11 @@ import { useMe } from '~/services/me.query'
 
 export default function AdminLayout() {
     const [isNotifOpen, setIsNotifOpen] = useState(false)
-    const {data: me} = useMe();
+    const {data: me, isLoading} = useMe();
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (me?.role !== "ADMIN") {
+        if (me?.role !== "ADMIN" && !isLoading) {
             navigate("/")
         }
     }, [navigate, me]);
