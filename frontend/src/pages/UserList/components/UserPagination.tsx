@@ -73,7 +73,7 @@ export const UserPagination: React.FC<UserPaginationProps> = ({
           {t("pagination.users")}
         </span>
 
-        <div className="hidden sm:flex items-center gap-1.5 pl-2 border-l border-border">
+        <div className="flex items-center gap-1.5 pl-2 border-l border-border">
           <label htmlFor="pageSizeSelect" className="text-fg-subtle">
             {t("pagination.perPage")}
           </label>

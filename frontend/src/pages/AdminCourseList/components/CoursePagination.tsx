@@ -73,7 +73,7 @@ export const CoursePagination: React.FC<CoursePaginationProps> = ({
           {t("pagination.courses")}
         </span>
 
-        <div className="hidden sm:flex items-center gap-1.5 pl-2 border-l border-border">
+        <div className="flex items-center gap-1.5 pl-2 border-l border-border">
           <label htmlFor="coursePageSizeSelect" className="text-fg-subtle">
             {t("pagination.perPage")}
           </label>

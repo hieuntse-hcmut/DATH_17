@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
   faXmark,
-  faRotateRight,
   faFilter,
 } from "@fortawesome/free-solid-svg-icons";
 import type { UserRole, UserStatus } from "../services/userList.type";
@@ -18,8 +17,6 @@ interface UserFilterToolbarProps {
   onStatusChange: (status: UserStatus | "ALL") => void;
   sortBy: string;
   onSortChange: (sort: string) => void;
-  onRefresh: () => void;
-  isRefreshing?: boolean;
   onReset: () => void;
 }
 
@@ -32,8 +29,6 @@ export const UserFilterToolbar: React.FC<UserFilterToolbarProps> = ({
   onStatusChange,
   sortBy,
   onSortChange,
-  onRefresh,
-  isRefreshing = false,
   onReset,
 }) => {
   const { t } = useTranslation("userList");
@@ -83,20 +78,6 @@ export const UserFilterToolbar: React.FC<UserFilterToolbarProps> = ({
               <span>{t("filters.reset")}</span>
             </button>
           )}
-
-          <button
-            type="button"
-            onClick={onRefresh}
-            disabled={isRefreshing}
-            className="flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3 py-2 text-xs font-medium text-fg-muted hover:bg-surface-muted hover:text-fg disabled:opacity-50 transition-colors cursor-pointer"
-            title={t("filters.refreshTooltip")}
-          >
-            <FontAwesomeIcon
-              icon={faRotateRight}
-              className={`h-3.5 w-3.5 ${isRefreshing ? "animate-spin text-primary" : ""}`}
-            />
-            <span className="hidden sm:inline">{t("filters.refresh")}</span>
-          </button>
         </div>
       </div>
 

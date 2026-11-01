@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
-  faUsers,
   faHouse,
   faTriangleExclamation,
   faRotateRight,
@@ -54,7 +53,6 @@ export default function UserList() {
   const {
     data: pageData,
     isLoading: isLoadingUsers,
-    isRefetching,
     refetch,
     isError,
     error,
@@ -204,25 +202,6 @@ export default function UserList() {
         <span className="font-semibold text-fg">{t("breadcrumb.userList")}</span>
       </nav>
 
-      {/* Page Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <FontAwesomeIcon icon={faUsers} className="h-5 w-5" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-fg md:text-3xl">
-                {t("header.title")}
-              </h1>
-              <p className="text-xs text-fg-muted mt-0.5 md:text-sm">
-                {t("header.subtitle")}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Error state alert */}
       {isError && (
         <div className="flex items-center justify-between rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
@@ -265,8 +244,6 @@ export default function UserList() {
           setSortBy(sort);
           setPage(0);
         }}
-        onRefresh={() => refetch()}
-        isRefreshing={isRefetching}
         onReset={handleResetFilters}
       />
 

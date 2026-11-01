@@ -470,8 +470,9 @@ function QuizRunner({
     prefill ? q.maxAttempts : 1,
   );
   const [saveError, setSaveError] = useState<string | null>(null);
+  console.log(saveError, "saveError")
   const { mutate: publishMutate } = usePublishQuestion(courseId, quizId);
-  console.log(saveError)
+  // console.log(saveError)
   const createQuestion = useCreateQuestion(courseId);
   const createQuiz = useCreateQuiz(courseId);
 
@@ -488,6 +489,14 @@ function QuizRunner({
           resolved.push(it);
           continue;
         }
+        console.log({
+          content: it.question.content.trim(),
+          type: it.question.type,
+          options: it.question.options.map((o) => ({
+            content: o.content.trim(),
+            correct: !!o.correct,
+          })),
+        })
         const created = await createQuestion.mutateAsync({
           content: it.question.content.trim(),
           type: it.question.type,
@@ -498,7 +507,7 @@ function QuizRunner({
         });
         resolved.push({
           ...it,
-          question: { ...it.question, id: created.data.id },
+          question: { ...it.question, id: created.id },
         });
       }
       // Giữ id thật: nếu bước 2 lỗi, bấm Lưu lại sẽ không tạo trùng câu hỏi
