@@ -23,6 +23,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "my-courses", element: <MyCourses /> },
+      { path: "courses/:courseId", element: <CourseDetail /> },
       {
         path: "courses/:courseId/lessons/:lessonId?",
         element: <CourseDetail />,
