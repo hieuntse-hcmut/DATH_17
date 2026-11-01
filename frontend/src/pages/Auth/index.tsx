@@ -14,10 +14,6 @@ export default function Auth({ isLogin } : { isLogin: boolean }) {
       <LangThemeToggle className="absolute top-4 right-4 z-10" />
 
       <section className="flex flex-col bg-surface px-6 py-6 sm:px-12 lg:px-16 lg:py-8">
-        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-tertiary-soft px-3 py-1 text-[11px] font-medium text-tertiary lg:hidden">
-          <span className="size-1.5 rounded-full bg-tertiary" />
-          HỆ THỐNG HỌC TẬP SỐ
-        </span>
 
         <div className="mt-6 flex flex-col items-center gap-3 text-center lg:mt-0 lg:flex-row lg:text-left">
           <span className="grid size-16 place-items-center rounded-2xl bg-primary-soft text-3xl text-primary lg:size-10 lg:text-lg">
