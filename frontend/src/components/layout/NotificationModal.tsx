@@ -55,10 +55,7 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
                 return
             }
         }
-        if (item.link) {
-            navigate(item.link)
-            onClose()
-        }
+        if (item.link) navigate(item.link)
     }
 
     return (
