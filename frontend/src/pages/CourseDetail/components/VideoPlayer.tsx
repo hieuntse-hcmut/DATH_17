@@ -1,6 +1,13 @@
 import { useEffect, useRef } from 'react'
+import {
+  loadYouTubeApi,
+  getYouTubeId,
+  type YTPlayer,
+  type YTPlayerEvent,
+} from '../services/youtube'
 
-const DONE_RATIO = 0.9 // xem đủ 90% thì tính là xong
+
+const DONE_RATIO = 0.5 // xem đủ 90% thì tính là xong
 const SEEK_TOLERANCE = 2 // giây: sai số cho phép khi so với vị trí xa nhất
 const TICK_MS = 250
 const EMIT_EVERY_MS = 5000
@@ -12,48 +19,6 @@ export interface VideoProgress {
   percent: number // 0..1, theo furthest
 }
 
-interface YTPlayerEvent {
-  data: number
-}
-
-interface YTPlayer {
-  getCurrentTime(): number
-  getDuration(): number
-  getPlaybackRate(): number
-  seekTo(seconds: number, allowSeekAhead: boolean): void
-  destroy(): void
-}
-
-declare global {
-  interface Window {
-    YT?: {
-      Player: new (el: HTMLElement, options: Record<string, unknown>) => YTPlayer
-    }
-    onYouTubeIframeAPIReady?: () => void
-  }
-}
-
-let apiPromise: Promise<void> | null = null
-const loadYouTubeApi = (): Promise<void> => {
-  if (window.YT?.Player) return Promise.resolve()
-  apiPromise ??= new Promise<void>((resolve) => {
-    const prev = window.onYouTubeIframeAPIReady
-    window.onYouTubeIframeAPIReady = () => {
-      prev?.()
-      resolve()
-    }
-    const script = document.createElement('script')
-    script.src = 'https://www.youtube.com/iframe_api'
-    document.head.appendChild(script)
-  })
-  return apiPromise
-}
-
-const getYoutubeId = (url?: string) => {
-  if (!url) return ''
-  const m = url.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/)
-  return m?.[1] ?? ''
-}
 
 interface Props {
   videoUrl?: string
@@ -71,7 +36,7 @@ export default function VideoPlayer({
   onProgress,
   onDone,
 }: Readonly<Props>) {
-  const id = getYoutubeId(videoUrl)
+  const id = getYouTubeId(videoUrl)
 
   const hostRef = useRef<HTMLDivElement>(null)
   const startAtRef = useRef(startAt)

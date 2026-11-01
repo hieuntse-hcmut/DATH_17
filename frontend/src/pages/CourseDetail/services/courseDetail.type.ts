@@ -31,6 +31,7 @@ export interface IMaterial {
   title: string
   fileUrl: string
   fileType: IMaterialType
+  totalLength?: number | null
 }
 
 export interface ICourseToc {
@@ -107,7 +108,8 @@ export interface IChapterPayload {
 }
 
 export interface ILessonPayload {
-  title: string
-  orderIndex: number
+  title?: string
+  orderIndex?: number
+  totalLength?: number | null
 }
 

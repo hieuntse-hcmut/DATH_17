@@ -210,6 +210,7 @@ export default function CourseDetailPage() {
                             chapterId={current.chapterId}
                             lessonId={current.id}
                             lessonTitle={current.title}
+                            orderIndex={current.orderIndex}
                             isStudent={isStudent}
                             materials={materials}
                             loading={materialsLoading}

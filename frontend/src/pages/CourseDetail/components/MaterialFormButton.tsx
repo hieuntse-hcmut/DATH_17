@@ -8,9 +8,11 @@ import {
     useAddMaterial,
     useDeleteMaterial,
     useUpdateMaterial,
+    useUpdateLesson,
 } from "../services/courseDetail.mutation";
 import FormModal from "./FormModal";
-import type { IMaterial } from "../services/courseDetail.type";
+import type { IMaterial, ILessonPayload } from "../services/courseDetail.type";
+import { getYouTubeId, getYouTubeDuration } from "../services/youtube";
 
 const FILE_TYPES = ["PDF", "VIDEO", "DOCX", "IMAGE", "PPTX"];
 
@@ -19,6 +21,7 @@ interface Props {
     chapterId?: number;
     lessonId?: number;
     lessonTitle?: string;
+    orderIndex?: number | null;
     isEdit?: boolean;
     material?: IMaterial;
 }
@@ -28,6 +31,7 @@ export default function MaterialFormButton({
     chapterId,
     lessonId,
     lessonTitle,
+    orderIndex,
     isEdit = false,
     material,
 }: Readonly<Props>) {
@@ -39,11 +43,23 @@ export default function MaterialFormButton({
     const [title, setTitle] = useState("");
     const [fileUrl, setFileUrl] = useState("");
     const [fileType, setFileType] = useState(FILE_TYPES[0]);
+    const [isResolving, setIsResolving] = useState(false);
 
     const add = useAddMaterial(courseId, chapterId, lessonId);
     const update = useUpdateMaterial(courseId, chapterId, lessonId, material?.id);
     const remove = useDeleteMaterial(courseId, chapterId, lessonId, material?.id);
-    const pending = add.isPending || update.isPending || remove.isPending;
+    const updateLesson = useUpdateLesson(courseId, chapterId, lessonId);
+    const pending =
+        isResolving ||
+        add.isPending ||
+        update.isPending ||
+        remove.isPending ||
+        updateLesson.isPending;
+
+    // Giá trị đã trim, dùng chung cho validate, so sánh và payload
+    const trimmedTitle = title.trim();
+    const trimmedUrl = fileUrl.trim();
+    const payload = { title: trimmedTitle, fileUrl: trimmedUrl, fileType };
 
     const openModal = () => {
         setTitle(canEdit ? material.title : "");
@@ -56,50 +72,60 @@ export default function MaterialFormButton({
     const onError = (err: unknown) =>
         toast.error(getErrorMessage(err, t("notFound")));
 
-    const payload = { title: title.trim(), fileUrl: fileUrl.trim(), fileType };
+    const handleSubmit = async () => {
+        if (pending) return;
 
-    const handleSubmit = () => {
+        // Chỉ lấy duration khi thêm mới hoặc URL thay đổi
+        let totalLength: number | null = null;
+        const urlChanged = !canEdit || trimmedUrl !== material.fileUrl;
+        const videoId = urlChanged ? getYouTubeId(trimmedUrl) : "";
+        if (videoId) {
+            setIsResolving(true);
+            try {
+                totalLength = await getYouTubeDuration(videoId);
+            } finally {
+                setIsResolving(false);
+            }
+        }
+
+        const onSuccess = (message: string) => () => {
+            toast.success(message);
+            // Cập nhật độ dài lesson sau khi material đã lưu thành công
+            if (totalLength) {
+                updateLesson.mutate({ title: lessonTitle, totalLength, orderIndex } as ILessonPayload, { onError });
+            }
+            close();
+        };
+
         if (canEdit) {
-            update.mutate(payload,
-                {
-                    onSuccess: () => {
-                        toast.success(t("material.updated"));
-                        close();
-                    },
-                    onError,
-                },
-            );
+            update.mutate(payload, {
+                onSuccess: onSuccess(t("material.updated")),
+                onError,
+            });
             return;
         }
 
-        add.mutate(payload,
-            {
-                onSuccess: () => {
-                    toast.success(t("material.added"));
-                    close();
-                },
-                onError,
-            },
-        );
+        add.mutate(payload, {
+            onSuccess: onSuccess(t("material.added")),
+            onError,
+        });
     };
 
     const handleDelete = () => {
         if (!material) return;
-        remove.mutate(undefined,
-            {
-                onSuccess: () => {
-                    toast.success(t("material.deleted"));
-                    close();
-                },
-                onError,
+        remove.mutate(undefined, {
+            onSuccess: () => {
+                toast.success(t("material.deleted"));
+                close();
             },
-        );
+            onError,
+        });
     };
 
     const unchanged =
         canEdit &&
-        payload.title === material.title &&
-        payload.fileUrl === material.fileUrl &&
+        trimmedTitle === material.title &&
+        trimmedUrl === material.fileUrl &&
         fileType === material.fileType;
 
     const inputCls =
@@ -132,7 +158,7 @@ export default function MaterialFormButton({
                     title={canEdit ? t("material.editTitle") : t("material.addTitle")}
                     subtitle={lessonTitle}
                     submitLabel={canEdit ? t("editChapter.save") : t("add")}
-                    submitDisabled={!payload.title || !payload.fileUrl || unchanged}
+                    submitDisabled={!trimmedTitle || !trimmedUrl || unchanged}
                     pending={pending}
                     confirmDeleteText={t("material.confirmDelete")}
                     onClose={close}

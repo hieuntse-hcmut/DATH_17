@@ -99,6 +99,7 @@ export type MaterialBody = {
     title: string;
     fileUrl: string;
     fileType: string;
+    totalLength?: number | null;
 };
 
 export const useAddMaterial = (courseId?: number, chapterId?: number, lessonId?: number) => {

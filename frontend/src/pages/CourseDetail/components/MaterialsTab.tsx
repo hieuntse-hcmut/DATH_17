@@ -13,6 +13,7 @@ interface Props {
     chapterId?: number;
     lessonId?: number;
     lessonTitle?: string;
+    orderIndex?: number;
     materials?: IMaterial[];
     loading?: boolean;
     isStudent: boolean;
@@ -23,6 +24,7 @@ export default function MaterialsTab({
     chapterId,
     lessonId,
     lessonTitle,
+    orderIndex,
     materials,
     loading,
     isStudent,
@@ -103,6 +105,7 @@ export default function MaterialsTab({
                                             chapterId={chapterId}
                                             lessonId={lessonId}
                                             lessonTitle={lessonTitle}
+                                            orderIndex={orderIndex}
                                             material={m}
                                         />
                                     </div>
@@ -118,6 +121,7 @@ export default function MaterialsTab({
                         chapterId={chapterId}
                         lessonId={lessonId}
                         lessonTitle={lessonTitle}
+                        orderIndex={orderIndex}
                     />
                 )}
             </div>
