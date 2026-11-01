@@ -19,6 +19,48 @@ interface NotificationModalProps {
 
 type FilterTab = 'all' | 'courses' | 'discussion' | 'unread'
 
+const normalizeNotificationLink = (rawLink?: string): string | undefined => {
+    if (!rawLink) return undefined;
+    const trimmed = rawLink.trim();
+
+    // 1. Phân giải dạng quiz: /quiz?courseId=101&assessmentId=601 hoặc /quiz?courseId=101
+    if (trimmed.startsWith('/quiz')) {
+        try {
+            const url = new URL(trimmed, window.location.origin);
+            const courseId = url.searchParams.get('courseId');
+            const assessmentId = url.searchParams.get('assessmentId') || url.searchParams.get('quizId');
+            if (courseId && assessmentId) {
+                return `/courses/${courseId}/quizzes/${assessmentId}`;
+            }
+            if (courseId) {
+                return `/courses/${courseId}/quizzes`;
+            }
+        } catch {
+            // fallback
+        }
+    }
+
+    // 2. Phân giải dạng /assessments/:id (từ dữ liệu mẫu cũ)
+    const assessmentMatch = trimmed.match(/^\/assessments\/(\d+)(?:\/attempts\/\d+)?/);
+    if (assessmentMatch) {
+        try {
+            const url = new URL(trimmed, window.location.origin);
+            const courseId = url.searchParams.get('courseId') || '1';
+            return `/courses/${courseId}/quizzes/${assessmentMatch[1]}`;
+        } catch {
+            return `/courses/1/quizzes/${assessmentMatch[1]}`;
+        }
+    }
+
+    // 3. Phân giải dạng /courses/:courseId (thiếu /lessons theo route gốc của FE)
+    const courseOnlyMatch = trimmed.match(/^\/courses\/(\d+)\/?$/);
+    if (courseOnlyMatch) {
+        return `/courses/${courseOnlyMatch[1]}/lessons`;
+    }
+
+    return trimmed;
+};
+
 export default function NotificationModal({ isOpen, onClose }: NotificationModalProps) {
     const { t } = useTranslation()
     const navigate = useNavigate()
@@ -55,7 +97,13 @@ export default function NotificationModal({ isOpen, onClose }: NotificationModal
                 return
             }
         }
-        if (item.link) navigate(item.link)
+        if (item.link) {
+            const targetLink = normalizeNotificationLink(item.link)
+            if (targetLink) {
+                navigate(targetLink)
+                onClose()
+            }
+        }
     }
 
     return (

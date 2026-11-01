@@ -318,9 +318,9 @@ INSERT INTO interventions (id, risk_assessment_id, created_by, intervention_type
 -- ============================================================
 INSERT INTO notifications (id, recipient_id, type, title, message, link, is_read, created_at, read_at) VALUES
 (1, 3, 'NEW_CONTENT',  'Có bài học mới',            'Bài 3: Lớp và đối tượng vừa được đăng trong khóa Lập trình Java cơ bản.', '/courses/1/lessons/3',       TRUE,  '2026-10-02 08:00:00', '2026-10-02 08:30:00'),
-(2, 3, 'GRADED',       'Bài kiểm tra đã có điểm',   'Quiz 1 - Java cơ bản (lần 2) của bạn đạt 10.00 điểm.',                    '/assessments/1/attempts/2',TRUE, '2026-10-07 09:20:00', '2026-10-07 10:00:00'),
-(3, 5, 'GRADED',       'Bài kiểm tra đã có điểm',   'Quiz 1 - Java cơ bản của bạn đạt 6.00 điểm.',                             '/assessments/1/attempts/3',FALSE, '2026-10-06 20:30:00', NULL),
-(4, 6, 'DEADLINE',     'Sắp đến hạn làm bài',       'Quiz 1 - Java cơ bản sẽ đóng vào 31/10/2026.',                            '/assessments/1',           FALSE, '2026-10-20 07:00:00', NULL),
+(2, 3, 'GRADED',       'Bài kiểm tra đã có điểm',   'Quiz 1 - Java cơ bản (lần 2) của bạn đạt 10.00 điểm.',                    '/courses/1/quizzes/1',TRUE, '2026-10-07 09:20:00', '2026-10-07 10:00:00'),
+(3, 5, 'GRADED',       'Bài kiểm tra đã có điểm',   'Quiz 1 - Java cơ bản của bạn đạt 6.00 điểm.',                             '/courses/1/quizzes/1',FALSE, '2026-10-06 20:30:00', NULL),
+(4, 6, 'DEADLINE',     'Sắp đến hạn làm bài',       'Quiz 1 - Java cơ bản sẽ đóng vào 31/10/2026.',                            '/courses/1/quizzes/1',           FALSE, '2026-10-20 07:00:00', NULL),
 (5, 6, 'RISK_ALERT',   'Cảnh báo nguy cơ học tập',  'Bạn đang ở mức rủi ro CAO trong khóa Lập trình Java cơ bản.',             '/courses/1/risk',          FALSE, '2026-10-17 06:30:00', NULL),
 (6, 2, 'RISK_ALERT',   'Sinh viên có rủi ro cao',   'Sinh viên Võ Thu Hà đang ở mức rủi ro CAO trong khóa Java.',              '/courses/1/risk/students/6', TRUE, '2026-10-17 06:30:00', '2026-10-17 07:00:00'),
 (7, 2, 'NEW_ENROLLMENT','Sinh viên mới đăng ký',    'Đặng Hoàng Nam vừa đăng ký khóa Cơ sở dữ liệu.',                          '/courses/2/roster',        TRUE,  '2026-09-12 13:00:00', '2026-09-12 14:00:00'),

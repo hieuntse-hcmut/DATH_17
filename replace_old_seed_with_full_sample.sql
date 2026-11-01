@@ -103,13 +103,12 @@ VALUES
 
 INSERT INTO course_lecturers (course_id, lecturer_id)
 VALUES
-    (101, 1002), -- Thầy Hùng
-    (101, 1004), -- Thầy Minh cùng giảng dạy
-    (102, 1003), -- Cô Lan
-    (103, 1004), -- Thầy Minh
-    (104, 1002), -- Thầy Hùng
-    (105, 1003), -- Cô Lan
-    (106, 1004); -- Thầy Minh
+    (101, 1002), -- Giảng viên 01 (lecturer01)
+    (102, 1003), -- Giảng viên 02 (lecturer02)
+    (103, 1004), -- Giảng viên 03 (lecturer03)
+    (104, 1002), -- Giảng viên 01 (lecturer01)
+    (105, 1003), -- Giảng viên 02 (lecturer02)
+    (106, 1004); -- Giảng viên 03 (lecturer03)
 
 -- ============================================================================
 -- 4. CHƯƠNG MỤC (CHAPTERS)
@@ -314,13 +313,13 @@ INSERT INTO notifications (recipient_id, type, title, message, link, is_read)
 VALUES
     (1011, 'NEW_CONTENT', 'Khóa học mới đã sẵn sàng', 
      'Chào mừng bạn đến với khóa học Lập trình Web với Spring Boot & React. Hãy bắt đầu bài học đầu tiên ngay!', 
-     '/courses/101', FALSE),
+     '/courses/101/lessons', FALSE),
     (1011, 'NEW_CONTENT', 'Bài kiểm tra trắc nghiệm mở', 
      'Bài kiểm tra Chương 1 đã mở, thời lượng 15 phút.', 
-     '/quiz?courseId=101&assessmentId=601', FALSE),
+     '/courses/101/quizzes/601', FALSE),
     (1002, 'SYSTEM', 'Sinh viên mới tham gia khóa học', 
      'Sinh viên 01 (student01) vừa đăng ký vào khóa học của bạn.', 
-     '/courses/101', TRUE);
+     '/courses/101/lessons', TRUE);
 
 -- ============================================================================
 -- HOÀN TẤT NẠP DỮ LIỆU MẪU
