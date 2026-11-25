@@ -2,13 +2,11 @@ import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faArrowRight,
-    faChartSimple,
     faCircleInfo,
     faGraduationCap,
 } from "@fortawesome/free-solid-svg-icons";
 import type { CourseCardProps } from "../services/myCourses.type";
 import { useNavigate } from "react-router";
-import { useMe } from "~/services/me.query";
 
 const GRADIENTS = [
     "from-indigo-500 to-violet-600",
@@ -27,9 +25,7 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
     const navigate = useNavigate();
     const goToCourse = () => navigate(`/courses/${course.id}/lessons`);
     const isGrid = layout === "grid";
-    const percent = course.progressPercent;
-    const { data: me } = useMe();
-    const isLecturerOrAdmin = me?.role === "LECTURER" || me?.role === "ADMIN";
+    const percent = course.progressPercent
 
     // const locale = i18n.language?.startsWith("vi") ? "vi-VN" : "en-US";
 
@@ -87,54 +83,53 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                         </div>
                     </div>
                 </div>
+
                 {/* Progress */}
-                {!isLecturerOrAdmin && (
-                    <div className="rounded-lg bg-surface-muted px-3 py-2">
-                        <div className="flex items-center justify-between text-xs">
-                            <span className="font-medium text-fg-muted">
-                                {t("card.progress")}
-                                {!isGrid && (
-                                    <span className="ml-1 text-fg-subtle">
-                                        (
-                                        {t("card.lessonsCount", {
-                                            done: course.completeLesson,
-                                            total: course.totalLesson,
-                                        })}
-                                        )
-                                    </span>
-                                )}
-                            </span>
-                            <span
-                                className={`font-bold ${isLocked ? "text-amber-500" : "text-primary"}`}
-                            >
-                                {percent?.toFixed(1)}%
-                                {isGrid && (
-                                    <span className="ml-1 font-normal text-fg-subtle">
-                                        ({course.completeLesson}/{course.totalLesson})
-                                    </span>
-                                )}
-                            </span>
-                        </div>
-                        <div
-                            role="progress"
-                            aria-valuenow={percent}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                            className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-border"
+                <div className="rounded-lg bg-surface-muted px-3 py-2">
+                    <div className="flex items-center justify-between text-xs">
+                        <span className="font-medium text-fg-muted">
+                            {t("card.progress")}
+                            {!isGrid && (
+                                <span className="ml-1 text-fg-subtle">
+                                    (
+                                    {t("card.lessonsCount", {
+                                        done: course.completeLesson,
+                                        total: course.totalLesson,
+                                    })}
+                                    )
+                                </span>
+                            )}
+                        </span>
+                        <span
+                            className={`font-bold ${isLocked ? "text-amber-500" : "text-primary"}`}
                         >
-                            <div
-                                className={`h-full rounded-full ${
-                                    isCompleted
-                                        ? "bg-tertiary"
-                                        : isLocked
-                                        ? "bg-amber-500"
-                                        : "bg-primary"
-                                }`}
-                                style={{ width: `${percent}%` }}
-                            />
-                        </div>
+                            {percent}%
+                            {isGrid && (
+                                <span className="ml-1 font-normal text-fg-subtle">
+                                    ({course.completeLesson}/{course.totalLesson})
+                                </span>
+                            )}
+                        </span>
                     </div>
-                )}                
+                    <div
+                        role="progress"
+                        aria-valuenow={percent}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-border"
+                    >
+                        <div
+                            className={`h-full rounded-full ${
+                                isCompleted
+                                    ? "bg-tertiary"
+                                    : isLocked
+                                      ? "bg-amber-500"
+                                      : "bg-primary"
+                            }`}
+                            style={{ width: `${percent}%` }}
+                        />
+                    </div>
+                </div>
 
                 {/* Next lesson / unlock plan */}
                 {/* {course.status === "in_progress" && course.nextLesson && (
@@ -192,7 +187,7 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                 )} */}
 
                 {/* CTA */}
-                <div className="mt-auto flex flex-col sm:flex-row gap-2">
+                <div className="mt-auto">
                     {isLocked ? (
                         <button
                             type="button"
@@ -209,33 +204,18 @@ export default function CourseCard({ course, layout }: Readonly<CourseCardProps>
                         <button
                             type="button"
                             onClick={goToCourse}
-                            className={` cursor-pointer flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                            className={` cursor-pointer flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
                                 isCompleted
                                     ? "border border-border bg-surface text-fg hover:bg-surface-muted"
                                     : "bg-primary text-on-primary hover:bg-primary-hover"
                             }`}
                         >
-                            {isLecturerOrAdmin ?  "Chỉnh sửa" : t(isCompleted ? "card.review" : "card.continue")}
+                            {t(isCompleted ? "card.review" : "card.continue")}
                             <FontAwesomeIcon
                                 icon={faArrowRight}
                                 className="text-[16px]"
                                 aria-hidden
                             />
-                        </button>
-                    )}
-                    {isLecturerOrAdmin && (
-                        <button
-                            type="button"
-                            onClick={() => navigate(`/courses/${course.id}/analytics`)}
-                            className="cursor-pointer flex items-center justify-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-2.5 text-xs font-semibold text-fg hover:bg-surface-muted hover:text-primary transition-colors"
-                            title="Xem thống kê & phân tích rủi ro"
-                        >
-                            <FontAwesomeIcon
-                                icon={faChartSimple}
-                                className="text-primary text-[14px]"
-                                aria-hidden
-                            />
-                            <span>Thống kê</span>
                         </button>
                     )}
                 </div>

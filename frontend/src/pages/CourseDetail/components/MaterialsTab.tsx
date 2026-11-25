@@ -13,7 +13,6 @@ interface Props {
     chapterId?: number;
     lessonId?: number;
     lessonTitle?: string;
-    orderIndex?: number;
     materials?: IMaterial[];
     loading?: boolean;
     isStudent: boolean;
@@ -24,7 +23,6 @@ export default function MaterialsTab({
     chapterId,
     lessonId,
     lessonTitle,
-    orderIndex,
     materials,
     loading,
     isStudent,
@@ -93,10 +91,12 @@ export default function MaterialsTab({
                         {t("docsEmpty")}
                     </p>
                 ) : (
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div className="grid gap-3 sm:grid-cols-2">
                         {items.map((m) => (
-                            <div key={m.id} className="relative flex min-w-0 items-start gap-1">
-                                <AttachmentCard material={m} />
+                            <div key={m.id} className="relative flex items-start gap-1">
+                                <div className="min-w-0 flex-1">
+                                    <AttachmentCard material={m} />
+                                </div>
                                 {canManage && (
                                     <div className="absolute -right-2 -top-2 rounded-full bg-border">
                                         <MaterialFormButton
@@ -105,7 +105,6 @@ export default function MaterialsTab({
                                             chapterId={chapterId}
                                             lessonId={lessonId}
                                             lessonTitle={lessonTitle}
-                                            orderIndex={orderIndex}
                                             material={m}
                                         />
                                     </div>
@@ -121,7 +120,6 @@ export default function MaterialsTab({
                         chapterId={chapterId}
                         lessonId={lessonId}
                         lessonTitle={lessonTitle}
-                        orderIndex={orderIndex}
                     />
                 )}
             </div>

@@ -10,7 +10,6 @@ import {
   useUpdateDiscussionComment,
 } from './services/discussion.query'
 import type { DiscussionComment } from './services/discussion.type'
-import { useMe } from '~/services/me.query'
 
 type SortOrder = 'newest' | 'oldest'
 
@@ -47,7 +46,7 @@ export default function Discuss({ courseId }: Readonly<DiscussProps>) {
   const [replyContent, setReplyContent] = useState('')
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editContent, setEditContent] = useState('')
-  const {data: me} = useMe();
+
   // Reset trạng thái reply/edit khi chuyển sang khóa học khác
   useEffect(() => {
     setNewContent('')
@@ -157,29 +156,25 @@ export default function Discuss({ courseId }: Readonly<DiscussProps>) {
                   >
                     {t('reply')}
                   </button>
-                  {me?.role !== "STUDENT" && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditingId(comment.id)
-                          setEditContent(comment.content)
-                          setReplyToId(null)
-                        }}
-                        className="text-fg-muted hover:text-primary"
-                      >
-                        {t('edit')}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => removeComment(comment.id)}
-                        disabled={deleteComment.isPending}
-                        className="text-red-600 hover:underline disabled:opacity-50"
-                      >
-                        {t('delete')}
-                      </button>
-                    </>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingId(comment.id)
+                      setEditContent(comment.content)
+                      setReplyToId(null)
+                    }}
+                    className="text-fg-muted hover:text-primary"
+                  >
+                    {t('edit')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeComment(comment.id)}
+                    disabled={deleteComment.isPending}
+                    className="text-red-600 hover:underline disabled:opacity-50"
+                  >
+                    {t('delete')}
+                  </button>
                 </div>
               )}
             </div>
