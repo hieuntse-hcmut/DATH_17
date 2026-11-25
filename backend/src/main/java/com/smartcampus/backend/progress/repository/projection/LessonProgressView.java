@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 public interface LessonProgressView {
     Long getLessonId();
     String getLessonTitle();
+    String getContentType();
     Long getChapterId();
     String getChapterTitle();
     /** 1 = completed, 0 = not completed */

@@ -252,7 +252,7 @@ class LearningContentTest {
                             10L,
                             2L,
                             new CreateLessonRequest(
-                                    " Java ", 0
+                                    " Java ", "VIDEO", 0, null
                             ),
                             user
                     );
@@ -277,7 +277,7 @@ class LearningContentTest {
                             10L,
                             2L,
                             new CreateLessonRequest(
-                                    "Intro video", 0
+                                    "Intro video", "VIDEO", 0, 600
                             ),
                             user
                     );
@@ -295,7 +295,7 @@ class LearningContentTest {
                             10L,
                             2L,
                             new CreateLessonRequest(
-                                    "Reading", 0
+                                    "Reading", "TEXT", 0, 10
                             ),
                             user
                     )
@@ -318,7 +318,7 @@ class LearningContentTest {
                             10L,
                             2L,
                             new CreateLessonRequest(
-                                    "A", 0
+                                    "A", "VIDEO", 0, null
                             ),
                             user
                     )
@@ -354,7 +354,7 @@ class LearningContentTest {
                             2L,
                             3L,
                             new UpdateLessonRequest(
-                                    "New", 1, null
+                                    "New", "VIDEO", 1, null
                             ),
                             user
                     );
@@ -381,7 +381,7 @@ class LearningContentTest {
                             2L,
                             3L,
                             new UpdateLessonRequest(
-                                    "B", 1, null
+                                    "B", "PDF", 1, null
                             ),
                             user
                     )
@@ -410,7 +410,7 @@ class LearningContentTest {
                             2L,
                             3L,
                             new UpdateLessonRequest(
-                                    "B", 1, null
+                                    "B", "PDF", 1, null
                             ),
                             user
                     )

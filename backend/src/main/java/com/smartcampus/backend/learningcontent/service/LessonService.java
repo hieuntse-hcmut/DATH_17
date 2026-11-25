@@ -74,7 +74,8 @@ public class LessonService {
         Lesson lesson = new Lesson(
                 chapterId,
                 request.title().trim(),
-                request.orderIndex()
+                request.orderIndex(),
+                validTotalLength(request.contentType(), request.totalLength())
         );
 
         return toResponse(lessonRepository.save(lesson));
@@ -110,7 +111,7 @@ public class LessonService {
         lesson.update(
                 request.title().trim(),
                 request.orderIndex(),
-                validTotalLength(request.totalLength())
+                validTotalLength(request.contentType(), request.totalLength())
         );
 
         return toResponse(lesson);
@@ -172,9 +173,16 @@ public class LessonService {
     }
 
     /** totalLength chỉ có nghĩa với VIDEO/PDF; gửi kèm bài TEXT là sai dữ liệu (400). */
-    static Integer validTotalLength(Integer totalLength) {
+    static Integer validTotalLength(String contentType, Integer totalLength) {
         if (totalLength == null) {
             return null;
+        }
+        String type = contentType.trim().toUpperCase(Locale.ROOT);
+        if (!MEASURABLE_TYPES.contains(type)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "totalLength chỉ dùng cho bài VIDEO (số giây) hoặc PDF (số trang)"
+            );
         }
         return totalLength;
     }
